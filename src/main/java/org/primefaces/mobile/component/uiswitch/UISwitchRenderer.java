@@ -34,10 +34,10 @@ public class UISwitchRenderer extends InputRenderer {
 		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
 
         if(submittedValue != null && submittedValue.equalsIgnoreCase("on")) {
-            uiswitch.setSubmittedValue(true);
+            uiswitch.setSubmittedValue("true");
         }
         else {
-            uiswitch.setSubmittedValue(false);
+            uiswitch.setSubmittedValue("false");
         }
 	}
 
@@ -73,6 +73,7 @@ public class UISwitchRenderer extends InputRenderer {
         writer.endElement("option");
     }
     
+    @Override
 	public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue) throws ConverterException {
 		UISwitch uiswitch = (UISwitch) component;
 		String value = (String) submittedValue;
