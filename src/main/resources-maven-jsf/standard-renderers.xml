@@ -1,0 +1,5 @@
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.CommandButtonRenderer</renderer-type>
+            <renderer-class>org.primefaces.mobile.renderkit.CommandButtonRenderer</renderer-class>
+        </renderer>

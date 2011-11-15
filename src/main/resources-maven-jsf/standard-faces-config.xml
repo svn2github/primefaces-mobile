@@ -1,5 +1,9 @@
     
     <name>primefaces-mobile</name>
+    
+    <ordering>
+        <after>primefaces</after>
+    </ordering>
   
     <application>
         <navigation-handler>org.primefaces.mobile.navigation.MobileNavigationHandler</navigation-handler>
