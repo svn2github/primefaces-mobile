@@ -15,16 +15,19 @@
  */
 package org.primefaces.mobile.navigation;
 
-import javax.faces.application.NavigationHandler;
+import java.util.Map;
+import java.util.Set;
+import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
-public class MobileNavigationHandler extends NavigationHandler {
+public class MobileNavigationHandler extends ConfigurableNavigationHandler {
     
-    private NavigationHandler base;
+    private ConfigurableNavigationHandler base;
 
     
-    public MobileNavigationHandler(NavigationHandler base) {
+    public MobileNavigationHandler(ConfigurableNavigationHandler base) {
         this.base = base;
     }
 
@@ -41,5 +44,15 @@ public class MobileNavigationHandler extends NavigationHandler {
         else {
             base.handleNavigation(context, fromAction, outcome);
         }
+    }
+
+    @Override
+    public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
+        return base.getNavigationCase(context, fromAction, outcome);
+    }
+
+    @Override
+    public Map<String, Set<NavigationCase>> getNavigationCases() {
+        return base.getNavigationCases();
     }
 }
