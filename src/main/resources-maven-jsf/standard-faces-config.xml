@@ -1,0 +1,6 @@
+    
+    <name>primefaces-mobile</name>
+  
+    <application>
+        <navigation-handler>org.primefaces.mobile.navigation.MobileNavigationHandler</navigation-handler>
+    </application>
