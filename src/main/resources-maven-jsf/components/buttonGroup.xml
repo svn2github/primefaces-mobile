@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.buttongroup.ButtonGroupTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.buttongroup.ButtonGroup</componentClass>
 	<componentType>org.primefaces.mobile.ButtonGroup</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.ButtonGroupRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.buttongroup.ButtonGroupRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

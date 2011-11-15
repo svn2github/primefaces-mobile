@@ -22,12 +22,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class PageRenderer extends CoreRenderer {
 
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+        MobileUtils.setMobileRequest();
+        
         ResponseWriter writer = context.getResponseWriter();
         Page page = (Page) component;
         UIComponent preinit = page.getFacet("preinit");

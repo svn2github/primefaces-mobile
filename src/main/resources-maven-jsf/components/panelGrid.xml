@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.panelgrid.PanelGridTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.panelgrid.PanelGrid</componentClass>
 	<componentType>org.primefaces.mobile.PanelGrid</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.PanelGridRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.panelgrid.PanelGridRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

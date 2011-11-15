@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.view.ViewTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.view.View</componentClass>
 	<componentType>org.primefaces.mobile.View</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.ViewRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.view.ViewRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

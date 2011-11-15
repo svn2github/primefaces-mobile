@@ -10,7 +10,7 @@
 	<tagClass>org.primefaces.mobile.component.slider.SliderTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.slider.Slider</componentClass>
 	<componentType>org.primefaces.mobile.Slider</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.SliderRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.slider.SliderRenderer</rendererClass>
 	<parent>javax.faces.component.UIInput</parent>

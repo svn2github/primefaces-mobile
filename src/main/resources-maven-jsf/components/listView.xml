@@ -9,7 +9,7 @@
     <tagClass>org.primefaces.mobile.component.listview.ListViewTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.listview.ListView</componentClass>
 	<componentType>org.primefaces.mobile.ListView</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.ListViewRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.listview.ListViewRenderer</rendererClass>
 	<parent>javax.faces.component.UIData</parent>

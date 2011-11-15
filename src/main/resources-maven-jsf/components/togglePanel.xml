@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.togglepanel.TogglePanelTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.togglepanel.TogglePanel</componentClass>
 	<componentType>org.primefaces.mobile.TogglePanel</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.TogglePanelRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.togglepanel.TogglePanelRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.footer.FooterTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.footer.Footer</componentClass>
 	<componentType>org.primefaces.mobile.Footer</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.FooterRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.footer.FooterRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

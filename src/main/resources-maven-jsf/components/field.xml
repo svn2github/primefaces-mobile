@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.field.FieldTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.field.Field</componentClass>
 	<componentType>org.primefaces.mobile.Field</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.FieldRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.field.FieldRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>

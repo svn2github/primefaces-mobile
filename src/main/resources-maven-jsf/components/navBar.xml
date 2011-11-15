@@ -8,7 +8,7 @@
     <tagClass>org.primefaces.mobile.component.navbar.NavBarTag</tagClass>
 	<componentClass>org.primefaces.mobile.component.navbar.NavBar</componentClass>
 	<componentType>org.primefaces.mobile.NavBar</componentType>
-	<componentFamily>org.primefaces.mobile</componentFamily>
+	<componentFamily>org.primefaces.mobile.component</componentFamily>
 	<rendererType>org.primefaces.mobile.component.NavBarRenderer</rendererType>
 	<rendererClass>org.primefaces.mobile.component.navbar.NavBarRenderer</rendererClass>
 	<parent>javax.faces.component.UIPanel</parent>
