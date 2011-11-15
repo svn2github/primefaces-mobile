@@ -21,12 +21,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
-import javax.faces.render.FacesRenderer;
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.util.ComponentUtils;
 
-@FacesRenderer(componentFamily="org.primefaces.component", rendererType="org.primefaces.component.CommandButtonRenderer")
 public class CommandButtonRenderer extends CoreRenderer {
 
     @Override
@@ -45,7 +43,6 @@ public class CommandButtonRenderer extends CoreRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        System.out.println("Rendering Mobile CommandButton");
         ResponseWriter writer = context.getResponseWriter();
         CommandButton button = (CommandButton) component;
         String clientId = button.getClientId(context);
