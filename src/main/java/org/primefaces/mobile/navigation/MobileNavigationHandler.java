@@ -30,7 +30,7 @@ public class MobileNavigationHandler extends NavigationHandler {
 
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-        if(outcome.startsWith("pm:")) {
+        if(outcome != null && outcome.startsWith("pm:")) {
             String view = outcome.split("pm:")[1];
             
             RequestContext requestContext = RequestContext.getCurrentInstance();
