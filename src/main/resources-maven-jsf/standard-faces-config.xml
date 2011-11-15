@@ -2,7 +2,9 @@
     <name>primefaces-mobile</name>
     
     <ordering>
-        <after>primefaces</after>
+        <after>
+            <name>primefaces</name>
+        </after>
     </ordering>
   
     <application>
