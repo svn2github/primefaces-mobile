@@ -15,17 +15,27 @@
  */
 package org.primefaces.mobile.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 
 public class MobileUtils {
     
-    public static final String MOBILE_REQUEST_MARKER = "PRIMEFACES_MOBILE_REQUEST";
-
-    public static void setMobileRequest() {
-        FacesContext.getCurrentInstance().getExternalContext().getRequestMap().put(MOBILE_REQUEST_MARKER, MOBILE_REQUEST_MARKER);
+    private final static String MOBILE_DEVICE_DETECTION_PARAM = "primefaces.mobile.DEVICE_DETECTION";
+    
+    public static boolean isMobileDevice(String userAgent) {
+        Pattern pattern = Pattern.compile("(Android|iPhone|iPad|iPod|BlackBerry|Opera Mobi|Opera Mini|IEMobile)");
+        Matcher matcher = pattern.matcher(userAgent);
+        
+        return matcher.find();
     }
-
-    public static boolean isMobileRequest() {
-        return FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(MOBILE_REQUEST_MARKER) != null;
+    
+    public static boolean isMobileDeviceDetectionEnabled(FacesContext context) {
+        String value = context.getExternalContext().getInitParameter(MOBILE_DEVICE_DETECTION_PARAM);
+        
+        if(value != null)
+            return Boolean.valueOf(value);
+        else
+            return false;
     }
 }

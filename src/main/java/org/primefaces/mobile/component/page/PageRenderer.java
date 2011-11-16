@@ -28,9 +28,7 @@ import org.primefaces.renderkit.CoreRenderer;
 public class PageRenderer extends CoreRenderer {
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
-        MobileUtils.setMobileRequest();
-        
+    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {        
         ResponseWriter writer = context.getResponseWriter();
         Page page = (Page) component;
         UIComponent preinit = page.getFacet("preinit");

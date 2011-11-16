@@ -18,6 +18,8 @@ package org.primefaces.mobile.application;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
+import org.primefaces.mobile.renderkit.MobileRenderKit;
+import org.primefaces.mobile.util.MobileUtils;
 
 public class MobileViewHandler extends ViewHandlerWrapper {
 
@@ -34,8 +36,14 @@ public class MobileViewHandler extends ViewHandlerWrapper {
 
     @Override
     public String calculateRenderKitId(FacesContext context) {
-        //This is a good place to do device detection.
-        
-        return this.wrapped.calculateRenderKitId(context);
+        String userAgent = context.getExternalContext().getRequestHeaderMap().get("User-Agent");
+
+        if(MobileUtils.isMobileDeviceDetectionEnabled(context) && MobileUtils.isMobileDevice(userAgent)) {
+            System.out.println("Match");
+            return MobileRenderKit.RENDER_KIT_ID;
+        } 
+        else {
+            return this.wrapped.calculateRenderKitId(context);
+        }
     }
 }
