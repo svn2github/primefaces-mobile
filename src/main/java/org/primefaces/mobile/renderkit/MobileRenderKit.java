@@ -28,6 +28,7 @@ import javax.faces.application.ApplicationFactory;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseStream;
 import javax.faces.context.ResponseWriter;
+import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.Renderer;
@@ -86,7 +87,22 @@ public class MobileRenderKit extends RenderKit {
             return empty.iterator();
         }
     }
-    
+
+    @Override
+    public void addClientBehaviorRenderer(String type, ClientBehaviorRenderer renderer) {
+        getDefaultRenderKit().addClientBehaviorRenderer(type, renderer);
+    }
+
+    @Override
+    public ClientBehaviorRenderer getClientBehaviorRenderer(String type) {
+        return getDefaultRenderKit().getClientBehaviorRenderer(type);
+    }
+
+    @Override
+    public Iterator<String> getClientBehaviorRendererTypes() {
+        return getDefaultRenderKit().getClientBehaviorRendererTypes();
+    }
+
     @Override
     public Iterator<String> getComponentFamilies() {
         return rendererFamilies.keySet().iterator();
