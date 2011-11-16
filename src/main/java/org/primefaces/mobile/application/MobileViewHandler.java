@@ -15,11 +15,9 @@
  */
 package org.primefaces.mobile.application;
 
-import java.util.Map;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.context.FacesContext;
-import org.primefaces.mobile.renderkit.MobileRenderKit;
 
 public class MobileViewHandler extends ViewHandlerWrapper {
 
@@ -36,11 +34,8 @@ public class MobileViewHandler extends ViewHandlerWrapper {
 
     @Override
     public String calculateRenderKitId(FacesContext context) {
-        Map<String,String> map = context.getExternalContext().getRequestParameterMap();
+        //This is a good place to do device detection.
         
-        if(map.containsKey("mobile"))
-            return MobileRenderKit.RENDER_KIT_ID;
-        else
-            return this.wrapped.calculateRenderKitId(context);
+        return this.wrapped.calculateRenderKitId(context);
     }
 }

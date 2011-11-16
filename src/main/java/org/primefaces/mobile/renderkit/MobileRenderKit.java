@@ -37,7 +37,7 @@ import javax.faces.render.ResponseStateManager;
 public class MobileRenderKit extends RenderKit {
 
     public final static String RENDER_KIT_ID = "PRIMEFACES_MOBILE";
-    
+        
     private RenderKit defaultRenderKit = null;
       
     private ConcurrentHashMap<String, HashMap<String, Renderer>> rendererFamilies;

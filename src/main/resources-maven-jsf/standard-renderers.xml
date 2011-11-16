@@ -3,3 +3,9 @@
             <renderer-type>org.primefaces.component.CommandButtonRenderer</renderer-type>
             <renderer-class>org.primefaces.mobile.renderkit.CommandButtonRenderer</renderer-class>
         </renderer>
+        
+         <renderer>
+            <component-family>javax.faces.Form</component-family>
+            <renderer-type>javax.faces.Form</renderer-type>
+            <renderer-class>org.primefaces.mobile.renderkit.FormRenderer</renderer-class>
+        </renderer>
