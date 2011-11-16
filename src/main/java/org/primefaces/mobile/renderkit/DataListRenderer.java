@@ -13,59 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.primefaces.mobile.component.listview;
+package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.component.datalist.DataList;
 import org.primefaces.renderkit.CoreRenderer;
 
-/**
- *
- * @author jagatai
- */
-public class ListViewRenderer extends CoreRenderer{
-
+public class DataListRenderer extends CoreRenderer {
+    
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        ListView listView = (ListView) component;
-        String title = listView.getTitle();
+        DataList dataList = (DataList) component;
+        String title = dataList.getTitle();
+        String type = dataList.getType();
 
-        writer.startElement("ul", listView);
-        writer.writeAttribute("id", listView.getClientId(context), "id");
+        writer.startElement("ul", dataList);
+        writer.writeAttribute("id", dataList.getClientId(context), "id");
         writer.writeAttribute("data-role", "listview", null);
 
-        if(listView.isInset()) writer.writeAttribute("data-inset", true, null);
-        if(listView.getSwatch() != null) writer.writeAttribute("data-theme", listView.getSwatch(), null);
-        if(listView.getStyle() != null) writer.writeAttribute("style", listView.getStyle(), null);
-        if(listView.getStyleClass() != null) writer.writeAttribute("class", listView.getStyleClass(), null);
-        if(listView.getTitleSwatch() != null) writer.writeAttribute("data-dividertheme", listView.getTitleSwatch(), null);
+        if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
+        if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
+        if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
 
         if(title != null) {
-            writer.startElement("li", listView);
+            writer.startElement("li", null);
             writer.writeAttribute("data-role", "list-divider", null);
 
             writer.writeText(title, null);
             writer.endElement("li");
         }
 
-        if(listView.getVar() != null) {
-            int rowCount = listView.getRowCount();
+        if(dataList.getVar() != null) {
+            int rowCount = dataList.getRowCount();
 
             for(int i = 0; i < rowCount; i++) {
-                listView.setRowIndex(i);
+                dataList.setRowIndex(i);
 
-                writer.startElement("li", listView);
-                renderChildren(context, listView);
+                writer.startElement("li", null);
+                renderChildren(context, dataList);
                 writer.endElement("li");
             }
         }
         else {
-            for(UIComponent child : listView.getChildren()) {
+            for(UIComponent child : dataList.getChildren()) {
                 if(child.isRendered()) {
-                    writer.startElement("li", listView);
+                    writer.startElement("li", dataList);
                     child.encodeAll(context);
                     writer.endElement("li");
                 }
@@ -73,16 +69,16 @@ public class ListViewRenderer extends CoreRenderer{
         }
         writer.endElement("ul");
 
-        listView.setRowIndex(-1);
+        dataList.setRowIndex(-1);
+    }
+    
+    @Override
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+        //Do Nothing
     }
 
     @Override
-	public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-		//Rendering happens on encodeEnd
-	}
-
-    @Override
-	public boolean getRendersChildren() {
-		return true;
-	}
+    public boolean getRendersChildren() {
+        return true;
+    }
 }
