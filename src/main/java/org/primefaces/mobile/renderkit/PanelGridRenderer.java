@@ -31,7 +31,6 @@ public class PanelGridRenderer extends CoreRenderer {
     private Map<Integer, String> blockKeys;
 
     public PanelGridRenderer() {
-        System.out.println("x");
         columnKeys = new HashMap<Integer, String>();
         columnKeys.put(2, "a");
         columnKeys.put(3, "b");
