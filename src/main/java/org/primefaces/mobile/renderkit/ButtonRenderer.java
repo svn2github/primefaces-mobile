@@ -70,7 +70,7 @@ public class ButtonRenderer extends CoreRenderer {
                 int reversePosition = href.indexOf("?reverse=true");
                 
                 if(reversePosition != -1)
-                    onclick.append("PrimeFaces.navigateBack('").append(href.substring(0, reversePosition)).append("');");
+                    onclick.append("PrimeFaces.navigate('").append(href.substring(0, reversePosition)).append("', {reverse:true});");
                 else
                     onclick.append("PrimeFaces.navigate('").append(href).append("');");
                 
