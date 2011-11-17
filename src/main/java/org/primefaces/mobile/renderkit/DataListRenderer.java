@@ -28,7 +28,7 @@ public class DataListRenderer extends CoreRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         DataList dataList = (DataList) component;
-        String title = dataList.getTitle();
+        UIComponent header = dataList.getHeader();
         String type = dataList.getType();
 
         writer.startElement("ul", dataList);
@@ -39,11 +39,10 @@ public class DataListRenderer extends CoreRenderer {
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
         if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
 
-        if(title != null) {
+        if(header != null) {
             writer.startElement("li", null);
             writer.writeAttribute("data-role", "list-divider", null);
-
-            writer.writeText(title, null);
+            header.encodeAll(context);
             writer.endElement("li");
         }
 
