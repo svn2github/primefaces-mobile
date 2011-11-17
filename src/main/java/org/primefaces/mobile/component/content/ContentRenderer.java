@@ -31,7 +31,6 @@ public class ContentRenderer extends CoreRenderer {
         writer.startElement("div", content);
         writer.writeAttribute("id", content.getClientId(context), "id");
         writer.writeAttribute("data-role", "content", null);
-        if(content.getSwatch() != null)  writer.writeAttribute("data-theme", content.getSwatch(), null);
     }
 
     @Override

@@ -31,8 +31,6 @@ public class NavBarRenderer extends CoreRenderer {
         writer.startElement("div", navBar);
         writer.writeAttribute("id", navBar.getClientId(context), "id");
         writer.writeAttribute("data-role", "navbar", null);
-        if(navBar.getSwatch() != null)
-            writer.writeAttribute("data-theme", navBar.getSwatch(), null);
 
         writer.startElement("ul", navBar);
         for(UIComponent child : navBar.getChildren()) {

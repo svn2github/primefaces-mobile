@@ -37,7 +37,6 @@ public class HeaderRenderer extends CoreRenderer {
         writer.writeAttribute("data-backbtn", "false", null);
         
         if(header.isFixed()) writer.writeAttribute("data-position", "fixed", null);
-        if(header.getSwatch() != null)  writer.writeAttribute("data-theme", header.getSwatch(), null);
 
         if(left != null) {
             left.encodeAll(context);

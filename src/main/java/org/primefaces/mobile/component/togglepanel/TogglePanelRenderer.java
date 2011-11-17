@@ -34,7 +34,6 @@ public class TogglePanelRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "collapsible", null);
 
         if(panel.isCollapsed()) writer.writeAttribute("data-collapsed", "true", null);
-        if(panel.getSwatch() != null) writer.writeAttribute("data-theme", panel.getSwatch(), null);
         if(panel.getStyle() != null) writer.writeAttribute("style", panel.getStyle(), null);
         if(panel.getStyleClass() != null) writer.writeAttribute("class", panel.getStyleClass(), null);
 
