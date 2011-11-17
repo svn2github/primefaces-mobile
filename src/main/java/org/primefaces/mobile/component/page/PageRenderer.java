@@ -22,7 +22,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class PageRenderer extends CoreRenderer {
@@ -56,6 +55,10 @@ public class PageRenderer extends CoreRenderer {
         
         writer.write("$(document).bind('mobileinit', function(){");
         writer.write("$.mobile.ajaxEnabled = false;");
+        writer.write("$.mobile.linkBindingEnabled = false;");
+        writer.write("$.mobile.hashListeningEnabled = false;");
+        writer.write("$.mobile.pushStateEnabled = false;");
+        
         if(page.getLoadingMessage() != null) writer.write("$.mobile.loadingMessage = '" + page.getLoadingMessage() + "';");
         if(page.getDefaultPageTransition() != null) writer.write("$.mobile.defaultPageTransition = '" + page.getDefaultPageTransition() + "';");
         if(page.getDefaultDialogTransition() != null) writer.write("$.mobile.defaultDialogTransition = '" + page.getDefaultDialogTransition() + "';");

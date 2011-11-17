@@ -38,7 +38,7 @@ public class MobileNavigationHandler extends ConfigurableNavigationHandler {
             
             RequestContext requestContext = RequestContext.getCurrentInstance();
             if(requestContext != null) {
-                requestContext.execute("PrimeFaces.navigate('" + view + "')");
+                requestContext.execute("PrimeFaces.navigate('#" + view + "')");
             }
         }
         else {
