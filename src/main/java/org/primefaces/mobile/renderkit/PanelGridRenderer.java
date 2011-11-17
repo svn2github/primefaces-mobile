@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.primefaces.mobile.component.panelgrid;
+package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlPanelGrid;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.renderkit.CoreRenderer;
@@ -30,6 +31,7 @@ public class PanelGridRenderer extends CoreRenderer {
     private Map<Integer, String> blockKeys;
 
     public PanelGridRenderer() {
+        System.out.println("x");
         columnKeys = new HashMap<Integer, String>();
         columnKeys.put(2, "a");
         columnKeys.put(3, "b");
@@ -47,7 +49,7 @@ public class PanelGridRenderer extends CoreRenderer {
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        PanelGrid grid = (PanelGrid) component;
+        HtmlPanelGrid grid = (HtmlPanelGrid) component;
         int columns = grid.getColumns();
         String gridClass = "ui-grid-" + columnKeys.get(columns);
         String styleClass = grid.getStyleClass();

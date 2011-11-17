@@ -27,3 +27,9 @@
             <renderer-type>org.primefaces.component.InputTextareaRenderer</renderer-type>
             <renderer-class>org.primefaces.mobile.renderkit.InputTextareaRenderer</renderer-class>
         </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Panel</component-family>
+            <renderer-type>javax.faces.Grid</renderer-type>
+            <renderer-class>org.primefaces.mobile.renderkit.PanelGridRenderer</renderer-class>
+        </renderer>
