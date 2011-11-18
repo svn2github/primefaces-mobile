@@ -34,11 +34,15 @@ public class MobileNavigationHandler extends ConfigurableNavigationHandler {
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
         if(outcome != null && outcome.startsWith("pm:")) {
-            String view = outcome.split("pm:")[1];
+            String viewMeta = outcome.split("pm:")[1];
+            int reverse = viewMeta.indexOf("?reverse=true");
             
             RequestContext requestContext = RequestContext.getCurrentInstance();
             if(requestContext != null) {
-                requestContext.execute("PrimeFaces.navigate('#" + view + "')");
+                if(reverse != -1)
+                    requestContext.execute("PrimeFaces.navigate('#" + viewMeta.substring(0, reverse) + "', {reverse:true});");
+                else
+                    requestContext.execute("PrimeFaces.navigate('#" + viewMeta + "');");
             }
         }
         else {
