@@ -30,7 +30,6 @@ public class OutputLinkRenderer extends CoreRenderer {
 		ResponseWriter writer = context.getResponseWriter();
 		HtmlOutputLink link = (HtmlOutputLink) component;
 		String clientId = link.getClientId(context);
-        Object label = link.getValue();
 
         writer.startElement("a", link);
         writer.writeAttribute("id", clientId, "id");
@@ -62,6 +61,10 @@ public class OutputLinkRenderer extends CoreRenderer {
                 
                 onclick.append("window.location.href='").append(href).append("';");
             }            
+        }
+        
+        if(onclick.length() > 0) {
+            writer.writeAttribute("onclick", onclick.toString(), "onclick");
         }
 
         renderPassThruAttributes(context, link, HTML.LINK_ATTRS, HTML.CLICK_EVENT);
