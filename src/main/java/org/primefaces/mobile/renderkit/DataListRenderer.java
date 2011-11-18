@@ -19,7 +19,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.primefaces.component.datalist.DataList;
+import org.primefaces.mobile.component.datalist.DataList;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class DataListRenderer extends CoreRenderer {
