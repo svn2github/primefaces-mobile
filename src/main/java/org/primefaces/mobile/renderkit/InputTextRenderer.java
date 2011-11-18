@@ -49,6 +49,7 @@ public class InputTextRenderer extends InputRenderer {
 		InputText inputText = (InputText) component;
 
 		encodeMarkup(context, inputText);
+        encodeScript(context, inputText);
 	}
 
 	protected void encodeScript(FacesContext context, InputText inputText) throws IOException {
