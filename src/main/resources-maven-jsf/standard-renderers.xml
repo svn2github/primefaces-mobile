@@ -57,3 +57,9 @@
             <renderer-type>org.primefaces.component.AccordionPanelRenderer</renderer-type>
             <renderer-class>org.primefaces.mobile.renderkit.AccordionPanelRenderer</renderer-class>
         </renderer>
+        
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.SliderRenderer</renderer-type>
+            <renderer-class>org.primefaces.mobile.renderkit.SliderRenderer</renderer-class>
+        </renderer>

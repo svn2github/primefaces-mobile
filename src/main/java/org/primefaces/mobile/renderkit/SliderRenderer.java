@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.primefaces.mobile.component.slider;
+package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
-import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
-import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.mobile.component.slider.Slider;
+import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 
-public class SliderRenderer extends CoreRenderer {
+public class SliderRenderer extends InputRenderer {
     
     @Override
 	public void decode(FacesContext context, UIComponent component) {
@@ -44,16 +42,19 @@ public class SliderRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         Slider slider = (Slider) component;
         String clientId = slider.getClientId(context);
-        Object value = slider.getValue();
         String valueToRender = ComponentUtils.getStringValueToRender(context, slider);
-
 
         writer.startElement("input", component);
         writer.writeAttribute("id", clientId, null);
         writer.writeAttribute("name", clientId, null);
         writer.writeAttribute("type", "range", null);
-        writer.writeAttribute("min", slider.getMin(), null);
-        writer.writeAttribute("max", slider.getMax(), null);
+        writer.writeAttribute("min", slider.getMinValue(), null);
+        writer.writeAttribute("max", slider.getMaxValue(), null);
+        writer.writeAttribute("step", slider.getStep(), null);
+        
+        if(slider.isDisabled()) {
+            writer.writeAttribute("disabled", "disabled", "disabled");
+        }
 
         if(valueToRender != null) {
 			writer.writeAttribute("value", valueToRender , null);
@@ -61,30 +62,4 @@ public class SliderRenderer extends CoreRenderer {
 
         writer.endElement("input");
     }
-
-    @Override
-	public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue) throws ConverterException {
-		Slider slider = (Slider) component;
-		String value = (String) submittedValue;
-		Converter converter = slider.getConverter();
-
-		//first ask the converter
-		if(converter != null) {
-			return converter.getAsObject(facesContext, slider, value);
-		}
-		//Try to guess
-		else {
-            ValueExpression ve = slider.getValueExpression("value");
-            if(ve != null) {
-                Class<?> valueType = ve.getType(facesContext.getELContext());
-                Converter converterForType = facesContext.getApplication().createConverter(valueType);
-
-                if(converterForType != null) {
-                    return converterForType.getAsObject(facesContext, slider, value);
-                }
-            }
-		}
-
-		return value;
-	}
 }
