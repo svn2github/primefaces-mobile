@@ -125,29 +125,12 @@ public class MobileRenderKit extends RenderKit {
     
     private RenderKit getDefaultRenderKit() {
         if(defaultRenderKit == null) {
-            String defaultRenderkitId = getDefaultRenderKitId();
             RenderKitFactory renderKitFactory = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
             FacesContext facesContext = FacesContext.getCurrentInstance();
             
-            defaultRenderKit = renderKitFactory.getRenderKit(facesContext, defaultRenderkitId);
+            defaultRenderKit = renderKitFactory.getRenderKit(facesContext, RenderKitFactory.HTML_BASIC_RENDER_KIT);
         }
 
         return defaultRenderKit;
-    }
-    
-    private String getDefaultRenderKitId() {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        String defaultRenderKitId = null;
-            
-        if(facesContext != null)
-            defaultRenderKitId = facesContext.getApplication().getDefaultRenderKitId();
-        else
-            defaultRenderKitId = ((ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY)).getApplication().getDefaultRenderKitId();
-
-        if(defaultRenderKitId == null) {
-            defaultRenderKitId = RenderKitFactory.HTML_BASIC_RENDER_KIT;
-        }
-        
-        return defaultRenderKitId;
     }
 }
