@@ -20,8 +20,6 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.convert.Converter;
-import javax.faces.convert.ConverterException;
 import org.primefaces.renderkit.InputRenderer;
 
 public class UISwitchRenderer extends InputRenderer {
@@ -72,30 +70,4 @@ public class UISwitchRenderer extends InputRenderer {
         writer.writeText(itemLabel, null);
         writer.endElement("option");
     }
-    
-    @Override
-	public Object getConvertedValue(FacesContext facesContext, UIComponent component, Object submittedValue) throws ConverterException {
-		UISwitch uiswitch = (UISwitch) component;
-		String value = (String) submittedValue;
-		Converter converter = uiswitch.getConverter();
-
-		//first ask the converter
-		if(converter != null) {
-			return converter.getAsObject(facesContext, uiswitch, value);
-		}
-		//Try to guess
-		else {
-            ValueExpression ve = uiswitch.getValueExpression("value");
-            if(ve != null) {
-                Class<?> valueType = ve.getType(facesContext.getELContext());
-                Converter converterForType = facesContext.getApplication().createConverter(valueType);
-
-                if(converterForType != null) {
-                    return converterForType.getAsObject(facesContext, uiswitch, value);
-                }
-            }
-		}
-
-		return value;
-	}
 }
