@@ -21,8 +21,6 @@ import javax.faces.context.FacesContext;
 
 public class MobileUtils {
     
-    private final static String MOBILE_DEVICE_DETECTION_PARAM = "primefaces.mobile.DEVICE_DETECTION";
-    
     public static boolean isMobileDevice(String userAgent) {
         Pattern pattern = Pattern.compile("(Android|iPhone|iPad|iPod|BlackBerry|Opera Mobi|Opera Mini|IEMobile)");
         Matcher matcher = pattern.matcher(userAgent);
@@ -31,7 +29,7 @@ public class MobileUtils {
     }
     
     public static boolean isMobileDeviceDetectionEnabled(FacesContext context) {
-        String value = context.getExternalContext().getInitParameter(MOBILE_DEVICE_DETECTION_PARAM);
+        String value = context.getExternalContext().getInitParameter(Constants.MOBILE_DEVICE_DETECTION_PARAM);
         
         if(value != null)
             return Boolean.valueOf(value);

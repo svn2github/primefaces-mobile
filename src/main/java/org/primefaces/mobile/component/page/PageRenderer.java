@@ -22,6 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.mobile.util.Constants;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class PageRenderer extends CoreRenderer {
@@ -32,6 +33,9 @@ public class PageRenderer extends CoreRenderer {
         Page page = (Page) component;
         UIComponent preinit = page.getFacet("preinit");
         UIComponent postinit = page.getFacet("postinit");
+        
+        //Theme
+        String theme = context.getExternalContext().getInitParameter(Constants.MOBILE_THEME_PARAM);
 
         writer.write("<!DOCTYPE html>\n");
         writer.startElement("html", page);
@@ -45,8 +49,18 @@ public class PageRenderer extends CoreRenderer {
         writer.startElement("title", page);
         writer.write(page.getTitle());
         writer.endElement("title");
+        
+        if(preinit != null) {
+            preinit.encodeAll(context);
+        }
 
-        renderResource(context, "mobile.css", "javax.faces.resource.Stylesheet", "primefaces-mobile");
+        if(theme != null && theme.equals("none")) {
+            renderResource(context, "structure.css", "javax.faces.resource.Stylesheet", "primefaces-mobile");
+        }
+        else {
+            renderResource(context, "mobile.css", "javax.faces.resource.Stylesheet", "primefaces-mobile");
+        }
+        
         renderResource(context, "jquery/jquery.js", "javax.faces.resource.Script", "primefaces");
 
         //config options
@@ -67,11 +81,6 @@ public class PageRenderer extends CoreRenderer {
         
         writer.endElement("script");
 
-        if(preinit != null) {
-            preinit.encodeAll(context);
-        }
-        
-        renderResource(context, "core.js", "javax.faces.resource.Script", "primefaces-mobile");
         renderResource(context, "mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
         renderResource(context, "primefaces.js", "javax.faces.resource.Script", "primefaces");
 

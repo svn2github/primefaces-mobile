@@ -6905,3 +6905,11 @@ $( document ).bind( "pagecreate", function( event ) {
 		$window.load( $.mobile.silentScroll );
 	});
 })( jQuery, this );
+
+$(document).bind('ajaxStart', function() {
+    $.mobile.showPageLoadingMsg();
+});
+
+$(document).bind('ajaxComplete', function() {
+    $.mobile.hidePageLoadingMsg();
+});
