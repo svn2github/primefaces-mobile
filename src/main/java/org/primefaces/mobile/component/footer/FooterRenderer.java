@@ -27,10 +27,14 @@ public class FooterRenderer extends CoreRenderer {
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         Footer footer = (Footer) component;
+        String swatch = footer.getSwatch();
 
         writer.startElement("div", footer);
         writer.writeAttribute("id", footer.getClientId(context), "id");
         writer.writeAttribute("data-role", "footer", null);
+        
+        if(swatch != null)
+            writer.writeAttribute("data-theme", swatch, null);
         
         if(footer.isFixed()) 
             writer.writeAttribute("data-position", "fixed", null);

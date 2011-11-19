@@ -28,6 +28,7 @@ public class HeaderRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         Header header = (Header) component;
         String title = header.getTitle();
+        String swatch = header.getSwatch();
         UIComponent left = header.getFacet("left");
         UIComponent right = header.getFacet("right");
 
@@ -36,12 +37,13 @@ public class HeaderRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "header", null);
         writer.writeAttribute("data-backbtn", "false", null);
         
-        if(header.isFixed()) writer.writeAttribute("data-position", "fixed", null);
+        if(swatch != null) writer.writeAttribute("data-theme", swatch, null);
+        if(header.isFixed())  writer.writeAttribute("data-position", "fixed", null);
 
         if(left != null) {
             left.encodeAll(context);
         }
-
+            
         if(title != null) {
              writer.startElement("h1", header);
              writer.writeText(title, null);
