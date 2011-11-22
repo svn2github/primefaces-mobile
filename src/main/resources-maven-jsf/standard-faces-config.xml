@@ -9,5 +9,4 @@
   
     <application>
         <navigation-handler>org.primefaces.mobile.navigation.MobileNavigationHandler</navigation-handler>
-        <view-handler>org.primefaces.mobile.application.MobileViewHandler</view-handler>
     </application>
