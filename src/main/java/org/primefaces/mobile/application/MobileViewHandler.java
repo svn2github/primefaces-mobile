@@ -39,7 +39,6 @@ public class MobileViewHandler extends ViewHandlerWrapper {
         String userAgent = context.getExternalContext().getRequestHeaderMap().get("User-Agent");
 
         if(MobileUtils.isMobileDeviceDetectionEnabled(context) && MobileUtils.isMobileDevice(userAgent)) {
-            System.out.println("Match");
             return MobileRenderKit.RENDER_KIT_ID;
         } 
         else {

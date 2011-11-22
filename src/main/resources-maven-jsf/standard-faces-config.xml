@@ -13,11 +13,6 @@
     </application>
     
     <component>
-		<component-type>org.primefaces.component.DataList</component-type>
-		<component-class>org.primefaces.mobile.component.datalist.DataList</component-class>
-	</component>
-    
-    <component>
 		<component-type>org.primefaces.component.Slider</component-type>
 		<component-class>org.primefaces.mobile.component.slider.Slider</component-class>
 	</component>
