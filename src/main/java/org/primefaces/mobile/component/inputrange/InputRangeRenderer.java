@@ -13,46 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.primefaces.mobile.renderkit;
+package org.primefaces.mobile.component.inputrange;
 
 import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.primefaces.mobile.component.slider.Slider;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 
-public class SliderRenderer extends InputRenderer {
+public class InputRangeRenderer extends InputRenderer {
     
     @Override
 	public void decode(FacesContext context, UIComponent component) {
-		Slider slider = (Slider) component;
+		InputRange inputRange = (InputRange) component;
 
-		String clientId = slider.getClientId(context);
+		String clientId = inputRange.getClientId(context);
 		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
 
         if(submittedValue != null) {
-            slider.setSubmittedValue(submittedValue);
+            inputRange.setSubmittedValue(submittedValue);
         }
 	}
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        Slider slider = (Slider) component;
-        String clientId = slider.getClientId(context);
-        String valueToRender = ComponentUtils.getStringValueToRender(context, slider);
+        InputRange range = (InputRange) component;
+        String clientId = range.getClientId(context);
+        String valueToRender = ComponentUtils.getStringValueToRender(context, range);
 
         writer.startElement("input", component);
         writer.writeAttribute("id", clientId, null);
         writer.writeAttribute("name", clientId, null);
         writer.writeAttribute("type", "range", null);
-        writer.writeAttribute("min", slider.getMinValue(), null);
-        writer.writeAttribute("max", slider.getMaxValue(), null);
-        writer.writeAttribute("step", slider.getStep(), null);
+        writer.writeAttribute("min", range.getMinValue(), null);
+        writer.writeAttribute("max", range.getMaxValue(), null);
+        writer.writeAttribute("step", range.getStep(), null);
         
-        if(slider.isDisabled()) {
+        if(range.isDisabled()) {
             writer.writeAttribute("disabled", "disabled", "disabled");
         }
 
