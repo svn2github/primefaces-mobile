@@ -17,6 +17,5 @@ package org.primefaces.mobile.util;
 
 public class Constants {
     
-    public final static String MOBILE_DEVICE_DETECTION_PARAM = "primefaces.mobile.DEVICE_DETECTION";
     public final static String MOBILE_THEME_PARAM = "primefaces.mobile.THEME";
 }
