@@ -20,7 +20,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.selectbooleancheckbox.SelectBooleanCheckbox;
-import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.renderkit.InputRenderer;
 
 public class SelectBooleanCheckboxRenderer extends InputRenderer {
@@ -59,16 +58,34 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
         String clientId = checkbox.getClientId(context);
         Boolean checked = (Boolean) checkbox.getValue();
         boolean disabled = checkbox.isDisabled();
+        String label = checkbox.getLabel();
         
         writer.startElement("div", checkbox);
         writer.writeAttribute("id", clientId, "id");
-                
+
         if(checkbox.getStyle() != null) writer.writeAttribute("style", checkbox.getStyle(), "style");
         if(checkbox.getStyleClass() != null) writer.writeAttribute("class", checkbox.getStyleClass(), "styleClass");
-
-        encodeInput(context, checkbox, clientId, checked, disabled);
-        encodeLabel(context, checkbox, clientId);
-
+        
+        if(label == null) {
+            encodeInput(context, checkbox, clientId, checked, disabled);
+            encodeLabel(context, checkbox, clientId);
+        }
+        else {
+            writer.writeAttribute("data-role", "fieldcontain", null);
+            
+            writer.startElement("fieldset", null);
+            writer.writeAttribute("data-role", "controlgroup", null);
+            
+            writer.startElement("legend", null);
+            writer.writeText(label, "label");
+            writer.endElement("legend");
+            
+            encodeInput(context, checkbox, clientId, checked, disabled);
+            encodeLabel(context, checkbox, clientId);
+            
+            writer.endElement("fieldset");
+        }
+        
         writer.endElement("div");
     }
 
