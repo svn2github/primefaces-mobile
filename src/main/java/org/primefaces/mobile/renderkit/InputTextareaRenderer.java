@@ -29,6 +29,8 @@ public class InputTextareaRenderer extends InputRenderer {
     @Override
 	public void decode(FacesContext context, UIComponent component) {
 		InputTextarea inputTextarea = (InputTextarea) component;
+        String clientId = inputTextarea.getClientId(context);
+        String inputId = inputTextarea.getLabel() == null ? clientId : clientId + "_input";
 
         if(inputTextarea.isDisabled() || inputTextarea.isReadonly()) {
             return;
@@ -36,8 +38,7 @@ public class InputTextareaRenderer extends InputRenderer {
 
         decodeBehaviors(context, inputTextarea);
 
-		String clientId = inputTextarea.getClientId(context);
-		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
+		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(inputId);
         
 		inputTextarea.setSubmittedValue(submittedValue);
 	}
@@ -69,14 +70,38 @@ public class InputTextareaRenderer extends InputRenderer {
 
 		endScript(writer);
 	}
-
-	protected void encodeMarkup(FacesContext context, InputTextarea inputTextarea) throws IOException {
+    
+    protected void encodeMarkup(FacesContext context, InputTextarea inputTextarea) throws IOException {
 		ResponseWriter writer = context.getResponseWriter();
 		String clientId = inputTextarea.getClientId(context);
+        String label = inputTextarea.getLabel();
+        String inputId = label == null ? clientId : clientId + "_input";
+
+        if(label == null) {
+            encodeInput(context, inputTextarea, clientId);
+        } 
+        else {
+            writer.startElement("div", inputTextarea);
+            writer.writeAttribute("id", clientId, null);
+            writer.writeAttribute("data-role", "fieldcontain", null);
+                        
+            writer.startElement("label", null);
+            writer.writeAttribute("for", inputId, null);
+            writer.writeText(label, "label");
+            writer.endElement("label");
+            
+            encodeInput(context, inputTextarea, inputId);
+            
+            writer.endElement("div");
+        }
+	}
+    
+    protected void encodeInput(FacesContext context, InputTextarea inputTextarea, String inputId) throws IOException {
+		ResponseWriter writer = context.getResponseWriter();
 
 		writer.startElement("textarea", null);
-		writer.writeAttribute("id", clientId, null);
-		writer.writeAttribute("name", clientId, null);
+		writer.writeAttribute("id", inputId, null);
+		writer.writeAttribute("name", inputId, null);
 
 		renderPassThruAttributes(context, inputTextarea, HTML.INPUT_TEXTAREA_ATTRS);
 
@@ -92,4 +117,6 @@ public class InputTextareaRenderer extends InputRenderer {
 
         writer.endElement("textarea");
 	}
+    
+	
 }

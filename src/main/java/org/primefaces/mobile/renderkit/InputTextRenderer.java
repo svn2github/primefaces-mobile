@@ -29,6 +29,8 @@ public class InputTextRenderer extends InputRenderer {
     @Override
 	public void decode(FacesContext context, UIComponent component) {
 		InputText inputText = (InputText) component;
+        String clientId = inputText.getClientId(context);
+        String inputId = inputText.getLabel() == null ? clientId : clientId + "_input";
 
         if(inputText.isDisabled() || inputText.isReadonly()) {
             return;
@@ -36,8 +38,7 @@ public class InputTextRenderer extends InputRenderer {
 
         decodeBehaviors(context, inputText);
 
-		String clientId = inputText.getClientId(context);
-		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
+		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(inputId);
 
         if(submittedValue != null) {
             inputText.setSubmittedValue(submittedValue);
@@ -73,10 +74,34 @@ public class InputTextRenderer extends InputRenderer {
 	protected void encodeMarkup(FacesContext context, InputText inputText) throws IOException {
 		ResponseWriter writer = context.getResponseWriter();
 		String clientId = inputText.getClientId(context);
+        String label = inputText.getLabel();
+        String inputId = label == null ? clientId : clientId + "_input";
 
-		writer.startElement("input", null);
-		writer.writeAttribute("id", clientId, null);
-		writer.writeAttribute("name", clientId, null);
+        if(label == null) {
+            encodeInput(context, inputText, clientId);
+        } 
+        else {
+            writer.startElement("div", inputText);
+            writer.writeAttribute("id", clientId, null);
+            writer.writeAttribute("data-role", "fieldcontain", null);
+                        
+            writer.startElement("label", null);
+            writer.writeAttribute("for", inputId, null);
+            writer.writeText(label, "label");
+            writer.endElement("label");
+            
+            encodeInput(context, inputText, inputId);
+            
+            writer.endElement("div");
+        }
+	}
+     
+    protected void encodeInput(FacesContext context, InputText inputText, String inputId) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        
+        writer.startElement("input", null);
+		writer.writeAttribute("id", inputId, null);
+		writer.writeAttribute("name", inputId, null);
 		writer.writeAttribute("type", inputText.getType(), null);
 
 		String valueToRender = ComponentUtils.getStringValueToRender(context, inputText);
@@ -92,5 +117,5 @@ public class InputTextRenderer extends InputRenderer {
         if(inputText.getStyleClass() != null) writer.writeAttribute("class", inputText.getStyleClass(), "styleClass");
 
         writer.endElement("input");
-	}
+    }
 }
