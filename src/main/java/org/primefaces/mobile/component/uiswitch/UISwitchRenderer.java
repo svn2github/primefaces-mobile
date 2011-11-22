@@ -16,7 +16,6 @@
 package org.primefaces.mobile.component.uiswitch;
 
 import java.io.IOException;
-import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -27,9 +26,10 @@ public class UISwitchRenderer extends InputRenderer {
     @Override
 	public void decode(FacesContext context, UIComponent component) {
 		UISwitch uiswitch = (UISwitch) component;
+        String clientId = uiswitch.getClientId(context);
+        String inputId = uiswitch.getLabel() == null ? clientId : clientId + "_input";
 
-		String clientId = uiswitch.getClientId(context);
-		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
+		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(inputId);
 
         if(submittedValue != null && submittedValue.equalsIgnoreCase("on")) {
             uiswitch.setSubmittedValue("true");
@@ -44,12 +44,37 @@ public class UISwitchRenderer extends InputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         UISwitch uiswitch = (UISwitch) component;
         String clientId = uiswitch.getClientId(context);
+        String label = uiswitch.getLabel();
+        String inputId = label == null ? clientId : clientId + "_input";
+        
+        if(label == null) {
+            encodeInput(context, uiswitch, inputId);
+        } 
+        else {
+            writer.startElement("div", uiswitch);
+            writer.writeAttribute("id", clientId, null);
+            writer.writeAttribute("data-role", "fieldcontain", null);
+                        
+            writer.startElement("label", null);
+            writer.writeAttribute("for", inputId, null);
+            writer.writeText(label, "label");
+            writer.endElement("label");
+            
+            encodeInput(context, uiswitch, inputId);
+            
+            writer.endElement("div");
+        }
+        
+    }
+    
+    protected void encodeInput(FacesContext context, UISwitch uiswitch, String inputId) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
         Object value = uiswitch.getValue();
-        boolean on = value == null ? false : (Boolean) value;
+        boolean on = (value == null) ? false : (Boolean) value;
 
         writer.startElement("select", uiswitch);
-        writer.writeAttribute("id", clientId, "id");
-        writer.writeAttribute("name", clientId, null);
+        writer.writeAttribute("id", inputId, "id");
+        writer.writeAttribute("name", inputId, null);
         writer.writeAttribute("data-role", "slider", null);
 
         encodeOption(context, uiswitch.getOffLabel(), "off", !on);

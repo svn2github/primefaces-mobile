@@ -27,9 +27,10 @@ public class InputRangeRenderer extends InputRenderer {
     @Override
 	public void decode(FacesContext context, UIComponent component) {
 		InputRange inputRange = (InputRange) component;
+        String clientId = inputRange.getClientId(context);
+        String inputId = inputRange.getLabel() == null ? clientId : clientId + "_input";
 
-		String clientId = inputRange.getClientId(context);
-		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(clientId);
+		String submittedValue = (String) context.getExternalContext().getRequestParameterMap().get(inputId);
 
         if(submittedValue != null) {
             inputRange.setSubmittedValue(submittedValue);
@@ -41,11 +42,37 @@ public class InputRangeRenderer extends InputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         InputRange range = (InputRange) component;
         String clientId = range.getClientId(context);
-        String valueToRender = ComponentUtils.getStringValueToRender(context, range);
+        String label = range.getLabel();
+        
+        String inputId = label == null ? clientId : clientId + "_input";
 
-        writer.startElement("input", component);
-        writer.writeAttribute("id", clientId, null);
-        writer.writeAttribute("name", clientId, null);
+        if(label == null) {
+            encodeInput(context, range, inputId);
+        } 
+        else {
+            writer.startElement("div", range);
+            writer.writeAttribute("id", clientId, null);
+            writer.writeAttribute("data-role", "fieldcontain", null);
+                        
+            writer.startElement("label", null);
+            writer.writeAttribute("for", inputId, null);
+            writer.writeText(label, "label");
+            writer.endElement("label");
+            
+            encodeInput(context, range, inputId);
+            
+            writer.endElement("div");
+        }
+        
+    }
+    
+    protected void encodeInput(FacesContext context, InputRange range, String inputId) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String valueToRender = ComponentUtils.getStringValueToRender(context, range);
+        
+        writer.startElement("input", null);
+        writer.writeAttribute("id", inputId, null);
+        writer.writeAttribute("name", inputId, null);
         writer.writeAttribute("type", "range", null);
         writer.writeAttribute("min", range.getMinValue(), null);
         writer.writeAttribute("max", range.getMaxValue(), null);

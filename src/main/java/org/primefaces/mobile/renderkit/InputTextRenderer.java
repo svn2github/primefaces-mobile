@@ -78,7 +78,7 @@ public class InputTextRenderer extends InputRenderer {
         String inputId = label == null ? clientId : clientId + "_input";
 
         if(label == null) {
-            encodeInput(context, inputText, clientId);
+            encodeInput(context, inputText, inputId);
         } 
         else {
             writer.startElement("div", inputText);

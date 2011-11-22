@@ -55,5 +55,11 @@
 			<defaultValue>false</defaultValue>
             <description>Disables or enables the slider.</description>
 		</attribute>
+        <attribute>
+			<name>label</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+            <description>User presentable name.</description>
+		</attribute>
 	</attributes>
 </component>
