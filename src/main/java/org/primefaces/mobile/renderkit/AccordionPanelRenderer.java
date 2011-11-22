@@ -65,6 +65,8 @@ public class AccordionPanelRenderer extends CoreRenderer {
                 i++;
             }
         }
+        
+        writer.endElement("div");
     }
 
     @Override
