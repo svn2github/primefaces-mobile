@@ -19,24 +19,35 @@
 			<required>false</required>
 			<type>java.lang.String</type>
             <defaultValue></defaultValue>
+            <description>Title of the page.</description>
 		</attribute>
         <attribute>
 			<name>defaultPageTransition</name>
 			<required>false</required>
 			<type>java.lang.String</type>
             <defaultValue></defaultValue>
+            <description>Name of animation to use in view navigation.</description>
 		</attribute>
         <attribute>
 			<name>defaultDialogTransition</name>
 			<required>false</required>
 			<type>java.lang.String</type>
             <defaultValue></defaultValue>
+            <description>Name of animation to use when displaying a dialog.</description>
 		</attribute>
         <attribute>
 			<name>loadingMessage</name>
 			<required>false</required>
 			<type>java.lang.String</type>
             <defaultValue></defaultValue>
+            <description>Text to display in built-in ajax status.</description>
+		</attribute>
+        <attribute>
+			<name>viewport</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+            <defaultValue>width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1</defaultValue>
+            <description>Meta settings for viewport.</description>
 		</attribute>
 	</attributes>
 </component>
