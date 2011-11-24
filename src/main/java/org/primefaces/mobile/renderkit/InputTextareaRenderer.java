@@ -60,7 +60,6 @@ public class InputTextareaRenderer extends InputRenderer {
         writer.write("PrimeFaces.cw('InputTextarea','" + inputTextarea.resolveWidgetVar() + "',{");
         writer.write("id:'" + clientId + "'");
         writer.write(",autoResize:false");
-        writer.write(",maxLength:" + inputTextarea.getMaxLength());
         
         encodeClientBehaviors(context, inputTextarea);
 
