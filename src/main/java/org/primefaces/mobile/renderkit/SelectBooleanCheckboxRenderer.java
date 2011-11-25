@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.selectbooleancheckbox.SelectBooleanCheckbox;
 import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.ComponentUtils;
 
 public class SelectBooleanCheckboxRenderer extends InputRenderer {
 
@@ -56,7 +57,7 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
     protected void encodeMarkup(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {        
         ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
-        Boolean checked = (Boolean) checkbox.getValue();
+        boolean checked = Boolean.valueOf(ComponentUtils.getValueToRender(context, checkbox));
         boolean disabled = checkbox.isDisabled();
         String label = checkbox.getLabel();
         
