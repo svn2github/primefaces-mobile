@@ -104,7 +104,7 @@ public class InputTextRenderer extends InputRenderer {
 		writer.writeAttribute("name", inputId, null);
 		writer.writeAttribute("type", inputText.getType(), null);
 
-		String valueToRender = ComponentUtils.getStringValueToRender(context, inputText);
+		String valueToRender = ComponentUtils.getValueToRender(context, inputText);
 		if(valueToRender != null) {
 			writer.writeAttribute("value", valueToRender , null);
 		}

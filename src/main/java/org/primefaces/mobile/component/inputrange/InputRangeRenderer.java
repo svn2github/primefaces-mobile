@@ -68,7 +68,7 @@ public class InputRangeRenderer extends InputRenderer {
     
     protected void encodeInput(FacesContext context, InputRange range, String inputId) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        String valueToRender = ComponentUtils.getStringValueToRender(context, range);
+        String valueToRender = ComponentUtils.getValueToRender(context, range);
         
         writer.startElement("input", null);
         writer.writeAttribute("id", inputId, null);
