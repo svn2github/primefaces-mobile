@@ -34,11 +34,12 @@ public class NavBarRenderer extends CoreRenderer {
 
         writer.startElement("ul", navBar);
         for(UIComponent child : navBar.getChildren()) {
-            writer.startElement("li", navBar);
+            
             if(child.isRendered()) {
+                writer.startElement("li", navBar);
                 child.encodeAll(context);
+                writer.endElement("li");
             }
-            writer.endElement("li");
         }
         writer.endElement("ul");
 
