@@ -39,6 +39,10 @@ public class PageRenderer extends CoreRenderer {
 
         writer.write("<!DOCTYPE html>\n");
         writer.startElement("html", page);
+        if(page.getManifest() != null) {
+            writer.writeAttribute("manifest", page.getManifest(), "manifest");
+        }
+        
         writer.startElement("head", page);
         
         writer.startElement("meta", page);
