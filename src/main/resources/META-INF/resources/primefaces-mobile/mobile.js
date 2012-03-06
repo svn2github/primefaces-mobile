@@ -1,3 +1,11 @@
+$(document).bind('ajaxStart', function() {
+    $.mobile.showPageLoadingMsg();
+});
+
+$(document).bind('ajaxComplete', function() {
+    $.mobile.hidePageLoadingMsg();
+});
+
 /*
 * jQuery Mobile Framework 1.1.0-rc.1
 * http://jquerymobile.com
