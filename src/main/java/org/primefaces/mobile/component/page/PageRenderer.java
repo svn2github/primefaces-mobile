@@ -47,6 +47,13 @@ public class PageRenderer extends CoreRenderer {
         
         writer.startElement("head", page);
         
+        //viewport meta
+        writer.startElement("meta", page);
+        writer.writeAttribute("name", "viewport", null);
+        writer.writeAttribute("content", page.getViewport(), null);
+        writer.endElement("meta");
+        
+        //user defined meta
         if(meta != null) {
             meta.encodeAll(context);
         }
