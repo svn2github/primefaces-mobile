@@ -51,7 +51,7 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
         SelectBooleanCheckbox checkbox = (SelectBooleanCheckbox) component;
 
         encodeMarkup(context, checkbox);
-        //encodeScript(context, checkbox);
+        encodeScript(context, checkbox);
     }
 
     protected void encodeMarkup(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {        
@@ -117,5 +117,21 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
             writer.writeText(itemLabel, "itemLabel");
             writer.endElement("label");
         }
+    }
+    
+    protected void encodeScript(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = checkbox.getClientId(context);
+
+        startScript(writer, clientId);
+        
+        writer.write("PrimeFaces.cw('SelectBooleanCheckbox','" + checkbox.resolveWidgetVar() + "',{");
+        writer.write("id:'" + clientId + "'");
+        
+        encodeClientBehaviors(context, checkbox);
+
+        writer.write("});");
+
+        endScript(writer);
     }
 }

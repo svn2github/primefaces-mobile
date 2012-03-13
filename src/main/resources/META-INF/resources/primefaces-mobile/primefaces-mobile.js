@@ -80,3 +80,19 @@ PrimeFaces.widget.InputTextarea = PrimeFaces.widget.BaseWidget.extend({
         });
     }
 });
+
+/**
+ * PrimeFaces SelectBooleanCheckbox Widget
+ */
+PrimeFaces.widget.SelectBooleanCheckbox = PrimeFaces.widget.BaseWidget.extend({
+    
+    init: function(cfg) {
+        this._super(cfg);
+        
+        this.input = $(this.jqId + '_input');
+
+        if(this.cfg.behaviors) {
+            PrimeFaces.attachBehaviors(this.input, this.cfg.behaviors);
+        }
+    }
+});
