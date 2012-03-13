@@ -32,6 +32,7 @@ public class PageRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         Page page = (Page) component;
         UIComponent meta = page.getFacet("meta");
+        UIComponent config = page.getFacet("config");
         UIComponent preinit = page.getFacet("preinit");
         UIComponent postinit = page.getFacet("postinit");
         
@@ -80,6 +81,10 @@ public class PageRenderer extends CoreRenderer {
         if(page.getLoadingMessage() != null) writer.write("$.mobile.loadingMessage = '" + page.getLoadingMessage() + "';");
         if(page.getDefaultPageTransition() != null) writer.write("$.mobile.defaultPageTransition = '" + page.getDefaultPageTransition() + "';");
         if(page.getDefaultDialogTransition() != null) writer.write("$.mobile.defaultDialogTransition = '" + page.getDefaultDialogTransition() + "';");
+        
+        if(config != null) {
+            config.encodeAll(context);
+        }
         
         writer.write("});");
         
