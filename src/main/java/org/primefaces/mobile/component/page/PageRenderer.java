@@ -31,6 +31,7 @@ public class PageRenderer extends CoreRenderer {
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {        
         ResponseWriter writer = context.getResponseWriter();
         Page page = (Page) component;
+        UIComponent meta = page.getFacet("meta");
         UIComponent preinit = page.getFacet("preinit");
         UIComponent postinit = page.getFacet("postinit");
         
@@ -45,10 +46,9 @@ public class PageRenderer extends CoreRenderer {
         
         writer.startElement("head", page);
         
-        writer.startElement("meta", page);
-        writer.writeAttribute("name", "viewport", null);
-        writer.writeAttribute("content", page.getViewport(), null);
-        writer.endElement("meta");
+        if(meta != null) {
+            meta.encodeAll(context);
+        }
 
         writer.startElement("title", page);
         writer.write(page.getTitle());
