@@ -64,8 +64,6 @@ public class InputTextRenderer extends InputRenderer {
 
         encodeClientBehaviors(context, inputText);
 
-        writer.write(",theme:false");
-
         writer.write("});");
 
 		endScript(writer);

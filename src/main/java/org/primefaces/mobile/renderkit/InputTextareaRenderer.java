@@ -63,8 +63,6 @@ public class InputTextareaRenderer extends InputRenderer {
         
         encodeClientBehaviors(context, inputTextarea);
 
-        writer.write(",theme:false");
-
         writer.write("});");
 
 		endScript(writer);
