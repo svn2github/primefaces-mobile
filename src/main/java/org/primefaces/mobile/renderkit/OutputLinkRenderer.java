@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.html.HtmlOutputLink;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.util.HTML;
 
@@ -47,14 +48,7 @@ public class OutputLinkRenderer extends CoreRenderer {
         
         if(href != null) {
             if(href.startsWith("#")) {
-                int reversePosition = href.indexOf("?reverse=true");
-                
-                if(reversePosition != -1)
-                    onclick.append("PrimeFaces.navigate('").append(href.substring(0, reversePosition)).append("', {reverse:true});");
-                else
-                    onclick.append("PrimeFaces.navigate('").append(href).append("');");
-                
-                writer.writeAttribute("onclick", onclick.toString(), "onclick");
+                onclick.append(MobileUtils.buildNavigation(href));
             }
             else {
                 href = getResourceURL(context, href);    //external page
