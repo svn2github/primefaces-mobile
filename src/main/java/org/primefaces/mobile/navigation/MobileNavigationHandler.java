@@ -15,12 +15,15 @@
  */
 package org.primefaces.mobile.navigation;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
+import org.primefaces.mobile.util.MobileUtils;
 
 public class MobileNavigationHandler extends ConfigurableNavigationHandler {
     
@@ -34,15 +37,11 @@ public class MobileNavigationHandler extends ConfigurableNavigationHandler {
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
         if(outcome != null && outcome.startsWith("pm:")) {
-            String viewMeta = outcome.split("pm:")[1];
-            int reverse = viewMeta.indexOf("?reverse=true");
-            
+            String command = MobileUtils.buildNavigation(outcome);
+
             RequestContext requestContext = RequestContext.getCurrentInstance();
             if(requestContext != null) {
-                if(reverse != -1)
-                    requestContext.execute("PrimeFaces.navigate('#" + viewMeta.substring(0, reverse) + "', {reverse:true});");
-                else
-                    requestContext.execute("PrimeFaces.navigate('#" + viewMeta + "');");
+                requestContext.execute(command.toString());
             }
         }
         else {

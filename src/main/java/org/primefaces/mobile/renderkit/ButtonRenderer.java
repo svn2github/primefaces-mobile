@@ -27,6 +27,7 @@ import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.button.Button;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class ButtonRenderer extends CoreRenderer {
@@ -67,12 +68,7 @@ public class ButtonRenderer extends CoreRenderer {
         
         if(href != null) {
             if(href.startsWith("#")) {
-                int reversePosition = href.indexOf("?reverse=true");
-                
-                if(reversePosition != -1)
-                    onclick.append("PrimeFaces.navigate('").append(href.substring(0, reversePosition)).append("', {reverse:true});");
-                else
-                    onclick.append("PrimeFaces.navigate('").append(href).append("');");
+                onclick.append(MobileUtils.buildNavigation(href));
                 
                 return onclick.toString();              //local view
             }
