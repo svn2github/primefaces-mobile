@@ -2,7 +2,7 @@ PrimeFaces.navigate = function(to, cfg) {
     cfg.changeHash = false;
     
     //cast
-    cfg.reverse = (cfg.reverse == 'true') ? true : false;
+    cfg.reverse = (cfg.reverse == 'true' || cfg.reverse == true) ? true : false;
 
     $.mobile.changePage(to, cfg);
 }
