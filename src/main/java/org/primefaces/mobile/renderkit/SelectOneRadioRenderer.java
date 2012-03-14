@@ -60,7 +60,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
 
         encodeSelectItems(context, radio, selectItems);
 
-        writer.endElement("table");
+        writer.endElement("div");
     }
     
     protected void encodeScript(FacesContext context, SelectOneRadio radio) throws IOException {
