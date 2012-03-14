@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.util.ComponentUtils;
 
 public class UISwitchRenderer extends InputRenderer {
 
@@ -70,8 +71,7 @@ public class UISwitchRenderer extends InputRenderer {
     
     protected void encodeInput(FacesContext context, UISwitch uiswitch, String inputId) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        Object value = uiswitch.getValue();
-        boolean on = (value == null) ? false : (Boolean) value;
+        boolean checked = Boolean.valueOf(ComponentUtils.getValueToRender(context, uiswitch));
 
         writer.startElement("select", uiswitch);
         writer.writeAttribute("id", inputId, "id");
@@ -81,8 +81,8 @@ public class UISwitchRenderer extends InputRenderer {
             writer.writeAttribute("data-mini", "true", null);
         }
 
-        encodeOption(context, uiswitch.getOffLabel(), "off", !on);
-        encodeOption(context, uiswitch.getOnLabel(), "on", on);
+        encodeOption(context, uiswitch.getOffLabel(), "off", !checked);
+        encodeOption(context, uiswitch.getOnLabel(), "on", checked);
 
         writer.endElement("select");
     }
