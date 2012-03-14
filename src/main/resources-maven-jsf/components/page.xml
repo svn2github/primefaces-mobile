@@ -55,5 +55,12 @@
 			<type>java.lang.String</type>
             <description>Manifest setting of document.</description>
 		</attribute>
+        <attribute>
+			<name>mini</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+            <defaultValue>false</defaultValue>
+            <description>When enabled form components displayed smaller.</description>
+		</attribute>
 	</attributes>
 </component>

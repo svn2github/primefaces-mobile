@@ -18,6 +18,7 @@ package org.primefaces.mobile.util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.faces.context.FacesContext;
 
 public class MobileUtils {
     
@@ -59,5 +60,9 @@ public class MobileUtils {
         command.append("});");
         
         return command.toString();
+    }
+    
+    public static boolean isMini(FacesContext context) {
+        return context.getAttributes().containsKey(Constants.MINI_FORMS);
     }
 }

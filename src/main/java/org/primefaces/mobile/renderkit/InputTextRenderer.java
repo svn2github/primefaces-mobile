@@ -23,6 +23,7 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.component.inputtext.InputText;
+import org.primefaces.mobile.util.MobileUtils;
 
 public class InputTextRenderer extends InputRenderer {
 
@@ -109,6 +110,7 @@ public class InputTextRenderer extends InputRenderer {
 
 		renderPassThruAttributes(context, inputText, HTML.INPUT_TEXT_ATTRS);
 
+        if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(inputText.isDisabled()) writer.writeAttribute("disabled", "disabled", null);
         if(inputText.isReadonly()) writer.writeAttribute("readonly", "readonly", null);
         if(inputText.getStyle() != null) writer.writeAttribute("style", inputText.getStyle(), null);

@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 
@@ -77,6 +78,9 @@ public class InputRangeRenderer extends InputRenderer {
         writer.writeAttribute("min", range.getMinValue(), null);
         writer.writeAttribute("max", range.getMaxValue(), null);
         writer.writeAttribute("step", range.getStep(), null);
+        if(MobileUtils.isMini(context)) {
+            writer.writeAttribute("data-mini", "true", null);
+        }
         
         if(range.isDisabled()) {
             writer.writeAttribute("disabled", "disabled", "disabled");

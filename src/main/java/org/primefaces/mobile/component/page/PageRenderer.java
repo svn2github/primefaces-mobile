@@ -36,8 +36,12 @@ public class PageRenderer extends CoreRenderer {
         UIComponent preinit = page.getFacet("preinit");
         UIComponent postinit = page.getFacet("postinit");
         
+        if(page.isMini()) {
+            context.getAttributes().put(Constants.MINI_FORMS, true);
+        }
+        
         //Theme
-        String theme = context.getExternalContext().getInitParameter(Constants.MOBILE_THEME_PARAM);
+        String theme = context.getExternalContext().getInitParameter(Constants.THEME_PARAM);
 
         writer.write("<!DOCTYPE html>\n");
         writer.startElement("html", page);

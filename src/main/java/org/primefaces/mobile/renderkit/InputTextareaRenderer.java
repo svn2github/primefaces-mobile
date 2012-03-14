@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.inputtextarea.InputTextarea;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
@@ -102,6 +103,7 @@ public class InputTextareaRenderer extends InputRenderer {
 
 		renderPassThruAttributes(context, inputTextarea, HTML.INPUT_TEXTAREA_ATTRS);
 
+        if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(inputTextarea.isDisabled()) writer.writeAttribute("disabled", "disabled", "disabled");
         if(inputTextarea.isReadonly()) writer.writeAttribute("readonly", "readonly", "readonly");
         if(inputTextarea.getStyle() != null) writer.writeAttribute("style", inputTextarea.getStyle(), "style");

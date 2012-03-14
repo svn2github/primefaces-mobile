@@ -27,6 +27,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import org.primefaces.component.selectmanycheckbox.SelectManyCheckbox;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.SelectManyRenderer;
 
 public class SelectManyCheckboxRenderer extends SelectManyRenderer {
@@ -139,6 +140,7 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         writer.writeAttribute("type", "checkbox", null);
         writer.writeAttribute("value", itemValueAsString, null);
 
+        if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(selected) writer.writeAttribute("checked", "checked", null);
         if(disabled) writer.writeAttribute("disabled", "disabled", null);
         if(checkbox.getOnchange() != null) writer.writeAttribute("onchange", checkbox.getOnchange(), null);

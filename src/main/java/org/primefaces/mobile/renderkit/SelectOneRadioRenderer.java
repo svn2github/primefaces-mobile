@@ -26,6 +26,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
 import org.primefaces.component.selectoneradio.SelectOneRadio;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.SelectOneRenderer;
 
 public class SelectOneRadioRenderer extends SelectOneRenderer {
@@ -128,6 +129,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         writer.writeAttribute("type", "radio", null);
         writer.writeAttribute("value", itemValueAsString, null);
 
+        if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(selected) writer.writeAttribute("checked", "checked", null);
         if(disabled) writer.writeAttribute("disabled", "disabled", null);
         if(radio.getOnchange() != null) writer.writeAttribute("onchange", radio.getOnchange(), null);

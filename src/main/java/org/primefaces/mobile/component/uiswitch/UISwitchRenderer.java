@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
 
 public class UISwitchRenderer extends InputRenderer {
@@ -76,6 +77,9 @@ public class UISwitchRenderer extends InputRenderer {
         writer.writeAttribute("id", inputId, "id");
         writer.writeAttribute("name", inputId, null);
         writer.writeAttribute("data-role", "slider", null);
+        if(MobileUtils.isMini(context)) {
+            writer.writeAttribute("data-mini", "true", null);
+        }
 
         encodeOption(context, uiswitch.getOffLabel(), "off", !on);
         encodeOption(context, uiswitch.getOnLabel(), "on", on);

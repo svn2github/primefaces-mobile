@@ -17,5 +17,6 @@ package org.primefaces.mobile.util;
 
 public class Constants {
     
-    public final static String MOBILE_THEME_PARAM = "primefaces.mobile.THEME";
+    public final static String THEME_PARAM = "primefaces.mobile.THEME";
+    public final static String MINI_FORMS = "primefaces.miniforms";
 }
