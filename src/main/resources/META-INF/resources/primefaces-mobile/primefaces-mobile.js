@@ -1,3 +1,43 @@
+PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {        
+    if(id == PrimeFaces.VIEW_STATE) {
+        PrimeFaces.ajax.AjaxUtils.updateState.call(this, content);
+    }
+    else if(id == PrimeFaces.VIEW_ROOT) {
+        document.open();
+        document.write(content);
+        document.close();
+    }
+    else {
+        $(PrimeFaces.escapeClientId(id)).replaceWith(content);
+
+        //PrimeFaces Mobile
+        if($.mobile) {
+            var controls = $(PrimeFaces.escapeClientId(id)).parent().find(":input, button, ul");
+
+            //input text and textarea
+            controls.filter("[type='text'],[type='search'],[type='tel'],[type='email'], textarea").textinput();
+            
+            //radio-checkbox
+            controls.filter("[type='radio'], [type='checkbox']").checkboxradio();
+            
+            //selects
+            controls.filter("select:not([data-role='slider'])" ).selectmenu();
+            
+            //slider
+            controls.filter("input[type='range']").slider();
+            
+            //switch
+            controls.filter("select[data-role='slider']" ).slider();
+            
+            //lists
+            controls.filter("ul[data-role='listview']").listview();
+            
+            //buttons
+            controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
+        }
+    }
+}
+
 PrimeFaces.navigate = function(to, cfg) {
     cfg.changeHash = false;
     
