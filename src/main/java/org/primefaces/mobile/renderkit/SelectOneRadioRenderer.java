@@ -18,56 +18,61 @@ package org.primefaces.mobile.renderkit;
 import java.io.IOException;
 import java.util.List;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.component.UINamingContainer;
-import javax.faces.component.UISelectMany;
+import javax.faces.component.UISelectOne;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.model.SelectItem;
-import org.primefaces.component.selectmanycheckbox.SelectManyCheckbox;
-import org.primefaces.renderkit.SelectManyRenderer;
+import org.primefaces.component.selectoneradio.SelectOneRadio;
+import org.primefaces.renderkit.SelectOneRenderer;
 
-public class SelectManyCheckboxRenderer extends SelectManyRenderer {
+public class SelectOneRadioRenderer extends SelectOneRenderer {
 
     @Override
 	public Object getConvertedValue(FacesContext context, UIComponent component, Object submittedValue) throws ConverterException {
-        return context.getRenderKit().getRenderer("javax.faces.SelectMany", "javax.faces.Checkbox").getConvertedValue(context, component, submittedValue);
+        return context.getRenderKit().getRenderer("javax.faces.SelectOne", "javax.faces.Radio").getConvertedValue(context, component, submittedValue);
 	}
     
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        SelectManyCheckbox checkbox = (SelectManyCheckbox) component;
-
-        encodeMarkup(context, checkbox);
+        SelectOneRadio radio = (SelectOneRadio) component;
+        
+        encodeMarkup(context, radio);
     }
     
-    protected void encodeMarkup(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
+    protected void encodeMarkup(FacesContext context, SelectOneRadio radio) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        String clientId = checkbox.getClientId(context);
-        String style = checkbox.getStyle();
-        String styleClass = checkbox.getStyleClass();
+        String clientId = radio.getClientId(context);
+        String style = radio.getStyle();
+        String styleClass = radio.getStyleClass();
         
-        writer.startElement("div", checkbox);
+        List<SelectItem> selectItems = getSelectItems(context, radio);
+
+        writer.startElement("div", radio);
         writer.writeAttribute("id", clientId, "id");
         writer.writeAttribute("data-role", "fieldcontain", null);
 
         if(style != null) writer.writeAttribute("style", style, "style");
         if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");
 
-        encodeSelectItems(context, checkbox);
+        encodeSelectItems(context, radio, selectItems);
 
-        writer.endElement("div");
+        writer.endElement("table");
     }
     
-    protected void encodeSelectItems(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
+    protected void encodeSelectItems(FacesContext context, SelectOneRadio radio, List<SelectItem> selectItems) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        List<SelectItem> selectItems = getSelectItems(context, checkbox);
-        Converter converter = getConverter(context, checkbox);
-        Object values = getValues(checkbox);
-        Object submittedValues = getSubmittedValues(checkbox);
-        String layout = checkbox.getLayout();
+        Converter converter = getConverter(context, radio);
+        Object value = radio.getSubmittedValue();
+        String name = radio.getClientId(context);
+        if(value == null) {
+            value = radio.getValue();
+        }
+        Class type = value == null ? String.class : value.getClass();
+        
+        String layout = radio.getLayout();
         boolean horizontal = layout != null && layout.equals("lineDirection");
         
         writer.startElement("fieldset", null);
@@ -76,58 +81,42 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
             writer.writeAttribute("data-type", "horizontal", null);
         }
         
-        if(checkbox.getLabel() != null) {
+        if(radio.getLabel() != null) {
             writer.startElement("legend", null);
-            writer.writeText(checkbox.getLabel(), null);
+            writer.writeText(radio.getLabel(), null);
             writer.endElement("legend");
         }
         
         int idx = -1;
         for(SelectItem selectItem : selectItems) {
             idx++;
-
-            encodeOption(context, checkbox, values, submittedValues, converter, selectItem, idx);
+            boolean disabled = selectItem.isDisabled() || radio.isDisabled();
+            String id = name + UINamingContainer.getSeparatorChar(context) + idx;
+            Object coercedItemValue = coerceToModelType(context, selectItem.getValue(), type);
+            boolean selected = (coercedItemValue != null) && coercedItemValue.equals(value);
+            
+            encodeOption(context, radio, selectItem, id, name, converter, selected, disabled);
         }
         
         writer.endElement("fieldset");
     }
     
-    protected void encodeOption(FacesContext context, UIInput component, Object values, Object submittedValues, Converter converter, SelectItem option, int idx) throws IOException {
+    protected void encodeOption(FacesContext context, SelectOneRadio radio, SelectItem option, String id, String name, Converter converter, boolean selected, boolean disabled) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        SelectManyCheckbox checkbox = (SelectManyCheckbox) component;
-        String itemValueAsString = getOptionAsString(context, component, converter, option.getValue());
-        String name = checkbox.getClientId(context);
-        String id = name + UINamingContainer.getSeparatorChar(context) + idx;
-        boolean disabled = option.isDisabled() || checkbox.isDisabled();
-
-        Object valuesArray;
-        Object itemValue;
-        if(submittedValues != null) {
-            valuesArray = submittedValues;
-            itemValue = itemValueAsString;
-        } else {
-            valuesArray = values;
-            itemValue = option.getValue();
-        }
-        
-        boolean selected = isSelected(context, component, itemValue, valuesArray, converter);
-        if(option.isNoSelectionOption() && values != null && !selected) {
-            return;
-        }
-              
-        //input
+        String itemValueAsString = getOptionAsString(context, radio, converter, option.getValue());
+       
         writer.startElement("input", null);
-        writer.writeAttribute("id", id, "id");
+        writer.writeAttribute("id", id, null);
         writer.writeAttribute("name", name, null);
-        writer.writeAttribute("type", "checkbox", null);
+        writer.writeAttribute("type", "radio", null);
+        writer.writeAttribute("value", itemValueAsString, null);
 
         if(selected) writer.writeAttribute("checked", "checked", null);
         if(disabled) writer.writeAttribute("disabled", "disabled", null);
-        if(checkbox.getOnchange() != null) writer.writeAttribute("onchange", checkbox.getOnchange(), null);
+        if(radio.getOnchange() != null) writer.writeAttribute("onchange", radio.getOnchange(), null);
 
         writer.endElement("input");
         
-        //label
         writer.startElement("label", null);
         writer.writeAttribute("for", id, null);
         
@@ -140,8 +129,8 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
     }
     
     @Override
-    protected String getSubmitParam(FacesContext context, UISelectMany selectMany) {
-        return selectMany.getClientId(context);
+    protected String getSubmitParam(FacesContext context, UISelectOne selectOne) {
+        return selectOne.getClientId(context);
     }
     
     @Override
@@ -153,4 +142,5 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
     public boolean getRendersChildren() {
         return true;
     }
+    
 }
