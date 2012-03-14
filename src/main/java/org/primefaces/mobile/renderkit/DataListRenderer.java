@@ -30,11 +30,13 @@ public class DataListRenderer extends CoreRenderer {
         DataList dataList = (DataList) component;
         UIComponent header = dataList.getHeader();
         String type = dataList.getType();
+        Object filterValue = dataList.getAttributes().get("filter");
 
         writer.startElement("ul", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
         writer.writeAttribute("data-role", "listview", null);
-
+        
+        if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
         if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
