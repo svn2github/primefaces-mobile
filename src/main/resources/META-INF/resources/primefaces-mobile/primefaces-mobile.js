@@ -105,3 +105,37 @@ PrimeFaces.widget.SelectBooleanCheckbox = PrimeFaces.widget.BaseWidget.extend({
         }
     }
 });
+
+/**
+ * PrimeFaces SelectManyCheckbox Widget
+ */
+PrimeFaces.widget.SelectManyCheckbox = PrimeFaces.widget.BaseWidget.extend({
+    
+    init: function(cfg) {
+        this._super(cfg);
+        
+        this.inputs = this.jq.find(':checkbox:not(:disabled)');
+                        
+        //Client Behaviors
+        if(this.cfg.behaviors) {
+            PrimeFaces.attachBehaviors(this.inputs, this.cfg.behaviors);
+        }
+    }
+});
+
+/**
+ * PrimeFaces SelectOneRadio Widget
+ */
+PrimeFaces.widget.SelectOneRadio = PrimeFaces.widget.BaseWidget.extend({
+    
+    init: function(cfg) {
+        this._super(cfg);
+
+        this.inputs = this.jq.find(':radio:not(:disabled)');
+                
+        //Client Behaviors
+        if(this.cfg.behaviors) {
+            PrimeFaces.attachBehaviors(this.inputs, this.cfg.behaviors);
+        }
+    }
+});

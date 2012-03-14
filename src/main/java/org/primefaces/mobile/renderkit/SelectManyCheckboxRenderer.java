@@ -41,6 +41,23 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         SelectManyCheckbox checkbox = (SelectManyCheckbox) component;
 
         encodeMarkup(context, checkbox);
+        encodeScript(context, checkbox);
+    }
+    
+    protected void encodeScript(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = checkbox.getClientId(context);
+
+        startScript(writer, clientId);
+        
+        writer.write("PrimeFaces.cw('SelectManyCheckbox','" + checkbox.resolveWidgetVar() + "',{");
+        writer.write("id:'" + clientId + "'");
+
+        encodeClientBehaviors(context, checkbox);
+
+        writer.write("});");
+
+        endScript(writer);
     }
     
     protected void encodeMarkup(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
@@ -120,6 +137,7 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         writer.writeAttribute("id", id, "id");
         writer.writeAttribute("name", name, null);
         writer.writeAttribute("type", "checkbox", null);
+        writer.writeAttribute("value", itemValueAsString, null);
 
         if(selected) writer.writeAttribute("checked", "checked", null);
         if(disabled) writer.writeAttribute("disabled", "disabled", null);

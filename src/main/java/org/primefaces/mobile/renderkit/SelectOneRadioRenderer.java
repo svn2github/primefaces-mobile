@@ -40,6 +40,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         SelectOneRadio radio = (SelectOneRadio) component;
         
         encodeMarkup(context, radio);
+        encodeScript(context, radio);
     }
     
     protected void encodeMarkup(FacesContext context, SelectOneRadio radio) throws IOException {
@@ -60,6 +61,22 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         encodeSelectItems(context, radio, selectItems);
 
         writer.endElement("table");
+    }
+    
+    protected void encodeScript(FacesContext context, SelectOneRadio radio) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = radio.getClientId(context);
+
+        startScript(writer, clientId);
+        
+        writer.write("PrimeFaces.cw('SelectOneRadio','" + radio.resolveWidgetVar() + "',{");
+        writer.write("id:'" + clientId + "'");
+
+        encodeClientBehaviors(context, radio);
+
+        writer.write("});");
+
+        endScript(writer);
     }
     
     protected void encodeSelectItems(FacesContext context, SelectOneRadio radio, List<SelectItem> selectItems) throws IOException {
