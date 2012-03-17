@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.datalist.DataList;
+import org.primefaces.component.separator.Separator;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class DataListRenderer extends CoreRenderer {
@@ -63,7 +64,15 @@ public class DataListRenderer extends CoreRenderer {
             for(UIComponent child : dataList.getChildren()) {
                 if(child.isRendered()) {
                     writer.startElement("li", dataList);
-                    child.encodeAll(context);
+                    
+                    if(child instanceof Separator) {
+                        writer.writeAttribute("data-role", "list-divider", null);
+                        renderChildren(context, child);
+                    }
+                    else {
+                        child.encodeAll(context);
+                    }
+                    
                     writer.endElement("li");
                 }
             }
