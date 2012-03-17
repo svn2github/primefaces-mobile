@@ -16,6 +16,7 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -28,15 +29,17 @@ import org.primefaces.util.ComponentUtils;
 public class CommandButtonRenderer extends CoreRenderer {
 
     @Override
-	public void decode(FacesContext facesContext, UIComponent component) {
+	public void decode(FacesContext context, UIComponent component) {
         CommandButton button = (CommandButton) component;
         if(button.isDisabled()) {
             return;
         }
 
-		String param = component.getClientId(facesContext);
+        Map<String,String> params = context.getExternalContext().getRequestParameterMap();
+		String clientId = component.getClientId(context);
+        String value = params.get(clientId);
 
-		if(facesContext.getExternalContext().getRequestParameterMap().containsKey(param)) {
+		if(!isValueBlank(value)) {
 			component.queueEvent(new ActionEvent(component));
 		}
 	}
