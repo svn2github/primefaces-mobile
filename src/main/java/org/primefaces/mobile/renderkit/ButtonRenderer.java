@@ -38,6 +38,7 @@ public class ButtonRenderer extends CoreRenderer {
         Button button = (Button) component;
 
         writer.startElement("a", component);
+        writer.writeAttribute("id", button.getClientId(context), null);
         writer.writeAttribute("href", "javascript:void(0)", null);
         writer.writeAttribute("data-role", "button", null);
 
