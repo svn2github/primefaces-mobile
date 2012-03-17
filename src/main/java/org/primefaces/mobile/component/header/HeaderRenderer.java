@@ -37,6 +37,8 @@ public class HeaderRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "header", null);
         writer.writeAttribute("data-backbtn", "false", null);
         
+        if(header.getStyle() != null) writer.writeAttribute("style", header.getStyle(), null);
+        if(header.getStyleClass() != null) writer.writeAttribute("class", header.getStyleClass(), null);
         if(swatch != null) writer.writeAttribute("data-theme", swatch, null);
         if(header.isFixed())  writer.writeAttribute("data-position", "fixed", null);
 

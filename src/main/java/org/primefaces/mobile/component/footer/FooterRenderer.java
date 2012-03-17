@@ -33,11 +33,10 @@ public class FooterRenderer extends CoreRenderer {
         writer.writeAttribute("id", footer.getClientId(context), "id");
         writer.writeAttribute("data-role", "footer", null);
         
-        if(swatch != null)
-            writer.writeAttribute("data-theme", swatch, null);
-        
-        if(footer.isFixed()) 
-            writer.writeAttribute("data-position", "fixed", null);
+        if(footer.getStyle() != null) writer.writeAttribute("style", footer.getStyle(), null);
+        if(footer.getStyleClass() != null) writer.writeAttribute("class", footer.getStyleClass(), null);
+        if(swatch != null) writer.writeAttribute("data-theme", swatch, null);        
+        if(footer.isFixed())  writer.writeAttribute("data-position", "fixed", null);
     }
 
     @Override
