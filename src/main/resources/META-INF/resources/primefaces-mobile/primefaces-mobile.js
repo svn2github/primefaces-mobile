@@ -49,9 +49,6 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             //accordion
             context.find("div[data-role='collapsibleset']").collapsibleset();
             
-            //grid
-            context.find("div[class^='ui-grid-']").grid();
-            
             //navbar
             context.find("div[data-role='navbar']").navbar();
         }
