@@ -13,7 +13,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
         //PrimeFaces Mobile
         if($.mobile) {
             var context = $(PrimeFaces.escapeClientId(id)).parent(),
-            controls = context.find(":input, button, ul");
+            controls = context.find(":input, button, a[data-role='button'], ul");
 
             //input text and textarea
             controls.filter("[type='text'],[type='search'],[type='tel'],[type='range'],[type='number'],[type='email'], textarea").textinput();
@@ -35,12 +35,25 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             
             //buttons
             controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
+            controls.filter("a").buttonMarkup();
             
             //field container
             context.find(":jqmData(role='fieldcontain')").fieldcontain();
             
             //control groups
             context.find(":jqmData(role='controlgroup')").controlgroup();
+            
+            //panel
+            context.find("div[data-role='collapsible']").collapsible();
+            
+            //accordion
+            context.find("div[data-role='collapsibleset']").collapsibleset();
+            
+            //grid
+            context.find("div[class^='ui-grid-']").grid();
+            
+            //navbar
+            context.find("div[data-role='navbar']").navbar();
         }
     }
 }
