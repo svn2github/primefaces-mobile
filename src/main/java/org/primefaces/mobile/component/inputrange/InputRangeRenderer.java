@@ -74,7 +74,8 @@ public class InputRangeRenderer extends InputRenderer {
         writer.startElement("input", null);
         writer.writeAttribute("id", inputId, null);
         writer.writeAttribute("name", inputId, null);
-        writer.writeAttribute("type", "range", null);
+        writer.writeAttribute("type", "number", null);
+        writer.writeAttribute("data-type", "range", null);
         writer.writeAttribute("min", range.getMinValue(), null);
         writer.writeAttribute("max", range.getMaxValue(), null);
         writer.writeAttribute("step", range.getStep(), null);

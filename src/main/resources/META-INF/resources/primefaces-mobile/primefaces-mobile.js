@@ -16,7 +16,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls = context.find(":input, button, ul");
 
             //input text and textarea
-            controls.filter("[type='text'],[type='search'],[type='tel'],[type='number'],[type='email'], textarea").textinput();
+            controls.filter("[type='text'],[type='search'],[type='tel'],[type='range'],[type='number'],[type='email'], textarea").textinput();
             
             //radio-checkbox
             controls.filter("[type='radio'], [type='checkbox']").checkboxradio();
@@ -25,7 +25,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls.filter("select:not([data-role='slider'])" ).selectmenu();
             
             //slider
-            controls.filter("input[type='range']").textinput().slider();
+            controls.filter(":jqmData(type='range')").slider();
             
             //switch
             controls.filter("select[data-role='slider']" ).slider();
