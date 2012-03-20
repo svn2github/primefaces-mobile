@@ -38,6 +38,9 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             
             //field container
             context.find(":jqmData(role='fieldcontain')").fieldcontain();
+            
+            //control groups
+            context.find(":jqmData(role='controlgroup')").controlgroup();
         }
     }
 }
