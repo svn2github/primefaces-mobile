@@ -97,12 +97,19 @@ public class InputTextRenderer extends InputRenderer {
      
     protected void encodeInput(FacesContext context, InputText inputText, String inputId) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
+        String type = inputText.getType();
+        boolean isSearch = type.equals("search");
         
+        //degrade
+        if(isSearch) {
+            type = "text";
+        }
+
         writer.startElement("input", null);
 		writer.writeAttribute("id", inputId, null);
 		writer.writeAttribute("name", inputId, null);
-		writer.writeAttribute("type", inputText.getType(), null);
-
+		writer.writeAttribute("type", type, null);
+        
 		String valueToRender = ComponentUtils.getValueToRender(context, inputText);
 		if(valueToRender != null) {
 			writer.writeAttribute("value", valueToRender , null);
@@ -110,6 +117,7 @@ public class InputTextRenderer extends InputRenderer {
 
 		renderPassThruAttributes(context, inputText, HTML.INPUT_TEXT_ATTRS);
 
+        if(isSearch) writer.writeAttribute("data-type", "search", null);
         if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(inputText.isDisabled()) writer.writeAttribute("disabled", "disabled", null);
         if(inputText.isReadonly()) writer.writeAttribute("readonly", "readonly", null);
