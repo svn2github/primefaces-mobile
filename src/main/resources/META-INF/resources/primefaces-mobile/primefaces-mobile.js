@@ -25,7 +25,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls.filter("select:not([data-role='slider'])" ).selectmenu();
             
             //slider
-            controls.filter("input[type='range']").slider();
+            controls.filter("input[type='range']").textinput().slider();
             
             //switch
             controls.filter("select[data-role='slider']" ).slider();
