@@ -12,10 +12,11 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
 
         //PrimeFaces Mobile
         if($.mobile) {
-            var controls = $(PrimeFaces.escapeClientId(id)).parent().find(":input, button, ul");
+            var context = $(PrimeFaces.escapeClientId(id)).parent(),
+            controls = context.find(":input, button, ul");
 
             //input text and textarea
-            controls.filter("[type='text'],[type='search'],[type='tel'],[type='email'], textarea").textinput();
+            controls.filter("[type='text'],[type='search'],[type='tel'],[type='number'],[type='email'], textarea").textinput();
             
             //radio-checkbox
             controls.filter("[type='radio'], [type='checkbox']").checkboxradio();
@@ -34,6 +35,9 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             
             //buttons
             controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
+            
+            //field container
+            context.find(":jqmData(role='fieldcontain')").fieldcontain();
         }
     }
 }
