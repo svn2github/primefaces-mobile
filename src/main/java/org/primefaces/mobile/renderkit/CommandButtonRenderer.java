@@ -58,13 +58,20 @@ public class CommandButtonRenderer extends CoreRenderer {
 
 		String onclick = button.getOnclick();
 		if(!type.equals("reset") && !type.equals("button")) {
-			UIComponent form = ComponentUtils.findParentForm(context, button);
-			if(form == null) {
-				throw new FacesException("CommandButton : \"" + clientId + "\" must be inside a form element");
-			}
-
-			String formClientId = form.getClientId(context);
-			String request = button.isAjax() ? buildAjaxRequest(context, button) + "return false;" : buildNonAjaxRequest(context, button, formClientId, clientId);
+            String request;
+			
+            if(button.isAjax()) {
+                 request = buildAjaxRequest(context, button, null);
+            }
+            else {
+                UIComponent form = ComponentUtils.findParentForm(context, button);
+                if(form == null) {
+                    throw new FacesException("CommandButton : \"" + clientId + "\" must be inside a form element");
+                }
+                
+                request = buildNonAjaxRequest(context, button, form, null, false);
+            }
+			
 			onclick = onclick != null ? onclick + ";" + request : request;
 		}
 
