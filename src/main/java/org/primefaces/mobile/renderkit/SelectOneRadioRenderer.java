@@ -82,7 +82,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
     
     protected void encodeSelectItems(FacesContext context, SelectOneRadio radio, List<SelectItem> selectItems) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        Converter converter = getConverter(context, radio);
+        Converter converter = radio.getConverter();
         Object value = radio.getSubmittedValue();
         String name = radio.getClientId(context);
         if(value == null) {
