@@ -9,12 +9,6 @@
             <renderer-type>org.primefaces.component.ButtonRenderer</renderer-type>
             <renderer-class>org.primefaces.mobile.renderkit.ButtonRenderer</renderer-class>
         </renderer>
-
-        <renderer>
-            <component-family>javax.faces.Form</component-family>
-            <renderer-type>javax.faces.Form</renderer-type>
-            <renderer-class>org.primefaces.mobile.renderkit.FormRenderer</renderer-class>
-        </renderer>
         
         <renderer>
             <component-family>org.primefaces.component</component-family>
