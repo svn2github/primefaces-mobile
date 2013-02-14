@@ -16,10 +16,8 @@
 package org.primefaces.mobile.component.page;
 
 import java.io.IOException;
-import java.util.ListIterator;
 import java.util.Map;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.mobile.util.Constants;
@@ -102,7 +100,6 @@ public class PageRenderer extends CoreRenderer {
         writer.endElement("script");
 
         renderResource(context, "mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
-        renderResource(context, "primefaces.js", "javax.faces.resource.Script", "primefaces");
         renderResource(context, "primefaces-mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
 
         if(postinit != null) {
