@@ -109,15 +109,6 @@ public class PageRenderer extends CoreRenderer {
             postinit.encodeAll(context);
         }
 
-        //Registered resources
-        UIViewRoot viewRoot = context.getViewRoot();
-        ListIterator<UIComponent> iter = (viewRoot.getComponentResources(context, "head")).listIterator();
-        while (iter.hasNext()) {
-            writer.write("\n");
-            UIComponent resource = (UIComponent) iter.next();
-            resource.encodeAll(context);
-        }
-
         writer.endElement("head");
 
         writer.startElement("body", page);
