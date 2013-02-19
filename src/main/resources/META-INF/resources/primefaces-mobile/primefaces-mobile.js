@@ -1088,3 +1088,28 @@ PrimeFaces.widget.SelectOneRadio = PrimeFaces.widget.BaseWidget.extend({
         }
     }
 });
+
+/**
+ * PrimeFaces Dialog Widget
+ */
+PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
+    
+    init: function(cfg) {
+        this._super(cfg);
+
+        this.cfg.mode = 'blank';
+        this.cfg.blankContent = true;
+        
+        if(this.cfg.visible) {
+            this.show();
+        }
+    },
+    
+    show: function() {
+        this.jq.simpledialog2(this.cfg);
+    },
+    
+    hide: function() {
+        this.jq.simpledialog2('close');
+    }
+});
