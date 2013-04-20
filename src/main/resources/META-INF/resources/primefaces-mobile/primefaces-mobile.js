@@ -1094,22 +1094,11 @@ PrimeFaces.widget.SelectOneRadio = PrimeFaces.widget.BaseWidget.extend({
  */
 PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
     
-    init: function(cfg) {
-        this._super(cfg);
-
-        this.cfg.mode = 'blank';
-        this.cfg.blankContent = true;
-        
-        if(this.cfg.visible) {
-            this.show();
-        }
-    },
-    
     show: function() {
-        this.jq.simpledialog2(this.cfg);
+        this.jq.popup('open');
     },
     
     hide: function() {
-        this.jq.simpledialog2('close');
+        this.jq.popup('close');
     }
 });

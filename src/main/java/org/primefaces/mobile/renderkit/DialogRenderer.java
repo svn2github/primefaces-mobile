@@ -38,20 +38,8 @@ public class DialogRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = dialog.getClientId(context);
         Map<String,Object> attrs = dialog.getAttributes();
-        String contentSwatch = (String) attrs.get("contentSwatch");
-        String headerSwatch = (String) attrs.get("headerSwatch");
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.widget("Dialog", dialog.resolveWidgetVar(), clientId, true);
-        
-        wb.attr("visible", dialog.isVisible(), false)
-            .attr("headerText", dialog.getHeader())
-            .attr("headerClose", dialog.isClosable())
-            .attr("themeDialog", contentSwatch, null)
-            .attr("themeHeader", headerSwatch, null);
-            
-        if(!dialog.isModal()) {
-            wb.attr("showModal", false);
-        }
         
         startScript(writer, clientId);        
         writer.write(wb.build());
@@ -62,17 +50,69 @@ public class DialogRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = dialog.getClientId(context);
         String style = dialog.getStyle();
-        style = (style == null) ? "display:none" : "display:none;" + style;
         String styleClass = dialog.getStyleClass();
-
+        String header = dialog.getHeader();
+        
+        Map<String, Object> attrs = dialog.getAttributes();
+        String contentSwatch = (String) attrs.get("contentSwatch");
+        String headerSwatch = (String) attrs.get("headerSwatch");
+        
         writer.startElement("div", dialog);
         writer.writeAttribute("id", clientId, "id");
         writer.writeAttribute("style", style, null);
         if(styleClass != null) {
             writer.writeAttribute("class", styleClass, null);
         }
-                
+        
+        writer.writeAttribute("data-role", "popup", null);
+        
+        if(dialog.isModal()) {
+            writer.writeAttribute("data-overlay-theme", "a", null);
+            writer.writeAttribute("data-dismissible", "false", null);
+        }
+        
+        if(dialog.getPosition() != null) {
+            writer.writeAttribute("data-position-to", dialog.getPosition(), null);
+        }
+        
+        if(dialog.getShowEffect() != null) {
+            writer.writeAttribute("data-transition", dialog.getShowEffect(), null);
+        }
+        
+        if(header != null) {
+            writer.startElement("div", null);
+            writer.writeAttribute("data-role", "header", null);
+            writer.writeAttribute("class", "ui-corner-top", null);
+            writer.startElement("h1", null);
+            if(headerSwatch != null) {
+                writer.writeAttribute("data-theme", headerSwatch, null);
+            }
+            writer.writeText(header, null);
+            writer.endElement("h1");
+            
+            if(dialog.isClosable()) {
+                writer.startElement("a", dialog);
+                writer.writeAttribute("href", "#", null);
+                writer.writeAttribute("data-rel", "back", null);
+                writer.writeAttribute("data-role", "button", null);
+                writer.writeAttribute("data-theme", "a", null);
+                writer.writeAttribute("data-icon", "delete", null);
+                writer.writeAttribute("data-iconpos", "notext", null);
+                writer.writeAttribute("data-class", "ui-btn-left", null);
+                writer.endElement("a");
+            }
+            
+            writer.endElement("div");
+        }
+        
+        writer.startElement("div", null);
+        writer.writeAttribute("data-role", "content", null);
+        writer.writeAttribute("class", "ui-corner-bottom ui-content", null);
+        if(contentSwatch != null) {
+            writer.writeAttribute("data-theme", contentSwatch, null);
+        }
         renderChildren(context, dialog);
+        writer.endElement("div");
         
         writer.endElement("div");
     }
