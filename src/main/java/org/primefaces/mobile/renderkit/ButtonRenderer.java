@@ -36,12 +36,16 @@ public class ButtonRenderer extends CoreRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         Button button = (Button) component;
+        Map<String,Object> attrs = button.getAttributes();
+        Object inline = attrs.get("inline");
 
         writer.startElement("a", component);
         writer.writeAttribute("id", button.getClientId(context), null);
         writer.writeAttribute("href", "javascript:void(0)", null);
         writer.writeAttribute("data-role", "button", null);
+        writer.writeAttribute("data-role", "button", null);
 
+        if(inline != null && Boolean.valueOf(inline.toString())) writer.writeAttribute("data-inline", "true", null);
         if(button.getIcon() != null) writer.writeAttribute("data-icon", button.getIcon(), null);
         if(button.getIconPos() != null) writer.writeAttribute("data-iconpos", button.getIconPos(), null);
         if(button.getStyle() != null) writer.writeAttribute("style", button.getStyle(), null);
