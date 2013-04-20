@@ -79,7 +79,7 @@ public class CommandButtonRenderer extends CoreRenderer {
         if(attrs.containsKey("swatch")) writer.writeAttribute("data-theme", attrs.get("swatch"), null);
         if(button.getIcon() != null) writer.writeAttribute("data-icon", button.getIcon(), null);
         if(button.getIconPos() != null) writer.writeAttribute("data-iconpos", button.getIconPos(), null);
-        if(button.isInline()) writer.writeAttribute("data-inline", true, null);
+        if(button.isInline()) writer.writeAttribute("data-inline", "true", null);
         if(button.getStyle() != null) writer.writeAttribute("style", button.getStyle(), null);
         if(button.getStyleClass() != null) writer.writeAttribute("class", button.getStyleClass(), null);
 		if(!isValueBlank(onclick)) writer.writeAttribute("onclick", onclick, "onclick");
