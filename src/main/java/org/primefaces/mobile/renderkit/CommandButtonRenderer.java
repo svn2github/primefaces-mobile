@@ -50,6 +50,7 @@ public class CommandButtonRenderer extends CoreRenderer {
         CommandButton button = (CommandButton) component;
         String clientId = button.getClientId(context);
         String type = button.getType();
+        Map<String,Object> attrs = button.getAttributes();
 
         writer.startElement("button", button);
 		writer.writeAttribute("id", clientId, "id");
@@ -75,6 +76,7 @@ public class CommandButtonRenderer extends CoreRenderer {
 			onclick = onclick != null ? onclick + ";" + request : request;
 		}
 
+        if(attrs.containsKey("swatch")) writer.writeAttribute("data-theme", attrs.get("swatch"), null);
         if(button.getIcon() != null) writer.writeAttribute("data-icon", button.getIcon(), null);
         if(button.getIconPos() != null) writer.writeAttribute("data-iconpos", button.getIconPos(), null);
         if(button.isInline()) writer.writeAttribute("data-inline", true, null);
