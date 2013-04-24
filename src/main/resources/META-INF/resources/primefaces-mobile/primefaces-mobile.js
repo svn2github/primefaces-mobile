@@ -956,6 +956,31 @@ PrimeFaces.navigate = function(to, cfg) {
     $.mobile.changePage(to, cfg);
 }
 
+var timePopUp;
+PrimeFaces.showGrowl = function(to, time, sticky) {
+    var cfg = {};
+    var element = $(PrimeFaces.escapeClientId(to));
+    time = time + 500;
+    cfg.y = $(document).height();
+    element.popup();
+    element.popup('destroy');
+    element.popup().on({
+        popupafterclose: function() {
+            clearTimeout(timePopUp);
+        }
+    });
+
+    //Time for other popup close
+    setTimeout(function() {
+        element.popup('open', cfg)
+    }, 500);
+    if (!sticky) {
+        timePopUp = setTimeout(function() {
+            element.popup('close')
+        }, time);
+    }
+}
+
 /**
  * PrimeFaces InputText Widget
  */
