@@ -908,7 +908,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls = context.find(":input, button, a[data-role='button'], ul");
 
             //input text and textarea
-            controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],textarea").textinput();
+            controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],[type='datetime'],[type='time'],[type='url'],[type='password'],textarea").textinput();
             
             //radio-checkbox
             controls.filter("[type='radio'], [type='checkbox']").checkboxradio();
