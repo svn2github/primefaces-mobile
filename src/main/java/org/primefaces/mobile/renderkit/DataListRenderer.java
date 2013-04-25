@@ -30,8 +30,9 @@ public class DataListRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         DataList dataList = (DataList) component;
         UIComponent header = dataList.getHeader();
+        UIComponent footer = dataList.getFooter();
         String type = dataList.getType();
-        Object filterValue = dataList.getAttributes().get("filter");
+        Object filterValue = dataList.getAttributes().get("filter");        
 
         writer.startElement("ul", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
@@ -77,6 +78,13 @@ public class DataListRenderer extends CoreRenderer {
                 }
             }
         }
+
+        if (footer != null) {
+            writer.startElement("li", null);            
+            footer.encodeAll(context);
+            writer.endElement("li");
+        }
+
         writer.endElement("ul");
 
         dataList.setRowIndex(-1);
