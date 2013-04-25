@@ -900,11 +900,22 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
         document.close();
     }
     else {
+        if ($.mobile) {
+            var context = $(PrimeFaces.escapeClientId(id)).parent(),
+                controls = context.find(":input, button, a[data-role='button'], ul");
+
+            //selects
+            controls.filter("select:not([data-role='slider'])").selectmenu("destroy");
+            //lists                        
+            context.find("form[role='search']").remove();
+            
+        }
+        
         $(PrimeFaces.escapeClientId(id)).replaceWith(content);
 
         //PrimeFaces Mobile
         if($.mobile) {
-            var context = $(PrimeFaces.escapeClientId(id)).parent(),
+            context = $(PrimeFaces.escapeClientId(id)).parent(),
             controls = context.find(":input, button, a[data-role='button'], ul");
 
             //input text and textarea
@@ -922,7 +933,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             //switch
             controls.filter("select[data-role='slider']" ).slider();
             
-            //lists
+            //lists            
             controls.filter("ul[data-role='listview']").listview();
             
             //buttons
