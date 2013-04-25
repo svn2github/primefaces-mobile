@@ -31,7 +31,7 @@ public class HeaderRenderer extends CoreRenderer {
         String swatch = header.getSwatch();
         UIComponent left = header.getFacet("left");
         UIComponent right = header.getFacet("right");
-
+        
         writer.startElement("div", header);
         writer.writeAttribute("id", header.getClientId(context), "id");
         writer.writeAttribute("data-role", "header", null);
@@ -55,7 +55,10 @@ public class HeaderRenderer extends CoreRenderer {
         if(right != null) {
             right.getAttributes().put("styleClass", "ui-btn-right");
             right.encodeAll(context);
-        }
+        }    
+                
+        renderChildren(context, header);
+        
     }
 
     @Override
@@ -64,4 +67,14 @@ public class HeaderRenderer extends CoreRenderer {
 
         writer.endElement("div");
     }
+    
+    @Override
+    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+        //Rendering happens on encodeEnd
+    }
+
+    @Override
+    public boolean getRendersChildren() {
+        return true;
+    }      
 }
