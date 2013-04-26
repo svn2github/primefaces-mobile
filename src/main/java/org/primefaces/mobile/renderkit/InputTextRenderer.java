@@ -31,7 +31,7 @@ public class InputTextRenderer extends InputRenderer {
 	public void decode(FacesContext context, UIComponent component) {
 		InputText inputText = (InputText) component;
         String clientId = inputText.getClientId(context);
-        String inputId = inputText.getLabel() == null ? clientId : clientId + "_input";
+        String inputId = clientId + "_input";
 
         if(inputText.isDisabled() || inputText.isReadonly()) {
             return;
@@ -74,10 +74,13 @@ public class InputTextRenderer extends InputRenderer {
 		ResponseWriter writer = context.getResponseWriter();
 		String clientId = inputText.getClientId(context);
         String label = inputText.getLabel();
-        String inputId = label == null ? clientId : clientId + "_input";
+        String inputId = clientId + "_input";
 
         if(label == null) {
+            writer.startElement("div", inputText);
+            writer.writeAttribute("id", clientId, null);
             encodeInput(context, inputText, inputId);
+            writer.endElement("div");
         } 
         else {
             writer.startElement("div", inputText);
@@ -114,7 +117,7 @@ public class InputTextRenderer extends InputRenderer {
 		if(valueToRender != null) {
 			writer.writeAttribute("value", valueToRender , null);
 		}
-
+                
 		renderPassThruAttributes(context, inputText, HTML.INPUT_TEXT_ATTRS);
 
         if(isSearch) writer.writeAttribute("data-type", "search", null);
