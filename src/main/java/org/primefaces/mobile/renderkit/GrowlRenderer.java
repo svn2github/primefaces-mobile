@@ -114,6 +114,7 @@ public class GrowlRenderer extends UINotificationRenderer {
 
         for (FacesMessage msg : messages) {
             String summary = msg.getSummary() != null ? msg.getSummary() : "";
+            String detail = msg.getDetail() != null ? msg.getDetail() : summary;
 
             writer.startElement("p", null);
 
@@ -124,11 +125,25 @@ public class GrowlRenderer extends UINotificationRenderer {
 
             if (uiGrowl.isShowSummary()) {
                 if (escape) {
+                    writer.startElement("b", null);
                     writer.writeText(summary, null);
+                    writer.endElement("b");
                 } else {
                     writer.write(summary);
                 }
             }
+            
+            if (uiGrowl.isShowSummary() && uiGrowl.isShowDetail()){
+                writer.writeText(" ", null);
+            }
+            
+            if (uiGrowl.isShowDetail()) {
+                if (escape) {
+                    writer.writeText(detail, null);
+                } else {
+                    writer.write(detail);
+                }
+            }          
 
             msg.rendered();
             writer.endElement("p");
