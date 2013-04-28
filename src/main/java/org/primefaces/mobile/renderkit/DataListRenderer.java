@@ -34,8 +34,9 @@ public class DataListRenderer extends CoreRenderer {
         String type = dataList.getType();
         Object filterValue = dataList.getAttributes().get("filter");        
 
-        writer.startElement("ul", dataList);
+        writer.startElement("div", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
+        writer.startElement("ul", dataList);        
         writer.writeAttribute("data-role", "listview", null);
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
@@ -86,6 +87,7 @@ public class DataListRenderer extends CoreRenderer {
         }
 
         writer.endElement("ul");
+        writer.endElement("div");
 
         dataList.setRowIndex(-1);
     }
