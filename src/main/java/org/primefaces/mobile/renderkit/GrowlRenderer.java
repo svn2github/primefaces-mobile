@@ -35,8 +35,7 @@ public class GrowlRenderer extends UINotificationRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         Growl uiGrowl = (Growl) component;
               
-        encodeMarkup(context, uiGrowl);              
-        encodeScript(context, uiGrowl);        
+        encodeMarkup(context, uiGrowl);                              
     }
     
     protected void encodeMarkup(FacesContext context, Growl uiGrowl) throws IOException {
@@ -75,26 +74,31 @@ public class GrowlRenderer extends UINotificationRenderer {
         writer.writeAttribute("data-transition", "fade", null);
         writer.writeAttribute("data-theme", "a", null);
 
+        Boolean showPopup = false;
         for (String severity : messagesMap.keySet()) {
             List<FacesMessage> severityMessages = messagesMap.get(severity);
 
             if (severityMessages.size() > 0) {
                 encodeSeverityMessages(context, uiGrowl, severity, severityMessages);
+                showPopup = true;
             }
         }
 
         writer.endElement("div");
         writer.endElement("div");
+        
+        encodeScript(context, uiGrowl, showPopup);
 
     }
     
-    protected void encodeScript(FacesContext context, Growl uiGrowl) throws IOException {
+    protected void encodeScript(FacesContext context, Growl uiGrowl,Boolean showPopup) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = uiGrowl.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.widget("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup", true);
         wb.attr("life", uiGrowl.getLife())
-                .attr("sticky", uiGrowl.isSticky());
+                .attr("sticky", uiGrowl.isSticky())
+                .attr("showPopup", showPopup);
         startScript(writer, clientId);
         writer.write(wb.build());
         endScript(writer);

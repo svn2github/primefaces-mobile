@@ -1120,9 +1120,11 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
         var element = this.jq;
         cfg.y = $(document).height();
 
-        element.popup().popup('open', cfg);
-        if (!cfg.sticky) {
-            setTimeout(function() {element.popup('close')}, cfg.life);
+        if (cfg.showPopup){
+            element.popup().popup('open', cfg);
+            if (!cfg.sticky) {
+                setTimeout(function() {element.popup('close')}, cfg.life);
+            }
         }
     }
 });
