@@ -905,7 +905,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
                 controls = context.find(":input, button, a[data-role='button'], ul");
 
             //selects
-            controls.filter("select:not([data-role='slider'])").selectmenu("destroy");            
+            controls.filter("select:not([data-role='slider'])").selectmenu("destroy");             
         }
         
         $(PrimeFaces.escapeClientId(id)).replaceWith(content);
@@ -950,7 +950,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             context.find("div[data-role='collapsibleset']").collapsibleset();
             
             //navbar
-            context.find("div[data-role='navbar']").navbar();
+            context.find("div[data-role='navbar']").navbar();          
         }
     }
 }
@@ -962,25 +962,6 @@ PrimeFaces.navigate = function(to, cfg) {
     cfg.reverse = (cfg.reverse == 'true' || cfg.reverse == true) ? true : false;
 
     $.mobile.changePage(to, cfg);
-}
-
-var timePopUp;
-PrimeFaces.showGrowl = function(to, time, sticky) {
-    var cfg = {};
-    var element = $(PrimeFaces.escapeClientId(to));
-    cfg.y = $(document).height();
-    element.popup().popup('destroy').popup().on({
-        popupafterclose: function() {
-            clearTimeout(timePopUp);
-        }
-    });
-
-    element.popup('open', cfg)
-    if (!sticky) {
-        timePopUp = setTimeout(function() {
-            element.popup('close')
-        }, time);
-    }
 }
 
 /**
@@ -1127,5 +1108,21 @@ PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
     
     hide: function() {
         this.jq.popup('close');
+    }
+});
+
+/**
+ * PrimeFaces Growl Widget
+ */
+PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        this._super(cfg);
+        var element = this.jq;
+        cfg.y = $(document).height();
+
+        element.popup().popup('open', cfg);
+        if (!cfg.sticky) {
+            setTimeout(function() {element.popup('close')}, cfg.life);
+        }
     }
 });

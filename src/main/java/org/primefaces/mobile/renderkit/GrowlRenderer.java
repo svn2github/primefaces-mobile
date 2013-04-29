@@ -26,14 +26,20 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.growl.Growl;
-import org.primefaces.context.RequestContext;
 import org.primefaces.renderkit.UINotificationRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 public class GrowlRenderer extends UINotificationRenderer {
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         Growl uiGrowl = (Growl) component;
+              
+        encodeMarkup(context, uiGrowl);              
+        encodeScript(context, uiGrowl);        
+    }
+    
+    protected void encodeMarkup(FacesContext context, Growl uiGrowl) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = uiGrowl.getClientId(context);
         Map<String, List<FacesMessage>> messagesMap = new HashMap<String, List<FacesMessage>>();
@@ -69,29 +75,29 @@ public class GrowlRenderer extends UINotificationRenderer {
         writer.writeAttribute("data-transition", "fade", null);
         writer.writeAttribute("data-theme", "a", null);
 
-        Boolean showPopup = false;
         for (String severity : messagesMap.keySet()) {
             List<FacesMessage> severityMessages = messagesMap.get(severity);
 
             if (severityMessages.size() > 0) {
                 encodeSeverityMessages(context, uiGrowl, severity, severityMessages);
-                showPopup = true;
             }
         }
 
         writer.endElement("div");
         writer.endElement("div");
 
-        if (showPopup) {
-            showGrowl(clientId + "_popup", uiGrowl.getLife(), uiGrowl.isSticky());
-        }
-
     }
-
-    protected void showGrowl(String id, int time, boolean sticky) {
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        String command = "PrimeFaces.showGrowl('" + id + "'," + time + "," + sticky + ")";
-        requestContext.execute(command);
+    
+    protected void encodeScript(FacesContext context, Growl uiGrowl) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = uiGrowl.getClientId(context);        
+        WidgetBuilder wb = getWidgetBuilder(context);
+        wb.widget("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup", true);
+        wb.attr("life", uiGrowl.getLife())
+                .attr("sticky", uiGrowl.isSticky());
+        startScript(writer, clientId);
+        writer.write(wb.build());
+        endScript(writer);
     }
 
     protected void addMessage(Growl uiGrowl, FacesMessage message, Map<String, List<FacesMessage>> messagesMap, String severity) {
