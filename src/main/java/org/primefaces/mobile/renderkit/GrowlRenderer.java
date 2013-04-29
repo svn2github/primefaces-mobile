@@ -53,11 +53,11 @@ public class GrowlRenderer extends UINotificationRenderer {
             if (severity.equals(FacesMessage.SEVERITY_INFO)) {
                 addMessage(uiGrowl, message, messagesMap, "info");
             } else if (severity.equals(FacesMessage.SEVERITY_WARN)) {
-                addMessage(uiGrowl, message, messagesMap, "alert");
+                addMessage(uiGrowl, message, messagesMap, "warn");
             } else if (severity.equals(FacesMessage.SEVERITY_ERROR)) {
-                addMessage(uiGrowl, message, messagesMap, "delete");
+                addMessage(uiGrowl, message, messagesMap, "error");
             } else if (severity.equals(FacesMessage.SEVERITY_FATAL)) {
-                addMessage(uiGrowl, message, messagesMap, "minus");
+                addMessage(uiGrowl, message, messagesMap, "fatal");
             }
         }
 
@@ -115,11 +115,17 @@ public class GrowlRenderer extends UINotificationRenderer {
         for (FacesMessage msg : messages) {
             String summary = msg.getSummary() != null ? msg.getSummary() : "";
             String detail = msg.getDetail() != null ? msg.getDetail() : summary;
+            String icon = null;
+            
+            if (severity.equals("info")) icon = "info";
+            if (severity.equals("warn")) icon = "alert";            
+            if (severity.equals("error")) icon = "delete";            
+            if (severity.equals("fatal")) icon = "minus";                     
 
             writer.startElement("p", null);
 
             writer.startElement("span", null);
-            writer.writeAttribute("class", "ui-icon ui-icon-" + severity, null);
+            writer.writeAttribute("class", "ui-icon ui-icon-" + icon, null);
             writer.writeAttribute("style", "float: left;margin-right: 5px;", null);
             writer.endElement("span");
 
