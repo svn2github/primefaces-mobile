@@ -903,7 +903,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
         if ($.mobile) {
             var context = $(PrimeFaces.escapeClientId(id)).parent(),
                 controls = context.find(":input, button, a[data-role='button'], ul");
-
+                                            
             //selects
             controls.filter("select:not([data-role='slider'])").selectmenu("destroy");             
         }
@@ -916,7 +916,10 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls = context.find(":input, button, a[data-role='button'], ul");
 
             //input text and textarea
-            controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],[type='datetime'],[type='time'],[type='url'],[type='password'],textarea").textinput();
+            var inputs = controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],[type='datetime'],[type='time'],[type='url'],[type='password'],textarea").textinput();            
+            if (inputs.parent().parent().hasClass("ui-input-text")){
+                inputs.unwrap();
+            }
             
             //radio-checkbox
             controls.filter("[type='radio'], [type='checkbox']").checkboxradio();

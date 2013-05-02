@@ -31,7 +31,7 @@ public class InputTextRenderer extends InputRenderer {
 	public void decode(FacesContext context, UIComponent component) {
 		InputText inputText = (InputText) component;
         String clientId = inputText.getClientId(context);
-        String inputId = clientId + "_input";
+        String inputId = inputText.getLabel() == null ? clientId : clientId + "_input";
 
         if(inputText.isDisabled() || inputText.isReadonly()) {
             return;
@@ -71,21 +71,18 @@ public class InputTextRenderer extends InputRenderer {
 	}
 
 	protected void encodeMarkup(FacesContext context, InputText inputText) throws IOException {
-		ResponseWriter writer = context.getResponseWriter();
-		String clientId = inputText.getClientId(context);
+	ResponseWriter writer = context.getResponseWriter();
+	String clientId = inputText.getClientId(context);
         String label = inputText.getLabel();
-        String inputId = clientId + "_input";
+        String inputId = inputText.getLabel() == null ? clientId : clientId + "_input";
 
         if(label == null) {
-            writer.startElement("div", inputText);
-            writer.writeAttribute("id", clientId, null);
-            encodeInput(context, inputText, inputId);
-            writer.endElement("div");
+            encodeInput(context, inputText, clientId);            
         } 
         else {
             writer.startElement("div", inputText);
             writer.writeAttribute("id", clientId, null);
-            writer.writeAttribute("data-role", "fieldcontain", null);
+            writer.writeAttribute("data-role", "fieldcontain", null);       
                         
             writer.startElement("label", null);
             writer.writeAttribute("for", inputId, null);
