@@ -16,6 +16,7 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -97,6 +98,8 @@ public class InputTextRenderer extends InputRenderer {
      
     protected void encodeInput(FacesContext context, InputText inputText, String inputId) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
+        Map<String, Object> attrs = inputText.getAttributes();
+        String placeholder = (String) attrs.get("placeholder");
         String type = inputText.getType();
         boolean isSearch = type.equals("search");
         
@@ -109,6 +112,9 @@ public class InputTextRenderer extends InputRenderer {
 		writer.writeAttribute("id", inputId, null);
 		writer.writeAttribute("name", inputId, null);
 		writer.writeAttribute("type", type, null);
+                if (placeholder != null){
+                    writer.writeAttribute("placeholder", placeholder, null);
+                }                
         
 		String valueToRender = ComponentUtils.getValueToRender(context, inputText);
 		if(valueToRender != null) {
