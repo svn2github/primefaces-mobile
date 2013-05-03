@@ -958,9 +958,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
     }
 }
 
-PrimeFaces.navigate = function(to, cfg) {
-    cfg.changeHash = false;
-    
+PrimeFaces.navigate = function(to, cfg) {        
     //cast
     cfg.reverse = (cfg.reverse == 'true' || cfg.reverse == true) ? true : false;
 
