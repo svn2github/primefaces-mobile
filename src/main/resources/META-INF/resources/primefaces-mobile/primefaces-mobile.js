@@ -905,7 +905,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
                 controls = context.find(":input, button, a[data-role='button'], ul");
                                             
             //selects
-            controls.filter("select:not([data-role='slider'])").selectmenu("destroy");             
+            controls.filter("select:not([data-role='slider'])").selectmenu().selectmenu("destroy");             
         }
         
         $(PrimeFaces.escapeClientId(id)).replaceWith(content);
