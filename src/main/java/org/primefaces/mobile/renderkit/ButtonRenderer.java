@@ -16,14 +16,8 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import javax.faces.application.ConfigurableNavigationHandler;
-import javax.faces.application.NavigationCase;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIParameter;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.button.Button;
@@ -80,19 +74,6 @@ public class ButtonRenderer extends CoreRenderer {
             else {
                 url = getResourceURL(context, href);    //external page
             }  
-        } 
-        else {
-            NavigationCase navCase = findNavigationCase(context, button);
-            String toViewId = navCase.getToViewId(context);
-            boolean isIncludeViewParams = isIncludeViewParams(button, navCase);
-            Map<String, List<String>> params = getParams(navCase, button);
-
-            //jsf navigation
-            url = context.getApplication().getViewHandler().getBookmarkableURL(context, toViewId, params, isIncludeViewParams);
-
-            if(button.getFragment() != null) {
-                url += "#" + button.getFragment();
-            }
         }
         
         if(url != null) {
@@ -100,59 +81,5 @@ public class ButtonRenderer extends CoreRenderer {
         }
         
         return onclick.toString();
-    }
-
-    protected NavigationCase findNavigationCase(FacesContext context, Button button) {
-        ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
-        String outcome = button.getOutcome();
-        
-        if(outcome == null) {
-            outcome = context.getViewRoot().getViewId();
-        }
-        
-        return navHandler.getNavigationCase(context, null, outcome);
-    }
-
-    /**
-     * Find all parameters to include by looking at nested uiparams and params of navigation case
-     */
-    protected Map<String, List<String>> getParams(NavigationCase navCase, Button button) {
-        Map<String, List<String>> params = new LinkedHashMap<String, List<String>>();
-
-        //UIParams
-        for(UIComponent child : button.getChildren()) {
-            if(child.isRendered() && (child instanceof UIParameter)) {
-                UIParameter uiParam = (UIParameter) child;
-                
-                if(!uiParam.isDisable()) {
-                    List<String> paramValues = params.get(uiParam.getName());
-                    if(paramValues == null) {
-                        paramValues = new ArrayList<String>();
-                        params.put(uiParam.getName(), paramValues);
-                    }
-
-                    paramValues.add(String.valueOf(uiParam.getValue()));
-                }
-            }
-        }
-
-        //NavCase Params
-        Map<String, List<String>> navCaseParams = navCase.getParameters();
-        if(navCaseParams != null && !navCaseParams.isEmpty()) {
-            for(Map.Entry<String,List<String>> entry : navCaseParams.entrySet()) {
-                String key = entry.getKey();
-
-                //UIParams take precedence
-                if(!params.containsKey(key)) {
-                    params.put(key, entry.getValue());
-                }
-            }
-        }
-
-        return params;
-    }
-
-    protected boolean isIncludeViewParams(Button button, NavigationCase navCase) {
-        return button.isIncludeViewParams() || navCase.isIncludeViewParams();
     }
 }
