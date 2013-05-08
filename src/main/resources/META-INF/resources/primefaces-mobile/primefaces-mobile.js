@@ -1129,3 +1129,32 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
         }
     }
 });
+
+/**
+ * PrimeFaces Calendar Widget
+ */
+PrimeFaces.widget.Calendar = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        this._super(cfg);
+
+        this.cfg.theme = 'jqm';
+
+        if (this.cfg.hasTime) {
+            if (this.cfg.timeOnly) {
+                this.jq.mobiscroll().time(this.cfg);
+            } else {
+                this.jq.mobiscroll().datetime(this.cfg);
+            }
+        } else {
+            this.jq.mobiscroll().date(this.cfg);
+        }
+
+        if (this.cfg.defaultDate !== 'null') {
+            this.jq.mobiscroll('setDate', $.scroller.parseDate(this.cfg.pattern, this.cfg.defaultDate), true);
+        }
+
+    },
+    show: function() {
+        this.jq.mobiscroll('show');
+    }
+});
