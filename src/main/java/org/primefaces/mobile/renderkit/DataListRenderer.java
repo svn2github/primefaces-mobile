@@ -34,6 +34,7 @@ public class DataListRenderer extends CoreRenderer {
         String type = dataList.getType();
         Object filterValue = dataList.getAttributes().get("filter");          
         Object autodividers = dataList.getAttributes().get("autoDividers");
+        Object autoComplete = dataList.getAttributes().get("autoComplete");
 
         writer.startElement("div", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
@@ -42,6 +43,7 @@ public class DataListRenderer extends CoreRenderer {
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
         if(autodividers != null && Boolean.valueOf(autodividers.toString())) writer.writeAttribute("data-autodividers", "true", null);
+        if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
         if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
