@@ -25,10 +25,10 @@ import javax.faces.convert.Converter;
 import javax.faces.event.PhaseId;
 import org.primefaces.component.autocomplete.AutoComplete;
 import org.primefaces.event.AutoCompleteEvent;
-import org.primefaces.renderkit.InputRenderer;
+import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.util.WidgetBuilder;
 
-public class AutoCompleteRenderer extends InputRenderer {
+public class AutoCompleteRenderer extends CoreRenderer {
 
     public void decode(FacesContext context, UIComponent component) {
         AutoComplete ac = (AutoComplete) component;
@@ -64,7 +64,7 @@ public class AutoCompleteRenderer extends InputRenderer {
         String clientId = ac.getClientId(context);
         String var = ac.getVar();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        Converter converter = findConverter(context, ac);
+        Converter converter = ac.getConverter();
         boolean pojo = var != null;
 
         writer.startElement("div", ac);
