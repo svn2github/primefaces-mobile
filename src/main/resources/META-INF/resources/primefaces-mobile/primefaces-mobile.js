@@ -1158,3 +1158,93 @@ PrimeFaces.widget.Calendar = PrimeFaces.widget.BaseWidget.extend({
         this.jq.mobiscroll('show');
     }
 });
+
+/**
+ * PrimeFaces AutoComplete Widget
+ */
+PrimeFaces.widget.AutoComplete = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        this._super(cfg);
+        this.cfg.minLength = this.cfg.minLength != undefined ? this.cfg.minLength : 1;
+        this.cfg.delay = this.cfg.delay != undefined ? this.cfg.delay : 300;
+
+        this.bindEvents();
+    },
+    bindEvents: function() {
+        var $this = this;
+
+        this.jq.bind('listviewbeforefilter', function(event, ui) {
+            $this.beforefilter(event, ui);
+        });
+
+        this.jq.find('a').bind('click', function(event) {
+            $this.invokeItemSelectBehavior(event, $(event.target).attr('item-value'));
+        });
+
+    },
+    beforefilter: function(event, ui) {
+        var _self = this;
+        $input = $(ui.input);
+        query = $input.val();
+
+        if (query.length === 0 || query.length >= _self.cfg.minLength) {
+
+            //Cancel the search request if user types within the timeout
+            if (_self.timeout) {
+                clearTimeout(_self.timeout);
+            }
+
+            _self.timeout = setTimeout(function() {
+                _self.search(query);
+            },
+            _self.cfg.delay);
+        }
+
+    },
+    search: function(query) {
+        var options = {
+            source: this.id,
+            update: this.id,
+            formId: this.cfg.formId,
+            onsuccess: function(responseXML) {
+                var xmlDoc = $(responseXML.documentElement),
+                        updates = xmlDoc.find("update");
+                for (var i = 0; i < updates.length; i++) {
+                    var update = updates.eq(i),
+                            id = update.attr('id'),
+                            data = update.text();
+
+                    PrimeFaces.ajax.AjaxUtils.updateElement.call(this, id, data);
+                    var context = $(PrimeFaces.escapeClientId(id));
+                    context.find(":input").focus().val(query);
+
+                }
+
+                PrimeFaces.ajax.AjaxUtils.handleResponse.call(this, xmlDoc);
+
+                return true;
+            }
+        };
+
+        options.params = [
+            {name: this.id + '_query', value: query}
+        ];
+
+        PrimeFaces.ajax.AjaxRequest(options);
+    },
+    invokeItemSelectBehavior: function(event, itemValue) {
+        if (this.cfg.behaviors) {
+            var itemSelectBehavior = this.cfg.behaviors['itemSelect'];
+
+            if (itemSelectBehavior) {
+                var ext = {
+                    params: [
+                        {name: this.id + '_itemSelect', value: itemValue}
+                    ]
+                };
+
+                itemSelectBehavior.call(this, event, ext);
+            }
+        }
+    }
+});
