@@ -17,7 +17,10 @@ package org.primefaces.mobile.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.NavigationCase;
 import javax.faces.context.FacesContext;
 
 public class MobileUtils {
@@ -35,7 +38,18 @@ public class MobileUtils {
         String viewName = (optionsIndex == -1) ? viewMeta : viewMeta.substring(0, optionsIndex);
 
         StringBuilder command = new StringBuilder();
-        command.append("PrimeFaces.navigate('#").append(viewName).append("',{");
+        
+        if (viewMeta.contains("lazyLoad=true")) {
+            FacesContext context = FacesContext.getCurrentInstance();            
+            ConfigurableNavigationHandler navHandler = (ConfigurableNavigationHandler) context.getApplication().getNavigationHandler();
+            NavigationCase navCase = navHandler.getNavigationCase(context, null, viewName);
+            
+            viewName = context.getApplication().getViewHandler().getBookmarkableURL(context, navCase.getToViewId(context), null, false);            
+                        
+            command.append("PrimeFaces.navigate('").append(viewName).append("',{");
+        } else {
+            command.append("PrimeFaces.navigate('#").append(viewName).append("',{");
+        }
 
         //parse navigation options like reverse and transition
         if(optionsIndex != -1) {
@@ -54,7 +68,7 @@ public class MobileUtils {
 
                 if(it.hasNext())
                     command.append(",");
-            }
+            }            
         }
 
         command.append("});");
