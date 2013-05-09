@@ -32,7 +32,8 @@ public class DataListRenderer extends CoreRenderer {
         UIComponent header = dataList.getHeader();
         UIComponent footer = dataList.getFooter();
         String type = dataList.getType();
-        Object filterValue = dataList.getAttributes().get("filter");        
+        Object filterValue = dataList.getAttributes().get("filter");          
+        Object autodividers = dataList.getAttributes().get("autoDividers");
 
         writer.startElement("div", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
@@ -40,6 +41,7 @@ public class DataListRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "listview", null);
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
+        if(autodividers != null && Boolean.valueOf(autodividers.toString())) writer.writeAttribute("data-autodividers", "true", null);
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
         if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
