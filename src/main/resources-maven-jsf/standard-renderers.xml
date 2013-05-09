@@ -92,4 +92,10 @@
             <component-family>org.primefaces.component</component-family>
             <renderer-type>org.primefaces.component.AutoCompleteRenderer</renderer-type>
             <renderer-class>org.primefaces.mobile.renderkit.AutoCompleteRenderer</renderer-class>
-        </renderer>                                           
+        </renderer>   
+        
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.OverlayPanelRenderer</renderer-type>
+            <renderer-class>org.primefaces.mobile.renderkit.OverlayPanelRenderer</renderer-class>
+        </renderer>                                                                                          

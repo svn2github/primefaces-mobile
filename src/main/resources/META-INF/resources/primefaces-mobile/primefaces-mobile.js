@@ -1248,3 +1248,28 @@ PrimeFaces.widget.AutoComplete = PrimeFaces.widget.BaseWidget.extend({
         }
     }
 });
+
+/**
+ * PrimeFaces OverlayPanel Widget
+ */
+PrimeFaces.widget.OverlayPanel = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        this._super(cfg);
+
+        this.targetId = PrimeFaces.escapeClientId(this.cfg.target);
+        this.target = $(this.targetId);
+
+        var jq = this.jq;
+        this.target.click(function() {
+            jq.panel('open');
+        });
+    },
+            
+    show: function() {
+        this.jq.panel('open');
+    },
+    
+    hide: function() {
+        this.jq.panel('close');
+    }            
+});
