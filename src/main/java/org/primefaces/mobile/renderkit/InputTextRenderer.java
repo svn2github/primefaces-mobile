@@ -100,13 +100,7 @@ public class InputTextRenderer extends InputRenderer {
         ResponseWriter writer = context.getResponseWriter();
         Map<String, Object> attrs = inputText.getAttributes();
         String placeholder = (String) attrs.get("placeholder");
-        String type = inputText.getType();
-        boolean isSearch = type.equals("search");
-        
-        //degrade
-        if(isSearch) {
-            type = "text";
-        }
+        String type = inputText.getType();        
 
         writer.startElement("input", null);
 		writer.writeAttribute("id", inputId, null);
@@ -123,7 +117,6 @@ public class InputTextRenderer extends InputRenderer {
                 
 		renderPassThruAttributes(context, inputText, HTML.INPUT_TEXT_ATTRS);
 
-        if(isSearch) writer.writeAttribute("data-type", "search", null);
         if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(inputText.isDisabled()) writer.writeAttribute("disabled", "disabled", null);
         if(inputText.isReadonly()) writer.writeAttribute("readonly", "readonly", null);
