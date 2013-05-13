@@ -339,30 +339,7 @@
             else if((offset + itemHeight) > elementHeight) {
                 container.scrollTop(scroll + offset - elementHeight + itemHeight);
             }
-        },
-        
-        calculateScrollbarWidth: function() {
-            if(!this.scrollbarWidth) {
-                if($.browser.msie) {
-                    var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
-                            .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body'),
-                        $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>')
-                            .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
-                    this.scrollbarWidth = $textarea1.width() - $textarea2.width();
-                    $textarea1.add($textarea2).remove();
-                } 
-                else {
-                    var $div = $('<div />')
-                        .css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: -1000 })
-                        .prependTo('body').append('<div />').find('div')
-                            .css({ width: '100%', height: 200 });
-                    this.scrollbarWidth = 100 - $div.width();
-                    $div.parent().remove();
-                }
-            }
-
-            return this.scrollbarWidth;
-        },
+        },        
 
         locales : {},
 
@@ -993,11 +970,6 @@ PrimeFaces.widget.InputTextarea = PrimeFaces.widget.BaseWidget.extend({
         this.cfg.rowsDefault = this.input.attr('rows');
         this.cfg.colsDefault = this.input.attr('cols');
 
-        //AutoResize
-        if(this.cfg.autoResize) {
-            this.setupAutoResize();
-        }
-
         //max length
         if(this.cfg.maxlength){
             this.applyMaxlength();
@@ -1007,32 +979,7 @@ PrimeFaces.widget.InputTextarea = PrimeFaces.widget.BaseWidget.extend({
         if(this.cfg.behaviors) {
             PrimeFaces.attachBehaviors(this.input, this.cfg.behaviors);
         }
-    },
-    
-    setupAutoResize: function() {
-        var _self = this;
-
-        this.input.keyup(function() {
-            _self.resize();
-        }).focus(function() {
-            _self.resize();
-        }).blur(function() {
-            _self.resize();
-        });
-    },
-    
-    resize: function() {
-        var linesCount = 0,
-        lines = this.input.val().split('\n');
-
-        for(var i = lines.length-1; i >= 0 ; --i) {
-            linesCount += Math.floor((lines[i].length / this.cfg.colsDefault) + 1);
-        }
-
-        var newRows = (linesCount >= this.cfg.rowsDefault) ? (linesCount + 1) : this.cfg.rowsDefault;
-
-        this.input.attr('rows', newRows);
-    },
+    },    
     
     applyMaxlength: function() {
         var _self = this;
