@@ -21,7 +21,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.column.Column;
+import org.primefaces.component.columngroup.ColumnGroup;
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.component.row.Row;
 import org.primefaces.renderkit.CoreRenderer;
 
 public class DataTableRenderer extends CoreRenderer {
@@ -31,8 +33,8 @@ public class DataTableRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         DataTable dataTable = (DataTable) component;
         Map<String, Object> attrs = dataTable.getAttributes();
-        String mode = (String) attrs.get("columnToggle");  
-        String btnText = (String) attrs.get("btnText");          
+        String mode = (String) attrs.get("columnToggle");
+        String btnText = (String) attrs.get("btnText");
         String defaultStyleClass = "ui-body-d ui-responsive table-stripe ";
 
 
@@ -43,12 +45,12 @@ public class DataTableRenderer extends CoreRenderer {
         if (mode != null && Boolean.valueOf(mode)) {
             writer.writeAttribute("data-mode", "columntoggle", null);
         }
-        
+
         if (btnText != null) {
             writer.writeAttribute("data-column-btn-text", btnText, null);
-        }        
-        
-        
+        }
+
+
 
         if (dataTable.getStyle() != null) {
             writer.writeAttribute("style", dataTable.getStyle(), null);
@@ -59,7 +61,7 @@ public class DataTableRenderer extends CoreRenderer {
             writer.writeAttribute("class", defaultStyleClass, null);
         }
 
-        encodeHeaders(context, dataTable);
+        encodeHeaders(context, dataTable);        
         encodeContent(context, dataTable);
 
         writer.endElement("table");
@@ -68,11 +70,42 @@ public class DataTableRenderer extends CoreRenderer {
     }
 
     protected void encodeHeaders(FacesContext context, DataTable dataTable) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
+        ResponseWriter writer = context.getResponseWriter();        
+        ColumnGroup group = dataTable.getColumnGroup("header");
         writer.startElement("thead", null);
+
+        if (group != null && group.isRendered()) {
+            writer.startElement("tr", null);
+            writer.writeAttribute("class", "th-groups", null);
+            for (UIComponent child : group.getChildren()) {
+                if (child.isRendered() && child instanceof Row) {
+                    Row headerRow = (Row) child;
+                    for (UIComponent headerRowChild : headerRow.getChildren()) {
+                        if (headerRowChild.isRendered() && headerRowChild instanceof Column) {
+                            Column column = (Column) headerRowChild;
+                            Map<String, Object> attrs = column.getAttributes();
+                            String priority = (String) attrs.get("priority");
+
+                            writer.startElement("th", null);
+                            writer.writeAttribute("colspan", column.getColspan(), null);                            
+                            if (priority != null) {
+                                writer.writeAttribute("data-priority", priority, null);
+                            }
+                            writer.write(column.getHeaderText());
+                            writer.endElement("th");
+                        }
+
+                    }
+
+                }
+                writer.endElement("tr");
+            }
+
+        }
+
         writer.startElement("tr", null);
-        writer.writeAttribute("class","ui-bar-d",null);
-        
+        writer.writeAttribute("class", "ui-bar-d", null);
+
         for (UIComponent kid : dataTable.getChildren()) {
             if (kid.isRendered() && kid instanceof Column) {
                 Column column = (Column) kid;
