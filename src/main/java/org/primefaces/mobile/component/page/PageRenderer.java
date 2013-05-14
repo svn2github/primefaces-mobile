@@ -82,8 +82,7 @@ public class PageRenderer extends CoreRenderer {
         writer.writeAttribute("type", "text/javascript", null);
         
         writer.write("$(document).bind('mobileinit', function(){");
-        writer.write("$.mobile.ajaxEnabled = false;");
-        writer.write("$.mobile.linkBindingEnabled = false;");        
+        writer.write("$.mobile.ajaxEnabled = false;");               
         writer.write("$.mobile.pushStateEnabled = false;");        
         writer.write("$.mobile.page.prototype.options.domCache = true;");
         
