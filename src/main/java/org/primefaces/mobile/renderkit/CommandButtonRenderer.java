@@ -29,20 +29,17 @@ import org.primefaces.util.ComponentUtils;
 public class CommandButtonRenderer extends CoreRenderer {
 
     @Override
-	public void decode(FacesContext context, UIComponent component) {
+    public void decode(FacesContext context, UIComponent component) {
         CommandButton button = (CommandButton) component;
         if(button.isDisabled()) {
             return;
         }
 
-        Map<String,String> params = context.getExternalContext().getRequestParameterMap();
-		String clientId = component.getClientId(context);
-        String value = params.get(clientId);
-
-		if(!isValueBlank(value)) {
-			component.queueEvent(new ActionEvent(component));
-		}
-	}
+        String param = component.getClientId(context);
+        if (context.getExternalContext().getRequestParameterMap().containsKey(param)) {
+            component.queueEvent(new ActionEvent(component));
+        }
+    }
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {

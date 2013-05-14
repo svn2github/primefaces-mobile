@@ -43,6 +43,13 @@
             <version>4.4</version>
             <scope>test</scope>
         </dependency>
+        <!-- File Upload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.1</version>
+            <scope>provided</scope>
+        </dependency>      
     </dependencies>
 
     <build>
