@@ -942,6 +942,11 @@ PrimeFaces.navigate = function(to, cfg) {
     $.mobile.changePage(to, cfg);
 }
 
+PrimeFaces.back = function() {        
+    history.back();
+    return false;
+}
+
 /**
  * PrimeFaces InputText Widget
  */
