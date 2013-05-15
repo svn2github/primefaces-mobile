@@ -16,6 +16,7 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
+import java.util.Iterator;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -60,15 +61,18 @@ public class DataListRenderer extends CoreRenderer {
         }
 
         if(dataList.getVar() != null) {
-            int rowCount = dataList.getRowCount();
-            Object iconVar = dataList.getAttributes().get("iconVar");                        
+            int rowCount = dataList.getRowCount();                                    
 
             for(int i = 0; i < rowCount; i++) {
                 dataList.setRowIndex(i);
 
-                writer.startElement("li", null);
-                if(iconVar != null) writer.writeAttribute("data-icon", iconVar, null);                
-                renderChildren(context, dataList);
+                writer.startElement("li", null);                
+		for (Iterator<UIComponent> iterator = component.getChildren().iterator(); iterator.hasNext();) {
+			UIComponent child = (UIComponent) iterator.next();
+                        Object iconLi = child.getAttributes().get("icon");
+                        if(iconLi != null) writer.writeAttribute("data-icon", iconLi, null);                                
+			renderChild(context, child);
+		}                
                 writer.endElement("li");
             }
         }
