@@ -35,6 +35,9 @@ public class DataListRenderer extends CoreRenderer {
         Object filterValue = dataList.getAttributes().get("filter");          
         Object autodividers = dataList.getAttributes().get("autoDividers");
         Object autoComplete = dataList.getAttributes().get("autoComplete");
+        Object icon = dataList.getAttributes().get("icon");
+        Object iconSplit = dataList.getAttributes().get("iconSplit");
+        String iconType = (iconSplit != null && Boolean.valueOf(iconSplit.toString())) ? "data-split-icon" : "data-icon";
 
         writer.startElement("div", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
@@ -43,7 +46,8 @@ public class DataListRenderer extends CoreRenderer {
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
         if(autodividers != null && Boolean.valueOf(autodividers.toString())) writer.writeAttribute("data-autodividers", "true", null);
-        if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);
+        if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);        
+        if(icon != null) writer.writeAttribute(iconType, icon, null);        
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
         if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
@@ -57,11 +61,13 @@ public class DataListRenderer extends CoreRenderer {
 
         if(dataList.getVar() != null) {
             int rowCount = dataList.getRowCount();
+            Object iconVar = dataList.getAttributes().get("iconVar");                        
 
             for(int i = 0; i < rowCount; i++) {
                 dataList.setRowIndex(i);
 
                 writer.startElement("li", null);
+                if(iconVar != null) writer.writeAttribute("data-icon", iconVar, null);                
                 renderChildren(context, dataList);
                 writer.endElement("li");
             }
@@ -76,6 +82,8 @@ public class DataListRenderer extends CoreRenderer {
                         renderChildren(context, child);
                     }
                     else {
+                        Object iconLi = child.getAttributes().get("icon");
+                        if(iconLi != null) writer.writeAttribute("data-icon", iconLi, null);
                         child.encodeAll(context);
                     }
                     
