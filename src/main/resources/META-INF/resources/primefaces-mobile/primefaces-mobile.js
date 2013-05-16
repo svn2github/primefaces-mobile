@@ -943,7 +943,7 @@ PrimeFaces.navigate = function(to, cfg) {
 }
 
 PrimeFaces.back = function() {        
-    history.back();
+    $.mobile.back();
     return false;
 }
 
