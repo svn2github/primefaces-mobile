@@ -125,9 +125,9 @@ public class DataListRenderer extends CoreRenderer {
 
         writer.endElement("ul");
         
-        if (dataList.isPaginator() && rowCount != 0){
+        if (dataList.isPaginator() && (dataList.getRows() < dataList.getRowCount())) {
             encodePaginatorButton(context, dataList);
-        }            
+        }         
         
         writer.endElement("div");
     
