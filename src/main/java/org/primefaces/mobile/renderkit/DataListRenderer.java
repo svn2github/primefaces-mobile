@@ -17,19 +17,37 @@ package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.datalist.DataList;
 import org.primefaces.component.separator.Separator;
 import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 public class DataListRenderer extends CoreRenderer {
-    
+             
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         DataList dataList = (DataList) component;
+        String clientId = dataList.getClientId(context);
+        Map<String, String> params = context.getExternalContext().getRequestParameterMap();
+        Boolean loadMoreRequest = Boolean.valueOf(params.get(clientId + "_encodeFeature"));
+
+        if (loadMoreRequest) {
+
+            int scrollOffset = Integer.parseInt(params.get(dataList.getClientId(context) + "_scrollOffset"));
+
+            encodeLoadMore(context, dataList, scrollOffset);
+        } else {
+            encodeMarkup(context, dataList);
+            encodeScript(context, dataList);
+        }
+    }
+    
+    protected void encodeMarkup(FacesContext context, DataList dataList) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();        
         UIComponent header = dataList.getHeader();
         UIComponent footer = dataList.getFooter();
         String type = dataList.getType();
@@ -61,18 +79,17 @@ public class DataListRenderer extends CoreRenderer {
         }
 
         if(dataList.getVar() != null) {
-            int rowCount = dataList.getRowCount();                                    
+            int rowCount = dataList.getRowCount();
+
+            if (dataList.isPaginator()) {
+                rowCount = dataList.getRows();
+            }
 
             for(int i = 0; i < rowCount; i++) {
                 dataList.setRowIndex(i);
 
-                writer.startElement("li", null);                
-		for (Iterator<UIComponent> iterator = component.getChildren().iterator(); iterator.hasNext();) {
-			UIComponent child = (UIComponent) iterator.next();
-                        Object iconLi = child.getAttributes().get("icon");
-                        if(iconLi != null) writer.writeAttribute("data-icon", iconLi, null);                                
-			renderChild(context, child);
-		}                
+                writer.startElement("li", null);
+                renderChildren(context, dataList);
                 writer.endElement("li");
             }
         }
@@ -103,9 +120,72 @@ public class DataListRenderer extends CoreRenderer {
         }
 
         writer.endElement("ul");
+        
+        if (dataList.isPaginator()){
+            encodePaginatorButton(context, dataList);
+        }            
+        
         writer.endElement("div");
+    
+        dataList.setRowIndex(-1);        
+    }
+        
+    protected void encodePaginatorButton(FacesContext context, DataList dataList) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId =  dataList.getClientId(context) + "_btn";
+        Object paginatorText = (dataList.getAttributes().get("paginatorText") == null) ? "More" : dataList.getAttributes().get("paginatorText");
+        
+        writer.startElement("a", dataList);
+        writer.writeAttribute("id", clientId, null);        
+        writer.writeAttribute("data-role", "button", null);
+        writer.writeAttribute("style", "margin-top: 30px", null);        
+        writer.writeText(paginatorText, null);       
+        writer.endElement("a");        
+    }  
+    
+    protected void encodeLoadMore(FacesContext context, DataList dataList, int scrollOffset) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
 
-        dataList.setRowIndex(-1);
+        for (int i = scrollOffset; i < (scrollOffset + dataList.getRows()); i++) {
+            dataList.setRowIndex(i);
+
+            if (dataList.isRowAvailable()) {
+                writer.startElement("li", null);
+                renderChildren(context, dataList);
+                writer.endElement("li");
+            }
+        }
+        
+        dataList.setRowIndex(-1); 
+    }    
+    
+    protected void encodeScript(FacesContext context, DataList dataList) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = dataList.getClientId(context);
+        WidgetBuilder wb = getWidgetBuilder(context);
+        UIComponent footer = dataList.getFooter();
+        boolean hasFooter = (footer != null) ? true : false; 
+        wb.widget("DataList", dataList.resolveWidgetVar(), clientId, true)
+                .attr("isPaginator", dataList.isPaginator())
+                .attr("hasFooter", hasFooter)
+                .attr("scrollStep", dataList.getRows())
+                .attr("scrollLimit", dataList.getRowCount());
+        startScript(writer, clientId);
+        writer.write(wb.build());
+        endScript(writer);
+    }    
+    
+    @Override
+    protected void renderChildren(FacesContext context, UIComponent component) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        for (Iterator<UIComponent> iterator = component.getChildren().iterator(); iterator.hasNext();) {
+            UIComponent child = (UIComponent) iterator.next();
+            Object iconLi = child.getAttributes().get("icon");
+            if (iconLi != null) {
+                writer.writeAttribute("data-icon", iconLi, null);
+            }
+            renderChild(context, child);
+        }
     }
     
     @Override

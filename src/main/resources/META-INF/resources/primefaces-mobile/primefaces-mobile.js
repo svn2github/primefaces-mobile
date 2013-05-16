@@ -1225,3 +1225,89 @@ PrimeFaces.widget.OverlayPanel = PrimeFaces.widget.BaseWidget.extend({
         this.jq.panel('close');
     }            
 });
+
+
+/**
+ * PrimeFaces DataList Widget
+ */
+PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        var _self = this;
+        this._super(cfg);
+        this.scrollOffset = this.cfg.scrollStep;
+
+        if (_self.cfg.isPaginator) {
+            var btn = $(PrimeFaces.escapeClientId(_self.id + '_btn'));
+
+            btn.click(function() {
+                _self.loadRows();
+            });
+        }
+    },
+            
+    loadRows: function() {
+        var options = {
+            source: this.id,
+            process: this.id,
+            update: this.id,
+            formId: this.cfg.formId
+        },
+        _self = this;
+
+        options.onsuccess = function(responseXML) {
+            var xmlDoc = $(responseXML.documentElement),
+                    updates = xmlDoc.find("update");
+
+            for (var i = 0; i < updates.length; i++) {
+                var update = updates.eq(i),
+                        id = update.attr('id'),
+                        content = update.text();
+
+                if (id == _self.id) {
+                    var lastRow;
+                    if (_self.cfg.hasFooter) {
+                        lastRow = $(_self.jqId + ' li:last').prev("li");
+                    } else {
+                        lastRow = $(_self.jqId + ' li:last');
+                    }
+
+                    //insert new rows
+                    lastRow.after(content);
+                    
+                    _self.scrollOffset += _self.cfg.scrollStep;
+
+                    //Disable scroll if there is no more data left
+                    if(_self.scrollOffset >= _self.cfg.scrollLimit) {
+                        var btn = $(PrimeFaces.escapeClientId(id + '_btn'));
+                        btn.remove();
+                    }                    
+
+                    var context = $(PrimeFaces.escapeClientId(id)).parent();         
+                    context.find("ul[data-role='listview']").listview("refresh");
+                }
+                else {
+                    PrimeFaces.ajax.AjaxUtils.updateElement.call(this, id, content);
+                }
+            }
+
+            PrimeFaces.ajax.AjaxUtils.handleResponse.call(this, xmlDoc);
+
+            return true;
+        };
+
+        options.params = [
+        {
+            name: this.id + '_scrollOffset', 
+            value: this.scrollOffset
+            },
+
+            {
+            name: this.id + '_encodeFeature', 
+            value: true
+        }
+        ];
+
+        PrimeFaces.ajax.AjaxRequest(options);
+
+    }         
+});
