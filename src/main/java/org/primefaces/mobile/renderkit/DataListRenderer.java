@@ -30,16 +30,16 @@ public class DataListRenderer extends CoreRenderer {
              
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        DataList dataList = (DataList) component;
-        String clientId = dataList.getClientId(context);
-        Map<String, String> params = context.getExternalContext().getRequestParameterMap();
-        Boolean loadMoreRequest = Boolean.valueOf(params.get(clientId + "_encodeFeature"));        
+        DataList dataList = (DataList) component;                       
         
-        if (loadMoreRequest) {
+        if (dataList.isPaginationRequest(context)) {
+            dataList.updatePaginationData(context, dataList);
+            
+            if(dataList.isLazy()) {
+                dataList.loadLazyData();
+            }            
 
-            int scrollOffset = Integer.parseInt(params.get(dataList.getClientId(context) + "_scrollOffset"));
-
-            encodeLoadMore(context, dataList, scrollOffset);
+            encodeLoadMore(context, dataList);
         } else {
             encodeMarkup(context, dataList);
             encodeScript(context, dataList);
@@ -47,6 +47,10 @@ public class DataListRenderer extends CoreRenderer {
     }
     
     protected void encodeMarkup(FacesContext context, DataList dataList) throws IOException {
+        if(dataList.isLazy()) {
+            dataList.loadLazyData();
+        }        
+        
         ResponseWriter writer = context.getResponseWriter();        
         UIComponent header = dataList.getHeader();
         UIComponent footer = dataList.getFooter();
@@ -143,10 +147,10 @@ public class DataListRenderer extends CoreRenderer {
         writer.endElement("a");        
     }  
     
-    protected void encodeLoadMore(FacesContext context, DataList dataList, int scrollOffset) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
-                
-        for (int i = scrollOffset; i < (scrollOffset + dataList.getRows()); i++) {
+    protected void encodeLoadMore(FacesContext context, DataList dataList) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();        
+                              
+        for (int i = dataList.getFirst(); i < (dataList.getFirst() + dataList.getRows()); i++) {
             dataList.setRowIndex(i);
             
             if (dataList.isRowAvailable()) {

@@ -1240,7 +1240,7 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
             var btn = $(PrimeFaces.escapeClientId(_self.id + '_btn'));
 
             btn.click(function() {
-                _self.loadRows();
+                _self.loadRows();                
             });
         }
     },
@@ -1296,15 +1296,9 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
         };
 
         options.params = [
-        {
-            name: this.id + '_scrollOffset', 
-            value: this.scrollOffset
-            },
-
-            {
-            name: this.id + '_encodeFeature', 
-            value: true
-        }
+            {name: this.id + '_pagination', value: true},
+            {name: this.id + '_first', value: this.scrollOffset},
+            {name: this.id + '_rows', value: _self.cfg.scrollStep}
         ];
 
         PrimeFaces.ajax.AjaxRequest(options);
