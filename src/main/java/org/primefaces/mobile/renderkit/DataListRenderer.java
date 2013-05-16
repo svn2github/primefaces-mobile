@@ -33,8 +33,8 @@ public class DataListRenderer extends CoreRenderer {
         DataList dataList = (DataList) component;
         String clientId = dataList.getClientId(context);
         Map<String, String> params = context.getExternalContext().getRequestParameterMap();
-        Boolean loadMoreRequest = Boolean.valueOf(params.get(clientId + "_encodeFeature"));
-
+        Boolean loadMoreRequest = Boolean.valueOf(params.get(clientId + "_encodeFeature"));        
+        
         if (loadMoreRequest) {
 
             int scrollOffset = Integer.parseInt(params.get(dataList.getClientId(context) + "_scrollOffset"));
@@ -77,11 +77,11 @@ public class DataListRenderer extends CoreRenderer {
             header.encodeAll(context);
             writer.endElement("li");
         }
-
-        if(dataList.getVar() != null) {
-            int rowCount = dataList.getRowCount();
-
-            if (dataList.isPaginator()) {
+        
+        int rowCount = dataList.getRowCount();
+        
+        if(dataList.getVar() != null) {            
+            if (dataList.isPaginator() && rowCount != 0) {
                 rowCount = dataList.getRows();
             }
 
@@ -121,7 +121,7 @@ public class DataListRenderer extends CoreRenderer {
 
         writer.endElement("ul");
         
-        if (dataList.isPaginator()){
+        if (dataList.isPaginator() && rowCount != 0){
             encodePaginatorButton(context, dataList);
         }            
         
@@ -145,10 +145,10 @@ public class DataListRenderer extends CoreRenderer {
     
     protected void encodeLoadMore(FacesContext context, DataList dataList, int scrollOffset) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-
+                
         for (int i = scrollOffset; i < (scrollOffset + dataList.getRows()); i++) {
             dataList.setRowIndex(i);
-
+            
             if (dataList.isRowAvailable()) {
                 writer.startElement("li", null);
                 renderChildren(context, dataList);
