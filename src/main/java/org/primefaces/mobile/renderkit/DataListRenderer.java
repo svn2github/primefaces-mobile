@@ -108,7 +108,9 @@ public class DataListRenderer extends CoreRenderer {
                     }
                     else {
                         Object iconLi = child.getAttributes().get("icon");
+                        Object filterText = child.getAttributes().get("filterText"); 
                         if(iconLi != null) writer.writeAttribute("data-icon", iconLi, null);
+                        if (filterText != null) writer.writeAttribute("data-filtertext", filterText, null);              
                         child.encodeAll(context);
                     }
                     
@@ -185,9 +187,13 @@ public class DataListRenderer extends CoreRenderer {
         for (Iterator<UIComponent> iterator = component.getChildren().iterator(); iterator.hasNext();) {
             UIComponent child = (UIComponent) iterator.next();
             Object iconLi = child.getAttributes().get("icon");
+            Object filterText = child.getAttributes().get("filterText");            
             if (iconLi != null) {
                 writer.writeAttribute("data-icon", iconLi, null);
             }
+            if (filterText != null) {
+                writer.writeAttribute("data-filtertext", filterText, null);
+            }            
             renderChild(context, child);
         }
     }
