@@ -56,6 +56,7 @@ public class DataListRenderer extends CoreRenderer {
         UIComponent footer = dataList.getFooter();
         String type = dataList.getType();
         Object filterValue = dataList.getAttributes().get("filter");          
+        Object placeholder = dataList.getAttributes().get("placeholder");
         Object autodividers = dataList.getAttributes().get("autoDividers");
         Object autoComplete = dataList.getAttributes().get("autoComplete");
         Object icon = dataList.getAttributes().get("icon");
@@ -68,6 +69,7 @@ public class DataListRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "listview", null);
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
+        if(placeholder != null) writer.writeAttribute("data-filter-placeholder", placeholder, null);
         if(autodividers != null && Boolean.valueOf(autodividers.toString())) writer.writeAttribute("data-autodividers", "true", null);
         if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);        
         if(icon != null) writer.writeAttribute(iconType, icon, null);        
