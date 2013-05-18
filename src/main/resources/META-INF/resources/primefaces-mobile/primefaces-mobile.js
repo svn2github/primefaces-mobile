@@ -1268,12 +1268,7 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
                         content = update.text();
 
                 if (id == _self.id) {
-                    var lastRow;
-                    if (_self.cfg.hasFooter) {
-                        lastRow = $(_self.jqId + ' li:last').prev("li");
-                    } else {
-                        lastRow = $(_self.jqId + ' li:last');
-                    }
+                    var lastRow = $(_self.jqId + ' li:last');
 
                     //insert new rows
                     lastRow.after(content);

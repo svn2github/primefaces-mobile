@@ -119,18 +119,21 @@ public class DataListRenderer extends CoreRenderer {
             }
         }
 
-        if (footer != null) {
-            writer.startElement("li", null);            
-            footer.encodeAll(context);
-            writer.endElement("li");
-        }
-
         writer.endElement("ul");
+        
+        if (footer != null) {
+            writer.startElement("div", null); 
+            writer.writeAttribute("style", "margin-top: 15px;text-align: center;", null);            
+            writer.writeAttribute("class", "ui-listview ui-li ui-li-static", null);            
+            footer.encodeAll(context);
+            writer.endElement("div");
+        }            
+        
         
         if (dataList.isPaginator() && (dataList.getRows() < dataList.getRowCount())) {
             encodePaginatorButton(context, dataList);
         }         
-        
+                    
         writer.endElement("div");
     
         dataList.setRowIndex(-1);        
@@ -168,12 +171,9 @@ public class DataListRenderer extends CoreRenderer {
     protected void encodeScript(FacesContext context, DataList dataList) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = dataList.getClientId(context);
-        WidgetBuilder wb = getWidgetBuilder(context);
-        UIComponent footer = dataList.getFooter();
-        boolean hasFooter = (footer != null) ? true : false; 
+        WidgetBuilder wb = getWidgetBuilder(context);                 
         wb.widget("DataList", dataList.resolveWidgetVar(), clientId, true)
-                .attr("isPaginator", dataList.isPaginator())
-                .attr("hasFooter", hasFooter)
+                .attr("isPaginator", dataList.isPaginator())                
                 .attr("scrollStep", dataList.getRows())
                 .attr("scrollLimit", dataList.getRowCount());
         startScript(writer, clientId);
