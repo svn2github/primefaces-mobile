@@ -86,7 +86,10 @@ public class PageRenderer extends CoreRenderer {
         writer.write("$.mobile.pushStateEnabled = false;");        
         writer.write("$.mobile.page.prototype.options.domCache = true;");
         
-        if(page.getLoadingMessage() != null) writer.write("$.mobile.loadingMessage = '" + page.getLoadingMessage() + "';");
+        if (page.getLoadingMessage() != null) {
+            writer.write("$.mobile.loader.prototype.options.text = '" + page.getLoadingMessage() + "';");
+            writer.write("$.mobile.loader.prototype.options.textVisible = 'true';");
+        }
         if(page.getDefaultPageTransition() != null) writer.write("$.mobile.defaultPageTransition = '" + page.getDefaultPageTransition() + "';");
         if(page.getDefaultDialogTransition() != null) writer.write("$.mobile.defaultDialogTransition = '" + page.getDefaultDialogTransition() + "';");
         
