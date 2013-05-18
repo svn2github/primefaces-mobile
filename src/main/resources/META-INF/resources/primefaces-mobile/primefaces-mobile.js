@@ -890,7 +890,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
         //PrimeFaces Mobile
         if($.mobile) {
             context = $(PrimeFaces.escapeClientId(id)).parent(),
-            controls = context.find(":input, button, a[data-role='button'], ul");
+            controls = context.find(":input, button, a[data-role='button'], ul, table");
 
             //input text and textarea
             var inputs = controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],[type='datetime'],[type='time'],[type='url'],[type='password'],[type='file'],textarea").textinput();            
@@ -916,6 +916,10 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             //buttons
             controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
             controls.filter("a").buttonMarkup();
+            
+            //table                                     
+            context.find("a[href='"+PrimeFaces.escapeClientId(id)+"-popup']").remove();
+            controls.filter("table[data-role='table']").table().table("refresh");                            
             
             //field container
             context.find(":jqmData(role='fieldcontain')").fieldcontain();
