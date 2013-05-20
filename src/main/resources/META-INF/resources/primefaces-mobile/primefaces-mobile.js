@@ -934,7 +934,10 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             context.find("div[data-role='collapsibleset']").collapsibleset();
             
             //navbar
-            context.find("div[data-role='navbar']").navbar();          
+            context.find("div[data-role='navbar']").navbar();     
+            
+            //popup
+            context.find("div[data-role='popup']").popup();            
         }
     }
 }
@@ -1077,10 +1080,12 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
         var element = this.jq;
         cfg.y = $(document).height();
 
-        if (cfg.showPopup){
-            element.popup().popup('open', cfg);
+        if (cfg.showPopup){  
+            //Wait other popup close
+            var delay = 100;
+            setTimeout(function() {element.popup('open', cfg)},delay);
             if (!cfg.sticky) {
-                setTimeout(function() {element.popup('close')}, cfg.life);
+                setTimeout(function() {element.popup('close')}, cfg.life+delay);
             }
         }
     }
@@ -1302,5 +1307,5 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
 
         PrimeFaces.ajax.AjaxRequest(options);
 
-    }         
-});
+    }
+});   
