@@ -1065,7 +1065,7 @@ PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
     show: function() {
         var _self = this;
         //Wait other popup close
-        var delay = 100;
+        var delay = 300;
         setTimeout(function() {_self.jq.popup('open')}, delay);
     },
     
@@ -1085,8 +1085,8 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
 
         if (cfg.showPopup){  
             //Wait other popup close
-            var delay = 100;
-            setTimeout(function() {element.popup('open', cfg)},delay);
+            var delay = 300;
+            setTimeout(function() {element.popup().popup('open', cfg)},delay);
             if (!cfg.sticky) {
                 setTimeout(function() {element.popup('close')}, cfg.life+delay);
             }
@@ -1130,7 +1130,7 @@ PrimeFaces.widget.AutoComplete = PrimeFaces.widget.BaseWidget.extend({
     init: function(cfg) {
         this._super(cfg);
         this.cfg.minLength = this.cfg.minLength != undefined ? this.cfg.minLength : 1;
-        this.cfg.delay = this.cfg.delay != undefined ? this.cfg.delay : 300;
+        this.cfg.delay = this.cfg.delay != undefined ? this.cfg.delay : 1000;
 
         this.bindEvents();
     },
