@@ -1311,4 +1311,76 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
         PrimeFaces.ajax.AjaxRequest(options);
 
     }
-});
+});   
+
+
+/**
+ * PrimeFaces ContextMenu Widget
+ */
+PrimeFaces.widget.ContextMenu = PrimeFaces.widget.BaseWidget.extend({
+    
+    init: function(cfg) {
+        this._super(cfg);
+        
+        var _self = this,
+        documentTarget = (this.cfg.target === undefined); 
+
+        //event
+        this.cfg.event = this.cfg.event||'taphold';
+        
+        var viewId = this.jq.closest("div[data-role='page']").attr('id');
+
+        //target
+        this.jqTargetId = documentTarget ? PrimeFaces.escapeClientId(viewId) : PrimeFaces.escapeClientId(this.cfg.target);
+        this.jqTarget = $(this.jqTargetId);
+
+        //attach contextmenu        
+        if (documentTarget) {
+            $(document).off(_self.cfg.event, this.jqTargetId).on(_self.cfg.event, this.jqTargetId, null, function() {
+                _self.show();
+            });
+        } else {
+            if (this.cfg.type === 'DataList') {
+                this.bindDataList();
+            }
+        }
+                
+        //close menu when link is clicked
+        this.jq.find('a').bind('click', function(event) {
+            _self.hide();
+        });        
+        
+    },      
+            
+    bindDataList: function() {
+        var _self = this;
+
+        //target
+        var selector = PrimeFaces.escapeClientId(this.cfg.target) + ' li.ui-li:not(.ui-li-divider)';
+
+        $(document).off(_self.cfg.event, selector).on(_self.cfg.event, selector, null, function() {
+            var linkSelection = $(this).find('a.selection');
+            linkSelection.bind('ajaxComplete', function() {
+                _self.show();
+            });
+            linkSelection.click();
+        });
+
+    },            
+            
+    show: function() {  
+
+        if(this.cfg.beforeShow) {
+            this.cfg.beforeShow.call(this);
+        }                
+        
+        if (this.cfg.hasContent) {
+            this.jq.popup('open');
+        }
+    },
+            
+    hide: function() {
+        this.jq.popup('close');
+    }              
+
+}); 
