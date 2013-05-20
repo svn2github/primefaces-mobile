@@ -1063,7 +1063,10 @@ PrimeFaces.widget.SelectOneRadio = PrimeFaces.widget.BaseWidget.extend({
 PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
     
     show: function() {
-        this.jq.popup('open');
+        var _self = this;
+        //Wait other popup close
+        var delay = 100;
+        setTimeout(function() {_self.jq.popup('open')}, delay);
     },
     
     hide: function() {
@@ -1308,4 +1311,4 @@ PrimeFaces.widget.DataList = PrimeFaces.widget.BaseWidget.extend({
         PrimeFaces.ajax.AjaxRequest(options);
 
     }
-});   
+});

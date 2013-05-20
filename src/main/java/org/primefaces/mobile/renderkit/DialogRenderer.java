@@ -36,8 +36,7 @@ public class DialogRenderer extends CoreRenderer {
 
     protected void encodeScript(FacesContext context, Dialog dialog) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        String clientId = dialog.getClientId(context);
-        Map<String,Object> attrs = dialog.getAttributes();
+        String clientId = dialog.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.widget("Dialog", dialog.resolveWidgetVar(), clientId, true);
         
@@ -59,7 +58,9 @@ public class DialogRenderer extends CoreRenderer {
         
         writer.startElement("div", dialog);
         writer.writeAttribute("id", clientId, "id");
-        writer.writeAttribute("style", style, null);
+        if (style != null) {
+            writer.writeAttribute("style", style, null);
+        }
         if(styleClass != null) {
             writer.writeAttribute("class", styleClass, null);
         }
