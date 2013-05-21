@@ -911,7 +911,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls.filter("select[data-role='slider']" ).slider();
             
             //lists            
-            controls.filter("ul[data-role='listview']").listview();
+            controls.filter("ul[data-role='listview']").listview();            
             
             //buttons
             controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
@@ -1346,7 +1346,7 @@ PrimeFaces.widget.ContextMenu = PrimeFaces.widget.BaseWidget.extend({
         }
                 
         //close menu when link is clicked
-        this.jq.find('a').bind('click', function(event) {
+        this.jq.find('li a').bind('click', function(event) {
             _self.hide();
         });        
         
