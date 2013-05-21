@@ -1352,7 +1352,7 @@ PrimeFaces.widget.ContextMenu = PrimeFaces.widget.BaseWidget.extend({
         }
                 
         //close menu when link is clicked
-        this.jq.find('li a').bind('click', function(event) {
+        this.jq.find('li a').bind('click', function(event) {            
             _self.hide();
         });        
         
@@ -1366,12 +1366,18 @@ PrimeFaces.widget.ContextMenu = PrimeFaces.widget.BaseWidget.extend({
 
         $(document).off(_self.cfg.event, selector).on(_self.cfg.event, selector, null, function() {
             var linkSelection = $(this).find('a.selection');
-            linkSelection.bind('ajaxComplete', function() {
-                _self.show();
-            });
-            linkSelection.click();
-        });
 
+            var options = {
+                source: linkSelection.attr('id'),
+                process: linkSelection.attr('id'),                               
+                oncomplete: function(xhr, status, args) {
+                    _self.show();
+                }
+            };
+
+            PrimeFaces.ajax.AjaxRequest(options);
+        });
+            
     },            
             
     show: function() {  
