@@ -125,8 +125,7 @@ public class DataListRenderer extends CoreRenderer {
         
         if (footer != null) {
             writer.startElement("div", null); 
-            writer.writeAttribute("style", "margin-top: 15px;text-align: center;", null);            
-            writer.writeAttribute("class", "ui-listview ui-li ui-li-static", null);            
+            writer.writeAttribute("style", "margin-top: 25px;text-align: center;", null);                        
             footer.encodeAll(context);
             writer.endElement("div");
         }            
