@@ -16,6 +16,7 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -29,21 +30,27 @@ public class AccordionPanelRenderer extends CoreRenderer {
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         AccordionPanel acco = (AccordionPanel) component;
-        String activeIndex = acco.getActiveIndex();
+        Map<String,Object> attrs = acco.getAttributes();
+        Object swatch = (String) attrs.get("swatch");
+        String activeIndex = acco.getActiveIndex();                
         
         writer.startElement("div", acco);
         writer.writeAttribute("id", acco.getClientId(context), null);
         writer.writeAttribute("data-role", "collapsible-set", null);
-        
+        if(acco.getStyle() != null) writer.writeAttribute("style", acco.getStyle(), null);
+        if(acco.getStyleClass() != null) writer.writeAttribute("class", acco.getStyleClass(), null);        
+        if(swatch != null) writer.writeAttribute("data-theme", swatch, null);         
         int i = 0;
         for(UIComponent child : acco.getChildren()) {
             if(child.isRendered() && child instanceof Tab) {  
                 Tab tab = (Tab) child;
                 String title = tab.getTitle();
+                Boolean inset = (tab.getAttributes().get("inset") == null ? true : Boolean.valueOf(tab.getAttributes().get("inset").toString()));             
                 
                 writer.startElement("div", null);
                 writer.writeAttribute("data-role", "collapsible", null);
-
+                writer.writeAttribute("data-inset", inset.toString(), null);
+                
                 if(activeIndex != null && activeIndex.equals(String.valueOf(i))) { 
                     writer.writeAttribute("data-collapsed", "false", null);
                 }
@@ -56,9 +63,9 @@ public class AccordionPanelRenderer extends CoreRenderer {
                 writer.endElement("h3");
 
                 //content
-                writer.startElement("p", null);
+                if (inset) writer.startElement("p", null);
                 tab.encodeAll(context);
-                writer.endElement("p");
+                if (inset) writer.endElement("p");
 
                 writer.endElement("div");
                 
