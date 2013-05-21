@@ -32,6 +32,8 @@ public class AccordionPanelRenderer extends CoreRenderer {
         AccordionPanel acco = (AccordionPanel) component;
         Map<String,Object> attrs = acco.getAttributes();
         Object swatch = (String) attrs.get("swatch");
+        String contentSwatch = (String) attrs.get("contentSwatch");
+        Boolean inset = (acco.getAttributes().get("inset") == null ? true : Boolean.valueOf(acco.getAttributes().get("inset").toString()));                             
         String activeIndex = acco.getActiveIndex();                
         
         writer.startElement("div", acco);
@@ -39,14 +41,14 @@ public class AccordionPanelRenderer extends CoreRenderer {
         writer.writeAttribute("data-role", "collapsible-set", null);
         if(acco.getStyle() != null) writer.writeAttribute("style", acco.getStyle(), null);
         if(acco.getStyleClass() != null) writer.writeAttribute("class", acco.getStyleClass(), null);        
-        if(swatch != null) writer.writeAttribute("data-theme", swatch, null);         
+        if(swatch != null) writer.writeAttribute("data-theme", swatch, null); 
+        if(contentSwatch != null) writer.writeAttribute("data-content-theme", contentSwatch, null);                 
         int i = 0;
         for(UIComponent child : acco.getChildren()) {
             if(child.isRendered() && child instanceof Tab) {  
                 Tab tab = (Tab) child;
                 String title = tab.getTitle();
-                Boolean inset = (tab.getAttributes().get("inset") == null ? true : Boolean.valueOf(tab.getAttributes().get("inset").toString()));             
-                
+                                
                 writer.startElement("div", null);
                 writer.writeAttribute("data-role", "collapsible", null);
                 writer.writeAttribute("data-inset", inset.toString(), null);
