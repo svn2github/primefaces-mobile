@@ -17,7 +17,6 @@ package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -65,6 +64,8 @@ public class DataListRenderer extends CoreRenderer {
 
         writer.startElement("div", dataList);
         writer.writeAttribute("id", dataList.getClientId(context), "id");
+        if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
+        if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);        
         writer.startElement("ul", dataList);        
         writer.writeAttribute("data-role", "listview", null);
         
@@ -74,8 +75,6 @@ public class DataListRenderer extends CoreRenderer {
         if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);        
         if(icon != null) writer.writeAttribute(iconType, icon, null);        
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
-        if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
-        if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);
 
         if(header != null) {
             writer.startElement("li", null);
