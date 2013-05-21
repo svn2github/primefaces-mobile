@@ -72,7 +72,7 @@ public class CalendarRenderer extends InputRenderer {
 
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("Calendar", calendar.resolveWidgetVar(), clientId, true);
+        wb.widget("Calendar", calendar.resolveWidgetVar(), clientId, true);        
         Locale locale = calendar.calculateLocale(context);
         String pattern = calendar.isTimeOnly() ? calendar.calculateTimeOnlyPattern() : calendar.calculatePattern();
 
@@ -99,7 +99,7 @@ public class CalendarRenderer extends InputRenderer {
                 .attr("lang", locale.toString())
                 .attr("pattern", patternMobDateTime)
                 .attr("dateFormat", patternMobDate);
-
+                
         if (mode.equals("modal") && (showOnFocus != null && !Boolean.valueOf(showOnFocus))) {
             wb.attr("showOnFocus", false);
         }
@@ -150,6 +150,8 @@ public class CalendarRenderer extends InputRenderer {
                     .attr("stepMinute", calendar.getStepMinute())
                     .attr("stepSecond", calendar.getStepSecond());
         }
+        
+        encodeClientBehaviors(context, calendar,wb);                        
 
         startScript(writer, clientId);
         writer.write(wb.build());

@@ -1100,6 +1100,7 @@ PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
 PrimeFaces.widget.Calendar = PrimeFaces.widget.BaseWidget.extend({
     init: function(cfg) {
         this._super(cfg);
+        this.input = this.jq.is(':input') ? this.jq : this.jq.children(':input');
 
         this.cfg.theme = 'jqm';
 
@@ -1116,6 +1117,11 @@ PrimeFaces.widget.Calendar = PrimeFaces.widget.BaseWidget.extend({
         if (this.cfg.defaultDate !== 'null') {
             this.jq.mobiscroll('setDate', $.scroller.parseDate(this.cfg.pattern, this.cfg.defaultDate), true);
         }
+        
+        //Client behaviors
+        if(this.cfg.behaviors) {
+            PrimeFaces.attachBehaviors(this.input, this.cfg.behaviors);
+        }        
 
     },
     show: function() {
