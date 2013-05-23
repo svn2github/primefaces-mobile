@@ -49,7 +49,7 @@ public class CommandButtonRenderer extends CoreRenderer {
         String type = button.getType();
         Map<String,Object> attrs = button.getAttributes();
 
-        writer.startElement("button", button);
+        writer.startElement("a", button);
 		writer.writeAttribute("id", clientId, "id");
 		writer.writeAttribute("name", clientId, "name");
         writer.writeAttribute("type", type, "type");
@@ -83,6 +83,6 @@ public class CommandButtonRenderer extends CoreRenderer {
         
 		if(button.getValue() != null) writer.write(button.getValue().toString());
 
-		writer.endElement("button");
+		writer.endElement("a");
     }
 }
