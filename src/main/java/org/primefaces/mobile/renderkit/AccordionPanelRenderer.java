@@ -34,47 +34,70 @@ public class AccordionPanelRenderer extends CoreRenderer {
         Object swatch = (String) attrs.get("swatch");
         String contentSwatch = (String) attrs.get("contentSwatch");
         Boolean inset = (acco.getAttributes().get("inset") == null ? true : Boolean.valueOf(acco.getAttributes().get("inset").toString()));                             
+        String var = acco.getVar();
+        boolean multiple = acco.isMultiple();
         String activeIndex = acco.getActiveIndex();                
         
         writer.startElement("div", acco);
         writer.writeAttribute("id", acco.getClientId(context), null);
-        writer.writeAttribute("data-role", "collapsible-set", null);
+        if (!multiple) writer.writeAttribute("data-role", "collapsible-set", null);
         if(acco.getStyle() != null) writer.writeAttribute("style", acco.getStyle(), null);
         if(acco.getStyleClass() != null) writer.writeAttribute("class", acco.getStyleClass(), null);        
         if(swatch != null) writer.writeAttribute("data-theme", swatch, null); 
         if(contentSwatch != null) writer.writeAttribute("data-content-theme", contentSwatch, null);                 
-        int i = 0;
-        for(UIComponent child : acco.getChildren()) {
-            if(child.isRendered() && child instanceof Tab) {  
-                Tab tab = (Tab) child;
-                String title = tab.getTitle();
-                                
-                writer.startElement("div", null);
-                writer.writeAttribute("data-role", "collapsible", null);
-                writer.writeAttribute("data-inset", inset.toString(), null);
-                
-                if(activeIndex != null && activeIndex.equals(String.valueOf(i))) { 
-                    writer.writeAttribute("data-collapsed", "false", null);
+        if (var == null) {
+            int i = 0;
+            for(UIComponent child : acco.getChildren()) {
+                if(child.isRendered() && child instanceof Tab) {
+                    boolean active = multiple ? activeIndex.indexOf(String.valueOf(i)) != -1 : activeIndex.equals(String.valueOf(i));
+                    
+                    encodeTab(context, (Tab) child, active, inset);
+
+                    i++;
                 }
-
-                //header
-                writer.startElement("h3", null);
-                if(title != null) {
-                    writer.writeText(title, null);
-                }
-                writer.endElement("h3");
-
-                //content
-                if (inset) writer.startElement("p", null);
-                tab.encodeAll(context);
-                if (inset) writer.endElement("p");
-
-                writer.endElement("div");
-                
-                i++;
             }
+        } else {
+            int dataCount = acco.getRowCount();
+            Tab tab = (Tab) acco.getChildren().get(0);
+
+            for (int i = 0; i < dataCount; i++) {
+                acco.setRowIndex(i);
+                boolean active = multiple ? activeIndex.indexOf(String.valueOf(i)) != -1 : activeIndex.equals(String.valueOf(i));
+
+                encodeTab(context, tab, active, inset);
+            }
+
+            acco.setRowIndex(-1);
         }
         
+        writer.endElement("div");
+    }
+    
+    protected void encodeTab(FacesContext context, Tab tab, boolean active,boolean inset) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        
+        String title = tab.getTitle();
+
+        writer.startElement("div", null);
+        writer.writeAttribute("data-role", "collapsible", null);
+        writer.writeAttribute("data-inset", Boolean.toString(inset), null);
+
+        if (active) {
+            writer.writeAttribute("data-collapsed", "false", null);
+        }
+
+        //header
+        writer.startElement("h3", null);
+        if (title != null) {
+            writer.writeText(title, null);
+        }
+        writer.endElement("h3");
+
+        //content
+        if (inset) writer.startElement("p", null);
+        tab.encodeAll(context);
+        if (inset) writer.endElement("p");
+
         writer.endElement("div");
     }
 
