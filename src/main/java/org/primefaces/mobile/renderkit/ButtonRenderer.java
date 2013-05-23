@@ -36,8 +36,7 @@ public class ButtonRenderer extends CoreRenderer {
         writer.startElement("a", component);
         writer.writeAttribute("id", button.getClientId(context), null);
         writer.writeAttribute("href", "javascript:void(0)", null);
-        writer.writeAttribute("data-role", "button", null);
-        writer.writeAttribute("data-role", "button", null);
+        writer.writeAttribute("data-role", "button", null);        
 
         if(inline != null && Boolean.valueOf(inline.toString())) writer.writeAttribute("data-inline", "true", null);
         if(button.getIcon() != null) writer.writeAttribute("data-icon", button.getIcon(), null);
