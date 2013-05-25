@@ -911,6 +911,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             controls.filter("select[data-role='slider']" ).slider();
             
             //lists            
+            context.find("form[role='search']").remove();            
             controls.filter("ul[data-role='listview']").listview();            
             
             //buttons

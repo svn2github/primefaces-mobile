@@ -61,12 +61,11 @@ public class DataListRenderer extends CoreRenderer {
         Object icon = dataList.getAttributes().get("icon");
         Object iconSplit = dataList.getAttributes().get("iconSplit");
         String iconType = (iconSplit != null && Boolean.valueOf(iconSplit.toString())) ? "data-split-icon" : "data-icon";
-
-        writer.startElement("div", dataList);
-        writer.writeAttribute("id", dataList.getClientId(context), "id");
+        
+        writer.startElement("ul", dataList);                        
+        writer.writeAttribute("id", dataList.getClientId(context), "id");        
         if(dataList.getStyle() != null) writer.writeAttribute("style", dataList.getStyle(), null);
-        if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);        
-        writer.startElement("ul", dataList);        
+        if(dataList.getStyleClass() != null) writer.writeAttribute("class", dataList.getStyleClass(), null);                        
         writer.writeAttribute("data-role", "listview", null);
         
         if(filterValue != null && Boolean.valueOf(filterValue.toString())) writer.writeAttribute("data-filter", "true", null);
@@ -119,12 +118,10 @@ public class DataListRenderer extends CoreRenderer {
                 }
             }
         }
-
-        writer.endElement("ul");
         
         if (footer != null) {
             writer.startElement("div", null); 
-            writer.writeAttribute("style", "margin-top: 25px;text-align: center;", null);                        
+            writer.writeAttribute("style", "margin-top: 20px;text-align: center;", null);                        
             footer.encodeAll(context);
             writer.endElement("div");
         }            
@@ -132,10 +129,10 @@ public class DataListRenderer extends CoreRenderer {
         
         if (dataList.isPaginator() && (dataList.getRows() < dataList.getRowCount())) {
             encodePaginatorButton(context, dataList);
-        }         
-                    
-        writer.endElement("div");
-    
+        }                
+
+        writer.endElement("ul");
+                                                 
         dataList.setRowIndex(-1);        
     }
         
@@ -147,7 +144,7 @@ public class DataListRenderer extends CoreRenderer {
         writer.startElement("a", dataList);
         writer.writeAttribute("id", clientId, null);        
         writer.writeAttribute("data-role", "button", null);
-        writer.writeAttribute("style", "margin-top: 30px", null);        
+        writer.writeAttribute("style", "margin-top: 20px", null);        
         writer.writeText(paginatorText, null);       
         writer.endElement("a");        
     }  
