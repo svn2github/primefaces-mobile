@@ -895,7 +895,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             //input text and textarea
             var inputs = controls.filter("[type='text'],[type='tel'],[type='range'],[type='number'],[type='email'],[type='password'],[type='date'],[type='datetime'],[type='time'],[type='url'],[type='password'],[type='file'],textarea").textinput();            
             if (inputs.parent().parent().hasClass("ui-input-text")){
-                inputs.unwrap();
+                inputs.unwrap(); //prevent duplicate input
             }
             
             //radio-checkbox
@@ -910,18 +910,19 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
             //switch
             controls.filter("select[data-role='slider']" ).slider();
             
-            //lists            
-            context.find("form[role='search']").remove();            
-            controls.filter("ul[data-role='listview']").listview();            
-            
+            //lists                        
+            var lists = controls.filter("ul[data-role='listview']").listview();     
+            lists.prev("form.ui-listview-filter").prev("form.ui-listview-filter").remove();  //prevent duplicate filter                      
+                                    
             //buttons
             controls.filter("button, [type='button'], [type='submit'], [type='reset'], [type='image']").button();
             controls.filter("a").buttonMarkup();
             
-            //table                                     
-            context.find("a[href='"+PrimeFaces.escapeClientId(id)+"-popup']").remove();
-            controls.filter("table[data-role='table']").table().table("refresh");                            
-            
+            //table                   
+            var tables = controls.filter("table[data-role='table']");
+            tables.table().table("refresh");
+            tables.prev().prev(".ui-table-columntoggle-btn").prev().prev(".ui-table-columntoggle-btn").remove(); //prevent duplicate button
+                        
             //field container
             context.find(":jqmData(role='fieldcontain')").fieldcontain();
             
