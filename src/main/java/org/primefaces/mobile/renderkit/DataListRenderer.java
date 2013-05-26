@@ -60,6 +60,8 @@ public class DataListRenderer extends CoreRenderer {
         Object autoComplete = dataList.getAttributes().get("autoComplete");
         Object icon = dataList.getAttributes().get("icon");
         Object iconSplit = dataList.getAttributes().get("iconSplit");
+        Object swatch = (String) dataList.getAttributes().get("swatch");
+        Object dividerSwatch = (String) dataList.getAttributes().get("dividerSwatch");        
         String iconType = (iconSplit != null && Boolean.valueOf(iconSplit.toString())) ? "data-split-icon" : "data-icon";
         
         writer.startElement("ul", dataList);                        
@@ -74,6 +76,8 @@ public class DataListRenderer extends CoreRenderer {
         if(autoComplete != null && Boolean.valueOf(autoComplete.toString())) writer.writeAttribute("data-filter-reveal", "true", null);        
         if(icon != null) writer.writeAttribute(iconType, icon, null);        
         if(type != null && type.equals("inset")) writer.writeAttribute("data-inset", true, null);
+        if(swatch != null) writer.writeAttribute("data-theme", swatch, null); 
+        if(dividerSwatch != null) writer.writeAttribute("data-divider-theme", dividerSwatch, null);         
 
         if(header != null) {
             writer.startElement("li", null);
