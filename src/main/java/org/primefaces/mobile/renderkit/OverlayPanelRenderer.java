@@ -16,6 +16,7 @@
 package org.primefaces.mobile.renderkit;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.faces.FacesException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -36,17 +37,20 @@ public class OverlayPanelRenderer extends CoreRenderer {
 
     protected void encodeMarkup(FacesContext context, OverlayPanel panel) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        String clientId = panel.getClientId(context);        
-
+        String clientId = panel.getClientId(context);     
+        Map<String, Object> attrs = panel.getAttributes();
+        String swatch = (String) attrs.get("swatch");
+        Object swipeClose = (String) attrs.get("swipeClose");        
+        
         writer.startElement("div", panel);
         writer.writeAttribute("id", clientId, "id");
-        writer.writeAttribute("data-role", "panel", null);
-        
-        if (panel.getMy() != null && panel.getMy().equals("right")){
-            writer.writeAttribute("data-position", "right", null);            
-        }
-        
+        writer.writeAttribute("data-role", "panel", null);       
 
+        if (panel.getMy() != null)writer.writeAttribute("data-position", panel.getMy(), null);                
+        if (swatch != null) writer.writeAttribute("data-theme", swatch, null);            
+        if (swipeClose != null && Boolean.valueOf(swipeClose.toString())) writer.writeAttribute("data-swipe-close", "true", null);                
+        
+        
         if (panel.getStyleClass() != null) {
             writer.writeAttribute("class", panel.getStyleClass(), "styleClass");
         }
@@ -73,7 +77,10 @@ public class OverlayPanelRenderer extends CoreRenderer {
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.widget("OverlayPanel", panel.resolveWidgetVar(), clientId, true);
 
-        wb.attr("target", targetClientId);                                
+        wb.attr("target", targetClientId)
+                .attr("showEvent", panel.getShowEvent(), null)                
+                .callback("onShow", "function()", panel.getOnShow())
+                .callback("onHide", "function()", panel.getOnHide());      
 
         startScript(writer, clientId);
         writer.write(wb.build());

@@ -1226,16 +1226,38 @@ PrimeFaces.widget.AutoComplete = PrimeFaces.widget.BaseWidget.extend({
  */
 PrimeFaces.widget.OverlayPanel = PrimeFaces.widget.BaseWidget.extend({
     init: function(cfg) {
-        this._super(cfg);
+        this._super(cfg);        
 
         this.targetId = PrimeFaces.escapeClientId(this.cfg.target);
-        this.target = $(this.targetId);
-
-        var jq = this.jq;
-        this.target.click(function() {
-            jq.panel('open');
-        });
+        this.target = $(this.targetId);        
+        //configuration      
+        this.cfg.showEvent = this.cfg.showEvent||'click.ui-overlaypanel';        
+        
+        this.bindEvents();
     },
+            
+    bindEvents: function() {
+        var _self = this;
+        //show and hide events for target        
+        var event = this.cfg.showEvent;
+
+        $(document).off(event, this.targetId).on(event, this.targetId, this, function(e) {
+            e.data.show();
+        });
+
+        this.jq.bind('panelopen', function(event, ui) {
+            if (_self.cfg.onShow) {
+                _self.cfg.onShow.call(_self);
+            }
+        });
+
+        this.jq.bind('panelclose', function(event, ui) {
+            if (_self.cfg.onHide) {
+                _self.cfg.onHide.call(_self);
+            }
+        });
+
+    },            
             
     show: function() {
         this.jq.panel('open');
@@ -1243,7 +1265,11 @@ PrimeFaces.widget.OverlayPanel = PrimeFaces.widget.BaseWidget.extend({
     
     hide: function() {
         this.jq.panel('close');
-    }            
+    },
+            
+    toggle: function() {
+        this.jq.panel('toggle');
+    }                      
 });
 
 
