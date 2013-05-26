@@ -67,7 +67,7 @@ public class CommandButtonRenderer extends CoreRenderer {
                     throw new FacesException("CommandButton : \"" + clientId + "\" must be inside a form element");
                 }
                 
-                request = buildNonAjaxRequest(context, button, form, null, false);
+                request = buildNonAjaxRequest(context, button, form, clientId, true);
             }
 			
 			onclick = onclick != null ? onclick + ";" + request : request;
