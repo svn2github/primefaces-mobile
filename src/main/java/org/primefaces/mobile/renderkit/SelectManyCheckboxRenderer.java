@@ -69,7 +69,7 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         
         writer.startElement("div", checkbox);
         writer.writeAttribute("id", clientId, "id");
-        writer.writeAttribute("data-role", "fieldcontain", null);
+        if (checkbox.getLabel() != null) writer.writeAttribute("data-role", "fieldcontain", null);
 
         if(style != null) writer.writeAttribute("style", style, "style");
         if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");

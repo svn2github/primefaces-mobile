@@ -54,7 +54,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
 
         writer.startElement("div", radio);
         writer.writeAttribute("id", clientId, "id");
-        writer.writeAttribute("data-role", "fieldcontain", null);
+        if (radio.getLabel() != null) writer.writeAttribute("data-role", "fieldcontain", null);
 
         if(style != null) writer.writeAttribute("style", style, "style");
         if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");
