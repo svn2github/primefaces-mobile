@@ -115,7 +115,7 @@ public class ConfirmDialogRenderer extends CoreRenderer {
         String messageText = dialog.getMessage();
         UIComponent messageFacet = dialog.getFacet("message");
         String severityIcon = dialog.getSeverity();
-        
+
 
         writer.startElement("div", null);
         writer.writeAttribute("data-role", "content", null);
@@ -126,22 +126,24 @@ public class ConfirmDialogRenderer extends CoreRenderer {
 
         //severity
         String icon = null;
-            
+
         if (severityIcon.equals("info")) icon = "info";
         if (severityIcon.equals("alert")) icon = "alert";            
         if (severityIcon.equals("error")) icon = "delete";            
         if (severityIcon.equals("fatal")) icon = "minus";        
         writer.startElement("span", null);
         writer.writeAttribute("class", "ui-icon ui-icon-" + icon, null);
-        writer.writeAttribute("style", "float: left;margin-right: 5px;", null);
+        writer.writeAttribute("style", "float: left;margin: 7px 5px;", null);
         writer.endElement("span");
 
         if (messageFacet != null) {
             messageFacet.encodeAll(context);
         } else if (messageText != null) {
+            writer.startElement("p", null);
             writer.writeText(messageText, null);
+            writer.endElement("p");
         }
-
+        
         renderChildren(context, dialog);
 
         writer.endElement("div");
