@@ -53,6 +53,7 @@ public class CommandButtonRenderer extends CoreRenderer {
 		writer.writeAttribute("id", clientId, "id");
 		writer.writeAttribute("name", clientId, "name");
         writer.writeAttribute("type", type, "type");
+        writer.writeAttribute("data-role", "button", null);        
 
 		String onclick = button.getOnclick();
 		if(!type.equals("reset") && !type.equals("button")) {
