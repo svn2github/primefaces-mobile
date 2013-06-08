@@ -106,8 +106,8 @@ public class InputTextareaRenderer extends InputRenderer {
         if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);
         if(inputTextarea.isDisabled()) writer.writeAttribute("disabled", "disabled", "disabled");
         if(inputTextarea.isReadonly()) writer.writeAttribute("readonly", "readonly", "readonly");
-        if(inputTextarea.getStyle() != null) writer.writeAttribute("style", inputTextarea.getStyle(), "style");
-        if(inputTextarea.getStyle() != null) writer.writeAttribute("styleClass", inputTextarea.getStyleClass(), "styleClass");
+        if(inputTextarea.getStyle() != null) writer.writeAttribute("style", inputTextarea.getStyle(), "style");        
+        if(inputTextarea.getStyleClass() != null) writer.writeAttribute("class", inputTextarea.getStyleClass(), "styleClass");
 
         String valueToRender = ComponentUtils.getValueToRender(context, inputTextarea);
 		if(valueToRender != null) {
