@@ -23,21 +23,32 @@ import javax.faces.context.ResponseWriter;
 import org.primefaces.component.accordionpanel.AccordionPanel;
 import org.primefaces.component.tabview.Tab;
 import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 public class AccordionPanelRenderer extends CoreRenderer {
+    
+    @Override
+    public void decode(FacesContext context, UIComponent component) {        
+        decodeBehaviors(context, component);
+    }   
 
     @Override
     public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         AccordionPanel acco = (AccordionPanel) component;
-        Map<String,Object> attrs = acco.getAttributes();
+        encodeMarkup(context, acco);
+        encodeScript(context, acco);
+    }
+           
+    protected void encodeMarkup(FacesContext context, AccordionPanel acco) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();        
+        Map<String, Object> attrs = acco.getAttributes();
         Object swatch = (String) attrs.get("swatch");
         String contentSwatch = (String) attrs.get("contentSwatch");
-        Boolean inset = (acco.getAttributes().get("inset") == null ? true : Boolean.valueOf(acco.getAttributes().get("inset").toString()));                             
+        Boolean inset = (acco.getAttributes().get("inset") == null ? true : Boolean.valueOf(acco.getAttributes().get("inset").toString()));
         String var = acco.getVar();
         boolean multiple = acco.isMultiple();
-        String activeIndex = acco.getActiveIndex();                
-        
+        String activeIndex = acco.getActiveIndex();
+
         writer.startElement("div", acco);
         writer.writeAttribute("id", acco.getClientId(context), null);
         if (!multiple) writer.writeAttribute("data-role", "collapsible-set", null);
@@ -50,7 +61,7 @@ public class AccordionPanelRenderer extends CoreRenderer {
             for(UIComponent child : acco.getChildren()) {
                 if(child.isRendered() && child instanceof Tab) {
                     boolean active = multiple ? activeIndex.indexOf(String.valueOf(i)) != -1 : activeIndex.equals(String.valueOf(i));
-                    
+
                     encodeTab(context, (Tab) child, active, inset);
 
                     i++;
@@ -69,9 +80,25 @@ public class AccordionPanelRenderer extends CoreRenderer {
 
             acco.setRowIndex(-1);
         }
-        
+
         writer.endElement("div");
     }
+    
+    protected void encodeScript(FacesContext context, AccordionPanel acco) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = acco.getClientId(context);
+
+        WidgetBuilder wb = getWidgetBuilder(context);
+        wb.widget("AccordionPanel", acco.resolveWidgetVar(), clientId, false);
+
+        wb.callback("onTabChange", "function(panel)", acco.getOnTabChange());
+
+        encodeClientBehaviors(context, acco, wb);
+
+        startScript(writer, clientId);
+        writer.write(wb.build());
+        endScript(writer);
+    }  
     
     protected void encodeTab(FacesContext context, Tab tab, boolean active,boolean inset) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
@@ -79,6 +106,7 @@ public class AccordionPanelRenderer extends CoreRenderer {
         String title = tab.getTitle();
 
         writer.startElement("div", null);
+        writer.writeAttribute("id", tab.getClientId(context), null);
         writer.writeAttribute("data-role", "collapsible", null);
         writer.writeAttribute("data-inset", Boolean.toString(inset), null);
 

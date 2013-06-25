@@ -1424,3 +1424,73 @@ PrimeFaces.widget.ContextMenu = PrimeFaces.widget.BaseWidget.extend({
     }              
 
 }); 
+
+/**
+ * PrimeFaces Accordion Panel Widget
+ */
+PrimeFaces.widget.AccordionPanel = PrimeFaces.widget.BaseWidget.extend({
+    init: function(cfg) {
+        this._super(cfg);        
+        
+        this.bindEvents();
+    },
+            
+    bindEvents: function() {
+        var $this = this;
+
+        var tabs = $this.jq.find("div[data-role='collapsible'] > h3");
+        tabs.bind('click', function() {
+            var selectedTab = $(PrimeFaces.escapeClientId(this.parentElement.id));
+            if (selectedTab.hasClass('ui-collapsible-collapsed')) {
+                
+                if ($this.cfg.onTabChange) {
+                    var result = $this.cfg.onTabChange.call($this, panel);
+                    if (result === false)
+                        return false;
+                }                
+                
+                if ($this.hasBehavior('tabChange')) {
+                    $this.fireTabChangeEvent(selectedTab);
+                }
+            } else {
+                if ($this.hasBehavior('tabClose')) {
+                    $this.fireTabCloseEvent(selectedTab);
+                }                
+            }
+        });
+
+    },
+            
+    fireTabChangeEvent : function(panel) {
+        var tabChangeBehavior = this.cfg.behaviors['tabChange'],
+        ext = {
+            params: [
+                {name: this.id + '_newTab', value: panel.attr('id')},
+                {name: this.id + '_tabindex', value: parseInt(panel.index())}
+            ]
+        };
+        
+        tabChangeBehavior.call(this, null, ext);
+    },
+
+    fireTabCloseEvent : function(panel) {
+        var tabCloseBehavior = this.cfg.behaviors['tabClose'],
+        ext = {
+            params: [
+                {name: this.id + '_tabId', value: panel.attr('id')},
+                {name: this.id + '_tabindex', value: parseInt(panel.index())}
+            ]
+        };
+        
+        tabCloseBehavior.call(this, null, ext);
+    },
+            
+    hasBehavior: function(event) {
+        if(this.cfg.behaviors) {
+            return this.cfg.behaviors[event] != undefined;
+        }
+
+        return false;
+    }            
+                        
+});
