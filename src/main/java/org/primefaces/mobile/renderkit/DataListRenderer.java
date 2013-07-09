@@ -95,10 +95,11 @@ public class DataListRenderer extends CoreRenderer {
 
             for(int i = 0; i < rowCount; i++) {
                 dataList.setRowIndex(i);
-
-                writer.startElement("li", null);
-                renderChildren(context, dataList);
-                writer.endElement("li");
+                if (dataList.isRowAvailable()) {
+                    writer.startElement("li", null);
+                    renderChildren(context, dataList);
+                    writer.endElement("li");
+                }
             }
         }
         else {
