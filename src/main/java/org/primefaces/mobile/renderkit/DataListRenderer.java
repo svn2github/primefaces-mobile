@@ -154,7 +154,7 @@ public class DataListRenderer extends CoreRenderer {
     
     protected void encodeLoadMore(FacesContext context, DataList dataList) throws IOException {
         ResponseWriter writer = context.getResponseWriter();        
-                              
+                                      
         for (int i = dataList.getFirst(); i < (dataList.getFirst() + dataList.getRows()); i++) {
             dataList.setRowIndex(i);
             
@@ -166,6 +166,8 @@ public class DataListRenderer extends CoreRenderer {
         }
         
         dataList.setRowIndex(-1); 
+        dataList.setFirst(0);
+        dataList.setRows(dataList.getRowCount());
     }    
     
     protected void encodeScript(FacesContext context, DataList dataList) throws IOException {
@@ -207,4 +209,4 @@ public class DataListRenderer extends CoreRenderer {
     public boolean getRendersChildren() {
         return true;
     }
-}
+    }    
