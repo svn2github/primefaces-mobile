@@ -89,17 +89,15 @@ public class DataListRenderer extends CoreRenderer {
         int rowCount = dataList.getRowCount();
         
         if(dataList.getVar() != null) {            
-            if (dataList.isPaginator() && rowCount != 0) {
+            if (dataList.isPaginator() && rowCount > dataList.getRows()) {
                 rowCount = dataList.getRows();
             }
 
-            for(int i = 0; i < rowCount; i++) {
+            for (int i = 0; i < rowCount; i++) {
                 dataList.setRowIndex(i);
-                if (dataList.isRowAvailable()) {
-                    writer.startElement("li", null);
-                    renderChildren(context, dataList);
-                    writer.endElement("li");
-                }
+                writer.startElement("li", null);
+                renderChildren(context, dataList);
+                writer.endElement("li");
             }
         }
         else {
