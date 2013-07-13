@@ -1124,10 +1124,24 @@ PrimeFaces.widget.Calendar = PrimeFaces.widget.BaseWidget.extend({
         if(this.cfg.behaviors) {
             PrimeFaces.attachBehaviors(this.input, this.cfg.behaviors);
         }        
-
+        
+        //Select listener
+        this.bindDateSelectListener();
     },
     show: function() {
         this.jq.mobiscroll('show');
+    },
+    
+    bindDateSelectListener: function() {
+        if (this.cfg.behaviors) {
+            var dateSelectBehavior = this.cfg.behaviors['dateSelect'];
+
+            if (dateSelectBehavior) {
+                this.jq.bind('change', function(e) {
+                    dateSelectBehavior.call(this);
+                });
+            }
+        }
     }
 });
 
