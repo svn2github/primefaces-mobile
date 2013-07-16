@@ -46,10 +46,8 @@ public class PageRenderer extends CoreRenderer {
         if(page.getManifest() != null) {
             writer.writeAttribute("manifest", page.getManifest(), "manifest");
         }
-                
-        UIComponent head = context.getApplication().createComponent("javax.faces.OutputHead");
-        head.setRendererType("javax.faces.Head");
-        head.encodeBegin(context);        
+        
+        writer.startElement("head", page);
         
         //viewport meta
         writer.startElement("meta", page);
@@ -110,7 +108,7 @@ public class PageRenderer extends CoreRenderer {
             postinit.encodeAll(context);
         }
 
-        head.encodeEnd(context);        
+        writer.endElement("head");
 
         writer.startElement("body", page);
     }
