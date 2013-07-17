@@ -18,6 +18,7 @@ package org.primefaces.mobile.component.page;
 import java.io.IOException;
 import java.util.Map;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.mobile.util.Constants;
@@ -46,7 +47,7 @@ public class PageRenderer extends CoreRenderer {
         if(page.getManifest() != null) {
             writer.writeAttribute("manifest", page.getManifest(), "manifest");
         }
-        
+                
         writer.startElement("head", page);
         
         //viewport meta
@@ -107,7 +108,15 @@ public class PageRenderer extends CoreRenderer {
         if(postinit != null) {
             postinit.encodeAll(context);
         }
-
+        
+        //Registered Resources
+        UIViewRoot viewRoot = context.getViewRoot();
+        for (UIComponent resource : viewRoot.getComponentResources(context, "head")) {
+            if (!resource.isInView()) {
+                resource.encodeAll(context);
+            }
+        }        
+        
         writer.endElement("head");
 
         writer.startElement("body", page);
@@ -132,5 +141,5 @@ public class PageRenderer extends CoreRenderer {
         attrs.put("target", "head");
 
         resource.encodeAll(context);
-    }
+    }    
 }
