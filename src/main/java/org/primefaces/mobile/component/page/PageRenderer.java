@@ -111,11 +111,11 @@ public class PageRenderer extends CoreRenderer {
         
         //Registered Resources
         UIViewRoot viewRoot = context.getViewRoot();
-        for (UIComponent resource : viewRoot.getComponentResources(context, "head")) {
-            if (!resource.isInView()) {
-                resource.encodeAll(context);
-            }
-        }        
+        for (UIComponent resource : viewRoot.getComponentResources(context, "head")) {            
+            if (resource.getAttributes().containsKey("com.sun.faces.facelets.MARK_ID")) {
+                resource.encodeAll(context);                
+            }            
+        }               
         
         writer.endElement("head");
 
