@@ -32,7 +32,9 @@ public class ButtonRenderer extends CoreRenderer {
         Button button = (Button) component;
         Map<String,Object> attrs = button.getAttributes();
         Object inline = attrs.get("inline");
-
+        String styleClass = button.getStyleClass() == null ? "" : button.getStyleClass();
+        if (button.isDisabled()) styleClass = styleClass + " ui-disabled";
+                
         writer.startElement("a", component);
         writer.writeAttribute("id", button.getClientId(context), null);
         writer.writeAttribute("href", "javascript:void(0)", null);
@@ -44,7 +46,7 @@ public class ButtonRenderer extends CoreRenderer {
             writer.writeAttribute("data-icon", button.getIcon(), null);
         }
         if(button.getStyle() != null) writer.writeAttribute("style", button.getStyle(), null);
-        if(button.getStyleClass() != null) writer.writeAttribute("class", button.getStyleClass(), null);
+        writer.writeAttribute("class", styleClass, null);
         
         writer.writeAttribute("onclick", buildOnclick(context, button), null);
 

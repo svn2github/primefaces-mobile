@@ -48,6 +48,8 @@ public class CommandButtonRenderer extends CoreRenderer {
         String clientId = button.getClientId(context);
         String type = button.getType();
         Map<String,Object> attrs = button.getAttributes();
+        String styleClass = button.getStyleClass()== null ? "" : button.getStyleClass();
+        if (button.isDisabled()) styleClass = styleClass + " ui-disabled";        
 
         writer.startElement("a", button);
 		writer.writeAttribute("id", clientId, "id");
@@ -81,7 +83,7 @@ public class CommandButtonRenderer extends CoreRenderer {
         }
         if(button.isInline()) writer.writeAttribute("data-inline", "true", null);
         if(button.getStyle() != null) writer.writeAttribute("style", button.getStyle(), null);
-        if(button.getStyleClass() != null) writer.writeAttribute("class", button.getStyleClass(), null);
+        writer.writeAttribute("class", styleClass, null);
 		if(!isValueBlank(onclick)) writer.writeAttribute("onclick", onclick, "onclick");
         
 		if(button.getValue() != null) writer.write(button.getValue().toString());
