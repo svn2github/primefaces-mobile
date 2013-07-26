@@ -28,6 +28,7 @@ import javax.faces.model.SelectItem;
 import org.primefaces.component.selectoneradio.SelectOneRadio;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.SelectOneRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 public class SelectOneRadioRenderer extends SelectOneRenderer {
 
@@ -68,15 +69,13 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = radio.getClientId(context);
 
+        WidgetBuilder wb = getWidgetBuilder(context);
+        wb.widget("SelectManyCheckbox", radio.resolveWidgetVar(), clientId, true);
+
+        encodeClientBehaviors(context, radio, wb);
+
         startScript(writer, clientId);
-        
-        writer.write("PrimeFaces.cw('SelectOneRadio','" + radio.resolveWidgetVar() + "',{");
-        writer.write("id:'" + clientId + "'");
-
-        encodeClientBehaviors(context, radio);
-
-        writer.write("});");
-
+        writer.write(wb.build());
         endScript(writer);
     }
     

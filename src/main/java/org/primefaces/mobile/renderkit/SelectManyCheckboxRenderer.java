@@ -29,6 +29,7 @@ import javax.faces.model.SelectItem;
 import org.primefaces.component.selectmanycheckbox.SelectManyCheckbox;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.SelectManyRenderer;
+import org.primefaces.util.WidgetBuilder;
 
 public class SelectManyCheckboxRenderer extends SelectManyRenderer {
 
@@ -49,15 +50,13 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
 
+        WidgetBuilder wb = getWidgetBuilder(context);
+        wb.widget("SelectManyCheckbox", checkbox.resolveWidgetVar(), clientId, true);
+
+        encodeClientBehaviors(context, checkbox, wb);
+
         startScript(writer, clientId);
-        
-        writer.write("PrimeFaces.cw('SelectManyCheckbox','" + checkbox.resolveWidgetVar() + "',{");
-        writer.write("id:'" + clientId + "'");
-
-        encodeClientBehaviors(context, checkbox);
-
-        writer.write("});");
-
+        writer.write(wb.build());
         endScript(writer);
     }
     

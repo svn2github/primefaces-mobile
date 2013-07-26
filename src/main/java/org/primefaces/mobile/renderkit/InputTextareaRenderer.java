@@ -24,6 +24,7 @@ import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
+import org.primefaces.util.WidgetBuilder;
 
 public class InputTextareaRenderer extends InputRenderer {
 
@@ -52,22 +53,19 @@ public class InputTextareaRenderer extends InputRenderer {
 		encodeScript(context, inputTextarea);
 	}
 
-	protected void encodeScript(FacesContext context, InputTextarea inputTextarea) throws IOException {
-		ResponseWriter writer = context.getResponseWriter();
-		String clientId = inputTextarea.getClientId(context);
+    protected void encodeScript(FacesContext context, InputTextarea inputTextarea) throws IOException {
+        ResponseWriter writer = context.getResponseWriter();
+        String clientId = inputTextarea.getClientId(context);
+
+        WidgetBuilder wb = getWidgetBuilder(context);
+        wb.widget("InputTextarea", inputTextarea.resolveWidgetVar(), clientId, true);
+
+        encodeClientBehaviors(context, inputTextarea, wb);
 
         startScript(writer, clientId);
-        
-        writer.write("PrimeFaces.cw('InputTextarea','" + inputTextarea.resolveWidgetVar() + "',{");
-        writer.write("id:'" + clientId + "'");
-        writer.write(",autoResize:false");
-        
-        encodeClientBehaviors(context, inputTextarea);
-
-        writer.write("});");
-
-		endScript(writer);
-	}
+        writer.write(wb.build());
+        endScript(writer);
+    }
     
     protected void encodeMarkup(FacesContext context, InputTextarea inputTextarea) throws IOException {
 		ResponseWriter writer = context.getResponseWriter();
