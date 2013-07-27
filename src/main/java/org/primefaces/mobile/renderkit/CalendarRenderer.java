@@ -102,6 +102,7 @@ public class CalendarRenderer extends InputRenderer {
                 
         if (mode.equals("modal") && (showOnFocus != null && !Boolean.valueOf(showOnFocus))) {
             wb.attr("showOnFocus", false);
+            wb.attr("showOnTap", false);            
         }
 
         if (!calendar.isTimeOnly()) {
