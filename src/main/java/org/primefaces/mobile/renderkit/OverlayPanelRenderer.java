@@ -66,7 +66,6 @@ public class OverlayPanelRenderer extends CoreRenderer {
     }
 
     protected void encodeScript(FacesContext context, OverlayPanel panel) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         UIComponent target = panel.findComponent(panel.getFor());
         if (target == null) {
             throw new FacesException("Cannot find component '" + panel.getFor() + "' in view.");
@@ -75,16 +74,14 @@ public class OverlayPanelRenderer extends CoreRenderer {
         String clientId = panel.getClientId(context);
         String targetClientId = target.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("OverlayPanel", panel.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("OverlayPanel", panel.resolveWidgetVar(), clientId);
 
         wb.attr("target", targetClientId)
                 .attr("showEvent", panel.getShowEvent(), null)                
                 .callback("onShow", "function()", panel.getOnShow())
                 .callback("onHide", "function()", panel.getOnHide());      
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
     @Override

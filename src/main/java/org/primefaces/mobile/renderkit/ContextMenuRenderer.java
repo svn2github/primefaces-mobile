@@ -38,12 +38,11 @@ public class ContextMenuRenderer extends CoreRenderer {
     }    
     
     protected void encodeScript(FacesContext context, ContextMenu menu) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = menu.getClientId(context);
         UIComponent target = findTarget(context, menu);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("ContextMenu", menu.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("ContextMenu", menu.resolveWidgetVar(), clientId);
 
         if (target != null) {
             wb.attr("target", target.getClientId(context))
@@ -54,9 +53,7 @@ public class ContextMenuRenderer extends CoreRenderer {
                 .attr("hasContent", (menu.getChildCount() > 0))
                 .callback("beforeShow", "function()", menu.getBeforeShow());
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
     protected void encodeMarkup(FacesContext context, ContextMenu menu) throws IOException {

@@ -70,13 +70,11 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         String clientId = radio.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("SelectManyCheckbox", radio.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("SelectManyCheckbox", radio.resolveWidgetVar(), clientId);
 
-        encodeClientBehaviors(context, radio, wb);
+        encodeClientBehaviors(context, radio);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
     
     protected void encodeSelectItems(FacesContext context, SelectOneRadio radio, List<SelectItem> selectItems) throws IOException {

@@ -85,19 +85,15 @@ public class AccordionPanelRenderer extends CoreRenderer {
     }
     
     protected void encodeScript(FacesContext context, AccordionPanel acco) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = acco.getClientId(context);
-
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("AccordionPanel", acco.resolveWidgetVar(), clientId, false);
+        wb.init("AccordionPanel", acco.resolveWidgetVar(), clientId);
 
         wb.callback("onTabChange", "function(panel)", acco.getOnTabChange());
 
-        encodeClientBehaviors(context, acco, wb);
+        encodeClientBehaviors(context, acco);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }  
     
     protected void encodeTab(FacesContext context, Tab tab, boolean active,boolean inset) throws IOException {

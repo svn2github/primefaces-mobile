@@ -65,14 +65,12 @@ public class CalendarRenderer extends InputRenderer {
     }
 
     protected void encodeScript(FacesContext context, Calendar calendar, String value) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = calendar.getClientId(context);
         Map<String, Object> attrs = calendar.getAttributes();
         String showOnFocus = (String) attrs.get("showOnFocus");
 
-
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("Calendar", calendar.resolveWidgetVar(), clientId, true);        
+        wb.initWithDomReady("Calendar", calendar.resolveWidgetVar(), clientId);        
         Locale locale = calendar.calculateLocale(context);
         String pattern = calendar.isTimeOnly() ? calendar.calculateTimeOnlyPattern() : calendar.calculatePattern();
 
@@ -152,11 +150,9 @@ public class CalendarRenderer extends InputRenderer {
                     .attr("stepSecond", calendar.getStepSecond());
         }
         
-        encodeClientBehaviors(context, calendar,wb);                        
+        encodeClientBehaviors(context, calendar);                        
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
     protected void encodeMarkup(FacesContext context, Calendar calendar, String value) throws IOException {

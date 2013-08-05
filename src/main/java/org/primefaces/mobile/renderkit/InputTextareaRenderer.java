@@ -54,17 +54,14 @@ public class InputTextareaRenderer extends InputRenderer {
 	}
 
     protected void encodeScript(FacesContext context, InputTextarea inputTextarea) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = inputTextarea.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("InputTextarea", inputTextarea.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("InputTextarea", inputTextarea.resolveWidgetVar(), clientId);
 
-        encodeClientBehaviors(context, inputTextarea, wb);
+        encodeClientBehaviors(context, inputTextarea);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
     
     protected void encodeMarkup(FacesContext context, InputTextarea inputTextarea) throws IOException {

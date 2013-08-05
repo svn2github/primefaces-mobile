@@ -61,13 +61,11 @@ public class InputTextRenderer extends InputRenderer {
         String clientId = inputText.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("InputText", inputText.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("InputText", inputText.resolveWidgetVar(), clientId);
         
-        encodeClientBehaviors(context, inputText,wb);        
+        encodeClientBehaviors(context, inputText);        
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
 	protected void encodeMarkup(FacesContext context, InputText inputText) throws IOException {

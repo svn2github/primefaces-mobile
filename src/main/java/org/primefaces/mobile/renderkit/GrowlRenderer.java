@@ -95,13 +95,12 @@ public class GrowlRenderer extends UINotificationRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = uiGrowl.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup", true);
+        wb.initWithDomReady("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup");
         wb.attr("life", uiGrowl.getLife())
                 .attr("sticky", uiGrowl.isSticky())
                 .attr("showPopup", showPopup);
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        
+        wb.finish();
     }
 
     protected void addMessage(Growl uiGrowl, FacesMessage message, Map<String, List<FacesMessage>> messagesMap, String severity) {

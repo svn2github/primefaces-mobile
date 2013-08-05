@@ -113,19 +113,15 @@ public class AutoCompleteRenderer extends CoreRenderer {
     }
 
     protected void encodeScript(FacesContext context, AutoComplete ac) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
-
         String clientId = ac.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("AutoComplete", ac.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("AutoComplete", ac.resolveWidgetVar(), clientId);
         wb.attr("minLength", ac.getMinQueryLength(), 1)
                 .attr("delay", ac.getQueryDelay(), 300);
 
-        encodeClientBehaviors(context, ac, wb);
+        encodeClientBehaviors(context, ac);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
     @Override

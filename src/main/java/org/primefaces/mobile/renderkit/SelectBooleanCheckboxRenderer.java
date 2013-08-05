@@ -127,12 +127,10 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
         String clientId = checkbox.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("SelectBooleanCheckbox", checkbox.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("SelectBooleanCheckbox", checkbox.resolveWidgetVar(), clientId);
 
-        encodeClientBehaviors(context, checkbox, wb);
+        encodeClientBehaviors(context, checkbox);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 }

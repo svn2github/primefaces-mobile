@@ -175,13 +175,12 @@ public class DataListRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = dataList.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);                 
-        wb.widget("DataList", dataList.resolveWidgetVar(), clientId, true)
+        wb.initWithDomReady("DataList", dataList.resolveWidgetVar(), clientId)
                 .attr("isPaginator", dataList.isPaginator())                
                 .attr("scrollStep", dataList.getRows())
                 .attr("scrollLimit", dataList.getRowCount());
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        
+        wb.finish();
     }    
     
     @Override

@@ -70,14 +70,11 @@ public class ConfirmDialogRenderer extends CoreRenderer {
     }
 
     protected void encodeScript(FacesContext context, ConfirmDialog dialog) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = dialog.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("Dialog", dialog.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("Dialog", dialog.resolveWidgetVar(), clientId);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
 
     protected void encodeHeader(FacesContext context, ConfirmDialog dialog, String headerSwatch) throws IOException {

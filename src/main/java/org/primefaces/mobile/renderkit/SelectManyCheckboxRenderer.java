@@ -51,13 +51,11 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         String clientId = checkbox.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.widget("SelectManyCheckbox", checkbox.resolveWidgetVar(), clientId, true);
+        wb.initWithDomReady("SelectManyCheckbox", checkbox.resolveWidgetVar(), clientId);
 
-        encodeClientBehaviors(context, checkbox, wb);
+        encodeClientBehaviors(context, checkbox);
 
-        startScript(writer, clientId);
-        writer.write(wb.build());
-        endScript(writer);
+        wb.finish();
     }
     
     protected void encodeMarkup(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
