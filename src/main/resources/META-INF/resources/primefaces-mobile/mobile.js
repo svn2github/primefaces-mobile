@@ -1,8 +1,8 @@
-$(document).bind('ajaxStart', function() {
+$(document).bind('pfAjaxStart', function() {
     $.mobile.showPageLoadingMsg();
 });
 
-$(document).bind('ajaxComplete', function() {
+$(document).bind('pfAjaxComplete', function() {
     $.mobile.hidePageLoadingMsg();
 });
 /*!
