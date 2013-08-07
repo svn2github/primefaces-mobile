@@ -22,6 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.overlaypanel.OverlayPanel;
+import org.primefaces.expression.SearchExpressionFacade;
 import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.util.WidgetBuilder;
 
@@ -49,7 +50,8 @@ public class OverlayPanelRenderer extends CoreRenderer {
         if (panel.getMy() != null)writer.writeAttribute("data-position", panel.getMy(), null);                
         if (swatch != null) writer.writeAttribute("data-theme", swatch, null);            
         if (swipeClose != null && Boolean.valueOf(swipeClose.toString())) writer.writeAttribute("data-swipe-close", "true", null);                
-        
+        if (!panel.isDismissable()) writer.writeAttribute("data-dismissible", "false", null);                
+
         
         if (panel.getStyleClass() != null) {
             writer.writeAttribute("class", panel.getStyleClass(), "styleClass");
@@ -65,8 +67,8 @@ public class OverlayPanelRenderer extends CoreRenderer {
         writer.endElement("div");
     }
 
-    protected void encodeScript(FacesContext context, OverlayPanel panel) throws IOException {
-        UIComponent target = panel.findComponent(panel.getFor());
+    protected void encodeScript(FacesContext context, OverlayPanel panel) throws IOException {        
+        UIComponent target = SearchExpressionFacade.resolveComponent(context, panel, panel.getFor());
         if (target == null) {
             throw new FacesException("Cannot find component '" + panel.getFor() + "' in view.");
         }

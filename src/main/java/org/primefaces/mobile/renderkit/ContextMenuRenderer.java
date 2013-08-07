@@ -22,6 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.contextmenu.ContextMenu;
+import org.primefaces.expression.SearchExpressionFacade;
 import org.primefaces.renderkit.CoreRenderer;
 
 import org.primefaces.util.WidgetBuilder;
@@ -38,8 +39,8 @@ public class ContextMenuRenderer extends CoreRenderer {
     }    
     
     protected void encodeScript(FacesContext context, ContextMenu menu) throws IOException {
-        String clientId = menu.getClientId(context);
-        UIComponent target = findTarget(context, menu);
+        String clientId = menu.getClientId(context);        
+        UIComponent target = SearchExpressionFacade.resolveComponent(context, menu, menu.getFor());
 
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.initWithDomReady("ContextMenu", menu.resolveWidgetVar(), clientId);
@@ -78,21 +79,6 @@ public class ContextMenuRenderer extends CoreRenderer {
         renderChildren(context, menu);
         
         writer.endElement("div");
-    }
-
-    protected UIComponent findTarget(FacesContext context, ContextMenu menu) {
-        String _for = menu.getFor();
-
-        if (_for != null) {
-            UIComponent forComponent = menu.findComponent(_for);
-            if (forComponent == null) {
-                throw new FacesException("Cannot find component '" + _for + "' in view.");
-            }
-
-            return forComponent;
-        } else {
-            return null;
-        }
     }
     
     @Override

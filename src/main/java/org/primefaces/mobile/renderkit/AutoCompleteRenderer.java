@@ -26,6 +26,7 @@ import javax.faces.event.PhaseId;
 import org.primefaces.component.autocomplete.AutoComplete;
 import org.primefaces.event.AutoCompleteEvent;
 import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.WidgetBuilder;
 
 public class AutoCompleteRenderer extends CoreRenderer {
@@ -64,7 +65,7 @@ public class AutoCompleteRenderer extends CoreRenderer {
         String clientId = ac.getClientId(context);
         String var = ac.getVar();
         Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
-        Converter converter = ac.getConverter();
+        Converter converter = ComponentUtils.getConverter(context, ac);
         boolean pojo = var != null;
 
         writer.startElement("div", ac);

@@ -51,6 +51,17 @@
         setCookie : function(name, value) {
             $.cookie(name, value);
         },
+                
+        cookiesEnabled: function() {
+            var cookieEnabled = (navigator.cookieEnabled) ? true : false;
+
+            if(typeof navigator.cookieEnabled === 'undefined' && !cookieEnabled) { 
+                document.cookie="testcookie";
+                cookieEnabled = (document.cookie.indexOf("testcookie") !== -1) ? true : false;
+            }
+            
+            return (cookieEnabled);
+        },
 
         skinInput : function(input) {
             input.hover(
@@ -78,14 +89,14 @@
         skinButton : function(button) {
             button.mouseover(function(){
                 var el = $(this);
-                if(!button.hasClass('ui-state-disabled')) {
+                if(!button.prop('disabled')) {
                     el.addClass('ui-state-hover');
                 }
             }).mouseout(function() {
                 $(this).removeClass('ui-state-active ui-state-hover');
             }).mousedown(function() {
                 var el = $(this);
-                if(!button.hasClass('ui-state-disabled')) {
+                if(!button.prop('disabled')) {
                     el.addClass('ui-state-active').removeClass('ui-state-hover');
                 }
             }).mouseup(function() {
@@ -95,7 +106,7 @@
             }).blur(function() {
                 $(this).removeClass('ui-state-focus ui-state-active');
             }).keydown(function(e) {
-                if(e.keyCode == $.ui.keyCode.SPACE || e.keyCode == $.ui.keyCode.ENTER || e.keyCode == $.ui.keyCode.NUMPAD_ENTER) {
+                if(e.keyCode === $.ui.keyCode.SPACE || e.keyCode === $.ui.keyCode.ENTER || e.keyCode === $.ui.keyCode.NUMPAD_ENTER) {
                     $(this).addClass('ui-state-active');
                 }
             }).keyup(function() {
@@ -103,7 +114,7 @@
             });
 
             //aria
-            button.attr('role', 'button').attr('aria-disabled', button.is(':disabled'));
+            button.attr('role', 'button').attr('aria-disabled', button.prop('disabled'));
 
             return this;
         },
@@ -130,7 +141,7 @@
 
         //ajax shortcut
         ab: function(cfg, ext) {
-            PrimeFaces.ajax.AjaxRequest(cfg, ext);
+            return PrimeFaces.ajax.AjaxRequest(cfg, ext);
         },
 
         info: function(log) {
@@ -215,10 +226,10 @@
 
         createWidget : function(widgetConstructor, widgetVar, cfg, resource) {            
             if(PrimeFaces.widget[widgetConstructor]) {
-                if(window[widgetVar])
-                    window[widgetVar].refresh(cfg);                                     //ajax spdate
+                if(PrimeFaces.widgets[widgetVar])
+                    PrimeFaces.widgets[widgetVar].refresh(cfg);                                                    //ajax spdate
                 else
-                    window[widgetVar] = new PrimeFaces.widget[widgetConstructor](cfg);  //page init
+                    PrimeFaces.widgets[widgetVar] = new PrimeFaces.widget[widgetConstructor](cfg);  //page init
             }
             else {
                 var scriptURI = $('script[src*="/javax.faces.resource/primefaces.js"]').attr('src').replace('primefaces.js', resource + '/' + resource + '.js'),
@@ -231,7 +242,7 @@
                 //load script and initialize widget
                 PrimeFaces.getScript(location.protocol + '//' + location.host + scriptURI, function() {
                     setTimeout(function() {
-                        window[widgetVar] = new PrimeFaces.widget[widgetConstructor](cfg);
+                        PrimeFaces.widgets[widgetVar] = new PrimeFaces.widget[widgetConstructor](cfg);
                     }, 100);
                 });
             }
@@ -285,21 +296,23 @@
         },
 
         monitorDownload: function(start, complete) {
-            if(start) {
-                start();
-            }
-
-            window.downloadMonitor = setInterval(function() {
-                var downloadComplete = PrimeFaces.getCookie('primefaces.download');
-
-                if(downloadComplete == 'true') {
-                    if(complete) {
-                        complete();
-                    }
-                    clearInterval(window.downloadPoll);
-                    PrimeFaces.setCookie('primefaces.download', null);
+            if(this.cookiesEnabled()) {
+                if(start) {
+                    start();
                 }
-            }, 500);
+
+                window.downloadMonitor = setInterval(function() {
+                    var downloadComplete = PrimeFaces.getCookie('primefaces.download');
+
+                    if(downloadComplete === 'true') {
+                        if(complete) {
+                            complete();
+                        }
+                        clearInterval(window.downloadMonitor);
+                        PrimeFaces.setCookie('primefaces.download', null);
+                    }
+                }, 250);
+            }
         },
 
         /**
@@ -317,30 +330,7 @@
             },1000);
 
         },
-
-        /**
-         *  Aligns container scrollbar to keep item in container viewport, algorithm copied from jquery-ui menu widget
-         */
-        scrollInView: function(container, item) { 
-            if(item.length == 0) {
-                return;
-            }
-
-            var borderTop = parseFloat(container.css('borderTopWidth')) || 0,
-            paddingTop = parseFloat(container.css('paddingTop')) || 0,
-            offset = item.offset().top - container.offset().top - borderTop - paddingTop,
-            scroll = container.scrollTop(),
-            elementHeight = container.height(),
-            itemHeight = item.outerHeight(true);
-
-            if(offset < 0) {
-                container.scrollTop(scroll + offset);
-            }
-            else if((offset + itemHeight) > elementHeight) {
-                container.scrollTop(scroll + offset - elementHeight + itemHeight);
-            }
-        },        
-
+        
         locales : {},
 
         zindex : 1000,
@@ -356,6 +346,10 @@
         BEHAVIOR_EVENT_PARAM : "javax.faces.behavior.event",
 
         PARTIAL_EVENT_PARAM : "javax.faces.partial.event",
+        
+        RESET_VALUES_PARAM : "primefaces.resetvalues",
+        
+        IGNORE_AUTO_UPDATE_PARAM : "primefaces.ignoreautoupdate",
 
         VIEW_STATE : "javax.faces.ViewState",
 
@@ -390,13 +384,149 @@
     		
     		return true;
     	}
-    };    
+    };
+    
+    PrimeFaces.Expressions = {
 
+    	resolveComponentsAsSelector: function(expressions) {
+
+            var splittedExpressions = PrimeFaces.Expressions.splitExpressions(expressions);
+            var elements = $();
+
+            if (splittedExpressions) {
+                for (var i = 0; i < splittedExpressions.length; ++i) {
+                    var expression =  $.trim(splittedExpressions[i]);
+                    if (expression.length > 0) {
+
+                    	// skip unresolvable keywords
+                    	if (expression == '@none' || expression == '@all') {
+                    		continue;
+                    	}
+                    	
+                        // just a id
+                        if (expression.indexOf("@") == -1) {
+                        	elements = elements.add(
+                            		$(document.getElementById(expression)));
+                        }
+                        // @widget
+                        else if (expression.indexOf("@widgetVar(") == 0) {
+                            var widgetVar = expression.substring(11, expression.length - 1);
+                            var widget = PrimeFaces.widgets[widgetVar];
+
+                            if (widget) {
+                            	elements = elements.add(
+                                		$(document.getElementById(widget.id)));
+                            } else {
+                                PrimeFaces.error("Widget for widgetVar \"" + widgetVar + "\" not avaiable");
+                            }
+                        }
+                        // PFS
+                        else if (expression.indexOf("@(") == 0) {
+                            //converts pfs to jq selector e.g. @(div.mystyle :input) to div.mystyle :input
+							elements = elements.add(
+                        			$(expression.substring(2, expression.length - 1)));
+                        }
+                    }
+                }
+            }
+
+            return elements;
+    	},
+
+        resolveComponents: function(expressions) {
+            var splittedExpressions = PrimeFaces.Expressions.splitExpressions(expressions);
+            var ids = [];
+            
+            if (splittedExpressions) {
+                for (var i = 0; i < splittedExpressions.length; ++i) {
+                    var expression =  $.trim(splittedExpressions[i]);
+                    if (expression.length > 0) {
+
+                        // just a id or passtrough keywords
+                        if (expression.indexOf("@") == -1 || expression == '@none' || expression == '@all') {
+                            if (!PrimeFaces.inArray(ids, expression)) {
+                                ids.push(expression);
+                            }
+                        }
+                        // @widget
+                        else if (expression.indexOf("@widgetVar(") == 0) {
+                            var widgetVar = expression.substring(11, expression.length - 1);
+                            var widget = PrimeFaces.widgets[widgetVar];
+
+                            if (widget) {
+                                if (!PrimeFaces.inArray(ids, widget.id)) {
+                                    ids.push(widget.id);
+                                }
+                            } else {
+                                PrimeFaces.error("Widget for widgetVar \"" + widgetVar + "\" not avaiable");
+                            }
+                        }
+                        // PFS
+                        else if (expression.indexOf("@(") == 0) {
+                            //converts pfs to jq selector e.g. @(div.mystyle :input) to div.mystyle :input
+                            var elements = $(expression.substring(2, expression.length - 1));
+
+                            for (var i = 0; i < elements.length; i++) {
+                                var element = $(elements[i]);
+                                var clientId = element.data(PrimeFaces.CLIENT_ID_DATA) || element.attr('id');
+
+                                if (!PrimeFaces.inArray(ids, clientId)) {
+                                    ids.push(clientId);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ids;
+        },
+        
+        splitExpressions: function(value) {
+
+    		var expressions = [];
+    		var buffer = '';
+
+    		var parenthesesCounter = 0;
+
+    		for (var i = 0; i < value.length; i++) {
+    			var c = value[i];
+
+    			if (c == '(') {
+    				parenthesesCounter++;
+    			}
+
+    			if (c == ')') {
+    				parenthesesCounter--;
+    			}
+
+    			if ((c == ' ' || c == ',') && parenthesesCounter == 0) {
+					// lets add token inside buffer to our tokens
+    				expressions.push(buffer);
+					// now we need to clear buffer
+    				buffer = '';
+    			} else {
+    				buffer += c;
+    			}
+    		}
+
+    		// lets not forget about part after the separator
+    		expressions.push(buffer);
+
+    		return expressions;
+        }	
+    };
+    
     /**
      * PrimeFaces Namespaces
      */
     PrimeFaces.ajax = {};
     PrimeFaces.widget = {};
+    PrimeFaces.widgets = {};
+    
+    PF = function(widgetVar) {
+        return PrimeFaces.widgets[widgetVar];
+    };
 
     PrimeFaces.ajax.AjaxUtils = {
 
@@ -410,7 +540,7 @@
 
         updateState: function(value) {
             var viewstateValue = $.trim(value),
-            forms = this.portletForms ? this.portletForms : $('form');
+            forms = this.portletForms ? $(this.portletForms) : $('form');
 
             forms.each(function() {
                 var form = $(this),
@@ -421,18 +551,23 @@
                 }
                 else
                 {
-                    form.append('<input type="hidden" name="javax.faces.ViewState" id="javax.faces.ViewState" value="' + viewstateValue + '" autocomplete="off" />');
+                    form.append('<input type="hidden" name="javax.faces.ViewState" value="' + viewstateValue + '" autocomplete="off" />');
                 }
             });
         },
 
         updateElement: function(id, content) {        
-            if(id == PrimeFaces.VIEW_STATE) {
+            if(id.indexOf(PrimeFaces.VIEW_STATE) !== -1) {
                 PrimeFaces.ajax.AjaxUtils.updateState.call(this, content);
             }
-            else if(id == PrimeFaces.VIEW_ROOT) {
+            else if(id === PrimeFaces.VIEW_ROOT) {
+            	$.ajaxSetup({'cache' : true});
                 $('head').html(content.substring(content.indexOf("<head>") + 6, content.lastIndexOf("</head>")));
-                $('body').html(content.substring(content.indexOf("<body>") + 6, content.lastIndexOf("</body>")));
+                $.ajaxSetup({'cache' : false});
+
+                var bodyStartTag = new RegExp("<body[^>]*>", "gi").exec(content)[0];
+                var bodyStartIndex = content.indexOf(bodyStartTag) + bodyStartTag.length;
+                $('body').html(content.substring(bodyStartIndex, content.lastIndexOf("</body>")));
             }
             else {
                 $(PrimeFaces.escapeClientId(id)).replaceWith(content);
@@ -461,68 +596,49 @@
             }
         },
 
-        findComponents: function(selector) {
-            //converts pfs to jq selector e.g. @(div.mystyle :input) to div.mystyle :input
-            var jqSelector = selector.substring(2, selector.length - 1),
-            components = $(jqSelector),
-            ids = [];
+        /**
+         * Type: update/process
+         */
+        resolveComponentsForAjaxCall: function(cfg, type) {
 
-            components.each(function() {
-                var element = $(this),
-                clientId = element.data(PrimeFaces.CLIENT_ID_DATA)||element.attr('id');
-
-                ids.push(clientId);
-            });
-
-            return ids;
-        },
-
-        idsToArray: function(cfg, type, selector) {
-            var arr = [],
-            def = cfg[type],
-            ext = cfg.ext ? cfg.ext[type] : null;
-
-            if(def) {
-                $.merge(arr, def.split(' '));
+            var expressions = '';
+            
+            if (cfg[type]) {
+                expressions += cfg[type];
             }
 
-            if(ext) {
-                var extArr = ext.split(' ');
-
-                for(var i = 0; i < extArr.length; i++) {
-                    if(!PrimeFaces.inArray(arr, extArr[i])) {
-                        arr.push(extArr[i]);
-                    }
-                }
+            if (cfg.ext && cfg.ext[type]) {
+                expressions += " " + cfg.ext[type];
             }
-
-            if(selector) {
-                $.merge(arr, PrimeFaces.ajax.AjaxUtils.findComponents(selector));
-            }
-
-            return arr;
+            
+            return PrimeFaces.Expressions.resolveComponents(expressions);
         },
 
         send: function(cfg) {
             PrimeFaces.debug('Initiating ajax request.');
-
+            
+            var global = (cfg.global === true || cfg.global === undefined) ? true : false,
+            form = null,
+            sourceId = null;
+    
             if(cfg.onstart) {
                 var retVal = cfg.onstart.call(this, cfg);
-                if(retVal == false) {
+                if(retVal === false) {
                     PrimeFaces.debug('Ajax request cancelled by onstart callback.');
 
                     //remove from queue
                     if(!cfg.async) {
                         PrimeFaces.ajax.Queue.poll();
                     }
-
-                    return;  //cancel request
+                    
+                    return false;  //cancel request
                 }
             }
-
-            var form = null,
-            sourceId = null;
-
+            
+            if(global) {
+                $(document).trigger('pfAjaxStart');
+            }
+            
             //source can be a client id or an element defined by this keyword
             if(typeof(cfg.source) == 'string') {
                 sourceId = cfg.source;
@@ -549,10 +665,10 @@
             postParams = [];
 
             //portlet support
-            var pForms = null;
+            var pFormsSelector = null;
             if(encodedURLfield.length > 0) {
+                pFormsSelector = 'form[action="' + postURL + '"]';
                 postURL = encodedURLfield.val();
-                pForms = $('form[action="' + form.attr('action') + '"]');   //find forms of the portlet
             }
 
             PrimeFaces.debug('URL to post ' + postURL + '.');
@@ -568,17 +684,41 @@
                 name:PrimeFaces.PARTIAL_SOURCE_PARAM, 
                 value:sourceId
             });
+            
+            //resetValues
+            if (cfg.resetValues) {
+                postParams.push({
+                    name:PrimeFaces.RESET_VALUES_PARAM, 
+                    value:true
+                });
+            }
 
+            //ignoreAutoUpdate
+            if (cfg.ignoreAutoUpdate) {
+                postParams.push({
+                    name:PrimeFaces.IGNORE_AUTO_UPDATE_PARAM, 
+                    value:true
+                });
+            }
+            
             //process
-            var processArray = PrimeFaces.ajax.AjaxUtils.idsToArray(cfg, 'process', cfg.processSelector),
-            processIds = processArray.length > 0 ? processArray.join(' ') : '@all';
-            postParams.push({
-                name:PrimeFaces.PARTIAL_PROCESS_PARAM, 
-                value:processIds
-            });
+            var processArray = PrimeFaces.ajax.AjaxUtils.resolveComponentsForAjaxCall(cfg, 'process');
+            if(cfg.fragmentId) {
+                processArray.push(cfg.fragmentId);
+            }
+            var processIds = processArray.length > 0 ? processArray.join(' ') : '@all';
+            if (processIds != '@none') {
+	            postParams.push({
+	                name:PrimeFaces.PARTIAL_PROCESS_PARAM, 
+	                value:processIds
+	            });
+            }
 
             //update
-            var updateArray = PrimeFaces.ajax.AjaxUtils.idsToArray(cfg, 'update', cfg.updateSelector);
+            var updateArray = PrimeFaces.ajax.AjaxUtils.resolveComponentsForAjaxCall(cfg, 'update');
+            if(cfg.fragmentId && cfg.fragmentUpdate) {
+                updateArray.push(cfg.fragmentId);
+            }
             if(updateArray.length > 0) {
                 postParams.push({
                     name:PrimeFaces.PARTIAL_UPDATE_PARAM, 
@@ -624,15 +764,13 @@
             * Only add params of process components and their children 
             * if partial submit is enabled and there are components to process partially
             */
-            if(cfg.partialSubmit && processIds != '@all') {
-                var hasViewstate = false;
+            if(cfg.partialSubmit && processIds.indexOf('@all') == -1) {
+            	var hasViewstate = false;
 
-                if(processIds != '@none') {
-                    var processIdsArray = processIds.split(' ');
-
-                    $.each(processIdsArray, function(i, item) {
-                        var jqProcess = $(PrimeFaces.escapeClientId(item)),
-                        componentPostParams = null;
+                if(processIds.indexOf('@none') == -1) {
+                	for (var i = 0; i < processArray.length; i++) {
+                        var jqProcess = $(PrimeFaces.escapeClientId(processArray[i]));
+                        var componentPostParams = null;
 
                         if(jqProcess.is('form')) {
                             componentPostParams = jqProcess.serializeArray();
@@ -646,7 +784,7 @@
                         }
 
                         $.merge(postParams, componentPostParams);
-                    });
+                    }
                 }
 
                 //add viewstate if necessary
@@ -673,63 +811,78 @@
                 cache : false,
                 dataType : "xml",
                 data : postData,
-                portletForms: pForms,
+                portletForms: pFormsSelector,
                 source: cfg.source,
+                global: false,
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader('Faces-Request', 'partial/ajax');
+                    
+                    if(global) {
+                        $(document).trigger('pfAjaxSend', [xhr, this]);
+                    }       
+                },
+                error: function(xhr, status, errorThrown) {                    
+                    if(cfg.onerror) {
+                        cfg.onerror.call(this, [xhr, status, errorThrown]);
+                    }
+                    
+                    if(global) {
+                        $(document).trigger('pfAjaxError', xhr, this, errorThrown);
+                    }
+
+                    PrimeFaces.error('Request return with error:' + status + '.');
+                },
+                success: function(data, status, xhr) {
+                    PrimeFaces.debug('Response received succesfully.');
+                    
+                    var parsed;
+
+                    //call user callback
+                    if(cfg.onsuccess) {
+                        parsed = cfg.onsuccess.call(this, data, status, xhr);
+                    }
+                    
+                    //extension callback that might parse response
+                    if(cfg.ext && cfg.ext.onsuccess && !parsed) {
+                        parsed = cfg.ext.onsuccess.call(this, data, status, xhr); 
+                    }
+                    
+                    if(global) {
+                        $(document).trigger('pfAjaxSuccess', [xhr, this]);
+                    }
+                    
+                    //do not execute default handler as response already has been parsed
+                    if(parsed) {
+                        return;
+                    } 
+                    else {
+                        PrimeFaces.ajax.AjaxResponse.call(this, data, status, xhr);
+                    }
+                    
+                    PrimeFaces.debug('DOM is updated.');
+                },
+                complete: function(xhr, status) {
+                    if(cfg.oncomplete) {
+                        cfg.oncomplete.call(this, xhr, status, this.args);
+                    }
+
+                    if(cfg.ext && cfg.ext.oncomplete) {
+                        cfg.ext.oncomplete.call(this, xhr, status, this.args);
+                    }
+                    
+                    if(global) {
+                        $(document).trigger('pfAjaxComplete', [xhr, this]);
+                    }
+                    
+                    PrimeFaces.debug('Response completed.');
+
+                    if(!cfg.async) {
+                        PrimeFaces.ajax.Queue.poll();
+                    }
                 }
             };
-
-            xhrOptions.global = cfg.global === true || cfg.global === undefined ? true : false;
-
-            $.ajax(xhrOptions)
-            .done(function(data, status, xhr) {
-                PrimeFaces.debug('Response received succesfully.');
-                
-                var parsed;
-
-                //call user callback
-                if(cfg.onsuccess) {
-                    parsed = cfg.onsuccess.call(this, data, status, xhr);
-                }
-
-                //extension callback that might parse response
-                if(cfg.ext && cfg.ext.onsuccess && !parsed) {
-                    parsed = cfg.ext.onsuccess.call(this, data, status, xhr); 
-                }
-
-                //do not execute default handler as response already has been parsed
-                if(parsed) {
-                    return;
-                } 
-                else {
-                    PrimeFaces.ajax.AjaxResponse.call(this, data, status, xhr);
-                }
-
-                PrimeFaces.debug('DOM is updated.');
-            })
-            .fail(function(xhr, status, errorThrown) {
-                if(cfg.onerror) {
-                    cfg.onerror.call(xhr, status, errorThrown);
-                }
-
-                PrimeFaces.error('Request return with error:' + status + '.');
-            })
-            .always(function(xhr, status) {
-                if(cfg.oncomplete) {
-                    cfg.oncomplete.call(this, xhr, status, this.args);
-                }
-
-                if(cfg.ext && cfg.ext.oncomplete) {
-                    cfg.ext.oncomplete.call(this, xhr, status, this.args);
-                }
-
-                PrimeFaces.debug('Response completed.');
-
-                if(!cfg.async) {
-                    PrimeFaces.ajax.Queue.poll();
-                }
-            });
+            
+            $.ajax(xhrOptions);
         }
     };
 
@@ -737,10 +890,10 @@
         cfg.ext = ext;
 
         if(cfg.async) {
-            PrimeFaces.ajax.AjaxUtils.send(cfg);
+            return PrimeFaces.ajax.AjaxUtils.send(cfg);
         }
         else {
-            PrimeFaces.ajax.Queue.offer(cfg);
+            return PrimeFaces.ajax.Queue.offer(cfg);
         }
     }
 
@@ -797,7 +950,7 @@
         isEmpty : function() {
             return this.requests.length == 0;
         }
-    };
+};
 
     /* Simple JavaScript Inheritance
      * By John Resig http://ejohn.org/
@@ -871,7 +1024,7 @@
         init: function(cfg) {
             this.cfg = cfg;
             this.id = cfg.id;
-            this.jqId = PrimeFaces.escapeClientId(this.id),
+            this.jqId = PrimeFaces.escapeClientId(this.id);
             this.jq = $(this.jqId);
 
             //remove script tag
@@ -893,7 +1046,7 @@
     //expose globally
     window.PrimeFaces = PrimeFaces;
 
-})(window);
+})(window);   
 
 PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {        
     if(id == PrimeFaces.VIEW_STATE) {
