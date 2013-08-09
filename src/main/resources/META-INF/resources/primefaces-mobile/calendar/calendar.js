@@ -1,7 +1,7 @@
 //mobiscroll.core.js
 /*jslint eqeq: true, plusplus: true, undef: true, sloppy: true, vars: true, forin: true, nomen: true */
 /*!
- * jQuery MobiScroll v2.6.2
+ * jQuery MobiScroll v2.7.0
  * http://mobiscroll.com
  *
  * Copyright 2010-2013, Acid Media
@@ -38,6 +38,7 @@
             index,
             timer,
             readOnly,
+            preventChange,
             preventShow,
             that = this,
             ms = $.mobiscroll,
@@ -238,7 +239,7 @@
         }
 
         function read() {
-            that.temp = ((input && that.val !== null && that.val != elm.val()) || that.values === null) ? s.parseValue(elm.val() || '', that) : that.values.slice(0);
+            that.temp = that.values ? that.values.slice(0) : s.parseValue(elm.val() || '', that);
             setVal();
         }
 
@@ -270,7 +271,6 @@
         }
 
         function scroll(t, index, val, time, active) {
-
             var px = (m - val) * hi,
                 style = t[0].style,
                 i;
@@ -399,17 +399,18 @@
 
             var cell = $('.dw-li', t).eq(val),
                 o = orig === undefined ? val : orig,
+                active = orig !== undefined,
                 idx = index,
                 time = anim ? (val == o ? 0.1 : Math.abs((val - o) * s.timeUnit)) : 0;
 
             // Set selected scroller value
             that.temp[idx] = cell.attr('data-val');
 
-            scroll(t, idx, val, time, orig);
+            scroll(t, idx, val, time, active);
 
             setTimeout(function () {
                 // Validate
-                scrollToPos(time, idx, true, dir, orig !== undefined);
+                scrollToPos(time, idx, true, dir, active);
             }, 10);
         }
 
@@ -423,10 +424,10 @@
             calc(t, val < min ? max : val, 2, true);
         }
 
-        function setVal(fill, time, noscroll, temp) {
+        function setVal(fill, time, noscroll, temp, manual) {
 
             if (visible && !noscroll) {
-                scrollToPos(time);
+                scrollToPos(time, undefined, manual);
             }
 
             v = s.formatResult(that.temp);
@@ -436,10 +437,9 @@
                 that.val = v;
             }
 
-            if (fill) {
-                if (input) {
-                    elm.val(v).trigger('change');
-                }
+            if (fill && input) {
+                preventChange = true;
+                elm.val(v).change();
             }
         }
 
@@ -573,9 +573,9 @@
         * @param {Number} [time=0] - Animation time
         * @param {Boolean} [temp=false] - If true, then only set the temporary value.(only scroll there but not set the value)
         */
-        that.setValue = function (values, fill, time, temp) {
+        that.setValue = function (values, fill, time, temp, manual) {
             that.temp = $.isArray(values) ? values.slice(0) : s.parseValue.call(e, values + '', that);
-            setVal(fill, time, false, temp);
+            setVal(fill, time, false, temp, manual);
         };
 
         that.getValue = function () {
@@ -595,7 +595,7 @@
         /**
         * Changes the values of a wheel, and scrolls to the correct position
         */
-        that.changeWheel = function (idx, time) {
+        that.changeWheel = function (idx, time, manual) {
             if (dw) {
                 var i = 0,
                     nr = idx.length;
@@ -608,7 +608,7 @@
                             nr--;
                             if (!nr) {
                                 that.position();
-                                scrollToPos(time, undefined, true);
+                                scrollToPos(time, undefined, manual);
                                 return false;
                             }
                         }
@@ -633,7 +633,7 @@
                 startY;
 
             if (s.tap) {
-                el.on('touchstart.dw', function (e) {
+                el.on('touchstart.dw mousedown.dw', function (e) {
                     e.preventDefault();
                     startX = getCoord(e, 'X');
                     startY = getCoord(e, 'Y');
@@ -654,6 +654,7 @@
                     // If handler was not called on touchend, call it on click;
                     handler.call(this, e);
                 }
+                e.preventDefault();
             });
 
         };
@@ -696,7 +697,7 @@
                 $.each(wg, function (j, w) { // Wheels
                     wheels[l] = w;
                     lbl = w.label !== undefined ? w.label : j;
-                    html += '<td><div class="dwwl dwrc dwwl' + l + '">' + (s.mode != 'scroller' ? '<div class="dwb-e dwwb dwwbp" style="height:' + hi + 'px;line-height:' + hi + 'px;"><span>+</span></div><div class="dwb-e dwwb dwwbm" style="height:' + hi + 'px;line-height:' + hi + 'px;"><span>&ndash;</span></div>' : '') + '<div class="dwl">' + lbl + '</div><div tabindex="0" aria-live="off" aria-label="' + lbl + '" role="listbox" class="dwww"><div class="dww" style="height:' + (s.rows * hi) + 'px;min-width:' + s.width + 'px;"><div class="dw-ul">';
+                    html += '<td><div class="dwwl dwrc dwwl' + l + '">' + (s.mode != 'scroller' ? '<a href="#" tabindex="-1" class="dwb-e dwwb dwwbp" style="height:' + hi + 'px;line-height:' + hi + 'px;"><span>+</span></a><a href="#" tabindex="-1" class="dwb-e dwwb dwwbm" style="height:' + hi + 'px;line-height:' + hi + 'px;"><span>&ndash;</span></a>' : '') + '<div class="dwl">' + lbl + '</div><div tabindex="0" aria-live="off" aria-label="' + lbl + '" role="listbox" class="dwww"><div class="dww" style="height:' + (s.rows * hi) + 'px;min-width:' + s.width + 'px;"><div class="dw-ul">';
                     // Create wheel values
                     html += generateWheelItems(l);
                     html += '</div><div class="dwwol"></div></div><div class="dwwo"></div></div><div class="dwwol"></div></div></td>';
@@ -706,7 +707,7 @@
                 html += '</tr></table></div></div>';
             });
 
-            html += '</div>' + (s.display != 'inline' ? '<div class="dwbc' + (s.button3 ? ' dwbc-p' : '') + '"><span class="dwbw dwb-s"><span class="dwb dwb-e" role="button" tabindex="0">' + s.setText + '</span></span>' + (s.button3 ? '<span class="dwbw dwb-n"><span class="dwb dwb-e" role="button" tabindex="0">' + s.button3Text + '</span></span>' : '') + '<span class="dwbw dwb-c"><span class="dwb dwb-e" role="button" tabindex="0">' + s.cancelText + '</span></span></div></div>' : '') + '</div></div></div>';
+            html += '</div>' + (s.display != 'inline' ? '<div class="dwbc' + (s.button3 ? ' dwbc-p' : '') + '"><span class="dwbw dwb-s"><a href="#" class="dwb dwb-e" role="button">' + s.setText + '</a></span>' + (s.button3 ? '<span class="dwbw dwb-n"><a href="#" class="dwb dwb-e" role="button">' + s.button3Text + '</a></span>' : '') + '<span class="dwbw dwb-c"><a href="#" class="dwb dwb-e" role="button">' + s.cancelText + '</a></span></div></div>' : '') + '</div></div></div>';
             dw = $(html);
 
             scrollToPos();
@@ -738,16 +739,18 @@
 
             if (s.display != 'inline') {
                 // Init buttons
-                that.tap($('.dwb-s span', dw), function () {
+                that.tap($('.dwb-s .dwb', dw), function () {
                     that.select();
                 });
 
-                that.tap($('.dwb-c span', dw), function () {
+                that.tap($('.dwb-c .dwb', dw), function () {
                     that.cancel();
                 });
 
                 if (s.button3) {
-                    that.tap($('.dwb-n span', dw), s.button3);
+                    that.tap($('.dwb-n .dwb', dw), function (e) {
+                        s.button3.call(this, e, that);
+                    });
                 }
 
                 // Enter / ESC
@@ -795,19 +798,19 @@
             }
 
             // Events
-            $('.dwwl', dw)
-                .on('DOMMouseScroll mousewheel', onScroll)
-                .on(START_EVENT, onStart)
-                .on('keydown', onKeyDown)
-                .on('keyup', onKeyUp);
-
-            dw.on(START_EVENT, '.dwb-e', onBtnStart).on('keydown', '.dwb-e', function (e) {
-                if (e.keyCode == 32) { // Space
-                    e.preventDefault();
-                    e.stopPropagation();
-                    $(this).click();
-                }
-            });
+            dw.on('DOMMouseScroll mousewheel', '.dwwl', onScroll)
+                .on(START_EVENT, '.dwwl', onStart)
+                .on('keydown', '.dwwl', onKeyDown)
+                .on('keyup', '.dwwl', onKeyUp)
+                .on(START_EVENT, '.dwb-e', onBtnStart)
+                .on('click', '.dwb-e', function (e) { e.preventDefault(); })
+                .on('keydown', '.dwb-e', function (e) {
+                    if (e.keyCode == 32) { // Space
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $(this).click();
+                    }
+                });
 
             event('onShow', [dw, v]);
         };
@@ -934,10 +937,19 @@
                     }
                 }
                 if (s.showOnTap) {
-                    that.tap(elm, function () {
+                    elm.on('click.dw', function () {
                         that.show();
                     });
                 }
+            }
+
+            if (input) {
+                elm.on('change.dw', function () {
+                    if (!preventChange) {
+                        that.setValue(elm.val(), false, 0.2);
+                    }
+                    preventChange = false;
+                });
             }
         };
 
@@ -962,6 +974,7 @@
             if (input) {
                 e.readOnly = readOnly;
             }
+            event('onDestroy', []);
         };
 
         that.getInst = function () {
@@ -1015,7 +1028,6 @@
         var org = e.originalEvent,
             ct = e.changedTouches;
         return ct || (org && org.changedTouches) ? (org ? org.changedTouches[0]['page' + c] : ct[0]['page' + c]) : e['page' + c];
-
     }
 
     function constrain(val, min, max) {
@@ -1164,7 +1176,10 @@
                 return init(this, extend(method, { preset: name }), arguments);
             };
         },
-        has3d: has3d,
+        util: {
+            prefix: prefix,
+            has3d: has3d
+        },
         shorts: {},
         presets: {},
         themes: {},
@@ -1436,14 +1451,14 @@
              * @param {Boolean} [fill=false] Also set the value of the associated input element. Default is true.
              * @return {Object} jQuery object to maintain chainability
              */
-            inst.setDate = function (d, fill, time, temp) {
+            inst.setDate = function (d, fill, time, temp, manual) {
                 var i;
 
                 // Set wheels
                 for (i in o) {
                     inst.temp[o[i]] = d[f[i]] ? d[f[i]]() : f[i](d);
                 }
-                inst.setValue(inst.temp, fill, time, temp);
+                inst.setValue(inst.temp, fill, time, temp, manual);
             };
 
             /**
@@ -1456,11 +1471,35 @@
                 return getDate(temp ? inst.temp : inst.values);
             };
 
+            inst.convert = function (obj) {
+                var x = obj;
+
+                if (!$.isArray(obj)) { // Convert from old format
+                    x = [];
+                    $.each(obj, function (i, o) {
+                        $.each(o, function (j, o) {
+                            if (i === 'daysOfWeek') {
+                                if (o.d) {
+                                    o.d = 'w' + o.d;
+                                } else {
+                                    o = 'w' + o;
+                                }
+                            }
+                            x.push(o);
+                        });
+                    });
+                }
+
+                return x;
+            };
+
+            inst.format = hformat;
+
             // ---
 
             return {
                 button3Text: s.showNow ? s.nowText : undefined,
-                button3: s.showNow ? function () { inst.setDate(new Date(), false, 0.3, true); } : undefined,
+                button3: s.showNow ? function () { inst.setDate(new Date(), false, 0.3, true, true); } : undefined,
                 wheels: wheels,
                 headerText: function (v) {
                     return ms.formatDate(hformat, getDate(inst.temp), s);
@@ -1478,13 +1517,10 @@
                 * @return {Array} - An array containing the wheel values to set
                 */
                 parseValue: function (val) {
-                    var d = new Date(),
+                    var d = ms.parseDate(format, val, s),
                         i,
                         result = [];
-                    try {
-                        d = ms.parseDate(format, val, s);
-                    } catch (e) {
-                    }
+
                     // Set wheels
                     for (i in o) {
                         result[o[i]] = d[f[i]] ? d[f[i]]() : f[i](d);
@@ -1554,31 +1590,18 @@
                             }
                             // Disable some days
                             if (s.invalid && i == 'd') {
-                                var idx = [];
-                                // Disable exact dates
-                                if (s.invalid.dates) {
-                                    $.each(s.invalid.dates, function (i, v) {
-                                        if (v.getFullYear() == y && v.getMonth() == m) {
-                                            idx.push(v.getDate() - 1);
-                                        }
-                                    });
-                                }
-                                // Disable days of week
-                                if (s.invalid.daysOfWeek) {
-                                    var first = new Date(y, m, 1).getDay(),
-                                        j;
-                                    $.each(s.invalid.daysOfWeek, function (i, v) {
-                                        for (j = v - first; j < maxdays; j += 7) {
-                                            if (j >= 0) {
-                                                idx.push(j);
-                                            }
-                                        }
-                                    });
-                                }
-                                // Disable days of month
-                                if (s.invalid.daysOfMonth) {
-                                    $.each(s.invalid.daysOfMonth, function (i, v) {
-                                        v = (v + '').split('/');
+                                var d, j, k, v,
+                                    first = new Date(y, m, 1).getDay(),
+                                    idx = [],
+                                    invalid = inst.convert(s.invalid);
+
+                                for (j = 0; j < invalid.length; j++) {
+                                    d = invalid[j];
+                                    v = d + '';
+                                    if (d.getTime && d.getFullYear() == y && d.getMonth() == m) { // Exact date
+                                        idx.push(d.getDate() - 1);
+                                    } else if (!v.match(/w/i)) { // Day of month
+                                        v = v.split('/');
                                         if (v[1]) {
                                             if (v[0] - 1 == m) {
                                                 idx.push(v[1] - 1);
@@ -1586,7 +1609,14 @@
                                         } else {
                                             idx.push(v[0] - 1);
                                         }
-                                    });
+                                    } else { // Day of week
+                                        v = +v.replace('w', '');
+                                        for (k = v - first; k < maxdays; k += 7) {
+                                            if (k >= 0) {
+                                                idx.push(k);
+                                            }
+                                        }
+                                    }
                                 }
                                 $.each(idx, function (i, v) {
                                     $('.dw-li', t).eq(v).removeClass('dw-v');
@@ -1711,7 +1741,8 @@
     * @return {Date} - Returns the extracted date.
     */
     ms.parseDate = function (format, value, settings) {
-        var def = new Date();
+        var s = $.extend({}, defaults, settings),
+            def = s.defaultValue || new Date();
 
         if (!format || !value) {
             return def;
@@ -1719,8 +1750,7 @@
 
         value = (typeof value == 'object' ? value.toString() : value + '');
 
-        var s = $.extend({}, defaults, settings),
-            shortYearCutoff = s.shortYearCutoff,
+        var shortYearCutoff = s.shortYearCutoff,
             year = def.getFullYear(),
             month = def.getMonth() + 1,
             day = def.getDate(),
@@ -1847,7 +1877,7 @@
         hours = (ampm == -1) ? hours : ((ampm && hours < 12) ? (hours + 12) : (!ampm && hours == 12 ? 0 : hours));
         var date = new Date(year, month - 1, day, hours, minutes, seconds);
         if (date.getFullYear() != year || date.getMonth() + 1 != month || date.getDate() != day) {
-            throw 'Invalid date';
+            return def; // Invalid date
         }
         return date;
     };
@@ -1870,9 +1900,9 @@
         init: function (elm, inst) {
             var s = inst.settings;
             $('.dw', elm).removeClass('dwbg').addClass('ui-overlay-shadow ui-corner-all ui-body-' + s.jqmBorder);
-            $('.dwb-s span', elm).attr('data-role', 'button').attr('data-theme', s.jqmSet);
-            $('.dwb-n span', elm).attr('data-role', 'button').attr('data-theme', s.jqmCancel);
-            $('.dwb-c span', elm).attr('data-role', 'button').attr('data-theme', s.jqmCancel);
+            $('.dwb-s .dwb', elm).attr('data-role', 'button').attr('data-mini', 'true').attr('data-theme', s.jqmSet);
+            $('.dwb-n .dwb', elm).attr('data-role', 'button').attr('data-mini', 'true').attr('data-theme', s.jqmCancel);
+            $('.dwb-c .dwb', elm).attr('data-role', 'button').attr('data-mini', 'true').attr('data-theme', s.jqmCancel);
             $('.dwwb', elm).attr('data-role', 'button').attr('data-theme', s.jqmClickPick);
             $('.dwv', elm).addClass('ui-header ui-bar-' + s.jqmHeader);
             $('.dwwr', elm).addClass('ui-body-' + s.jqmBody);

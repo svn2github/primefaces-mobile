@@ -212,13 +212,13 @@
 .dwa .dwwb {
     opacity: 0;
 }
-.dwwbp {
+.dwpm .dwwbp {
     top: 0;
     -webkit-border-radius: 3px 3px 0 0;
     border-radius: 3px 3px 0 0;
     font-size: 40px;
 }
-.dwwbm {
+.dwpm .dwwbm {
     bottom: 0;
     -webkit-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
@@ -341,9 +341,11 @@
     background: #fff;
     -webkit-border-radius: 3px;
 }
-.dwbg .dwwb {
+.dwbg .dwwb, .dwbg .dwwb:hover {
     background: #ccc;
     color: #888;
+    font-weight: normal;
+    text-decoration: none;
     text-shadow: 0 -1px 1px #333;
     box-shadow: 0 0 5px #333;
     -webkit-box-shadow: 0 0 5px #333;
@@ -394,6 +396,9 @@
     padding: .7em 15px .7em 15px;
     border: 0;
 }
+.jqm .dw-hidden {
+    padding: 0;
+}
 .jqm .dwwr {
     border: 0;
     padding: 0;
@@ -410,6 +415,7 @@
 .jqm .dwwb {
     margin: 0;
     border: 0;
+    padding: 0;
 }
 .jqm .dwwb span {
     padding: 0;
