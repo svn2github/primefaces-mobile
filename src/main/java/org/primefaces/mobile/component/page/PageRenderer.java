@@ -103,8 +103,9 @@ public class PageRenderer extends CoreRenderer {
         writer.endElement("script");
 
         renderResource(context, "mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
-        renderResource(context, "primefaces-mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
-
+        renderResource(context, "core/primefaces-core.js", "javax.faces.resource.Script", "primefaces");
+        renderResource(context, "primefaces-mobile.js", "javax.faces.resource.Script", "primefaces-mobile");        
+        
         if(postinit != null) {
             postinit.encodeAll(context);
         }
@@ -138,7 +139,7 @@ public class PageRenderer extends CoreRenderer {
         Map<String, Object> attrs = resource.getAttributes();
         attrs.put("name", resourceName);
         attrs.put("library", library);
-        attrs.put("target", "head");
+        attrs.put("target", "head");        
 
         resource.encodeAll(context);
     }    
