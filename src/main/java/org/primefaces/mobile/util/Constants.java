@@ -19,4 +19,6 @@ public class Constants {
     
     public final static String THEME_PARAM = "primefaces.mobile.THEME";
     public final static String MINI_FORMS = "primefaces.mobile.MINI_FORMS";
+    public final static String LIBRARY = "primefaces-mobile";
+    public final static String VERSION = "0.9.5-SNAPSHOT";
 }
