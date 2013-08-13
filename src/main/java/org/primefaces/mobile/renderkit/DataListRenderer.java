@@ -87,10 +87,15 @@ public class DataListRenderer extends CoreRenderer {
         }
         
         int rowCount = dataList.getRowCount(); 
-               
+        
+        if (!dataList.getAttributes().containsKey("defaultRows")) {
+            dataList.getAttributes().put("defaultRows", dataList.getRows());
+        }
+        
         if (dataList.getVar() != null) {
-            if (dataList.isPaginator() && rowCount > dataList.getRows()) {
-                rowCount = dataList.getRows();
+            if (dataList.isPaginator() && (rowCount != 0)) {
+                rowCount = (Integer) dataList.getAttributes().get("defaultRows");
+                dataList.setRows(rowCount);
             }
 
             for (int i = 0; i < rowCount; i++) {
@@ -165,11 +170,12 @@ public class DataListRenderer extends CoreRenderer {
                 writer.endElement("li");
             }
         }
-                
+                 
         dataList.setFirst(0);
+        dataList.setRows(rowsRendered);
     }    
     
-    protected void encodeScript(FacesContext context, DataList dataList) throws IOException {
+    protected void encodeScript(FacesContext context, DataList dataList) throws IOException {        
         String clientId = dataList.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);                 
         wb.initWithDomReady("DataList", dataList.resolveWidgetVar(), clientId)
