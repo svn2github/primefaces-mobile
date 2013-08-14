@@ -39,6 +39,8 @@ public class CommandButtonRenderer extends CoreRenderer {
         if (context.getExternalContext().getRequestParameterMap().containsKey(param)) {
             component.queueEvent(new ActionEvent(component));
         }
+        
+        decodeBehaviors(context, component);
     }
 
     @Override
@@ -52,29 +54,37 @@ public class CommandButtonRenderer extends CoreRenderer {
         if (button.isDisabled()) styleClass = styleClass + " ui-disabled";        
 
         writer.startElement("a", button);
-		writer.writeAttribute("id", clientId, "id");
-		writer.writeAttribute("name", clientId, "name");
+        writer.writeAttribute("id", clientId, "id");
+        writer.writeAttribute("name", clientId, "name");
         writer.writeAttribute("type", type, "type");
-        writer.writeAttribute("data-role", "button", null);        
+        writer.writeAttribute("data-role", "button", null);      
 
-		String onclick = button.getOnclick();
-		if(!type.equals("reset") && !type.equals("button")) {
+        StringBuilder onclick = new StringBuilder();
+        if(button.getOnclick() != null) {
+            onclick.append(button.getOnclick()).append(";");
+        }
+        
+        String onclickBehaviors = getOnclickBehaviors(context, button);
+        if(onclickBehaviors != null) {
+            onclick.append(onclickBehaviors);
+        }        
+        
+        if (!type.equals("reset") && !type.equals("button")) {
             String request;
-			
-            if(button.isAjax()) {
-                 request = buildAjaxRequest(context, button, null);
-            }
-            else {
+
+            if (button.isAjax()) {
+                request = buildAjaxRequest(context, button, null);
+            } else {
                 UIComponent form = ComponentUtils.findParentForm(context, button);
-                if(form == null) {
+                if (form == null) {
                     throw new FacesException("CommandButton : \"" + clientId + "\" must be inside a form element");
                 }
-                
+
                 request = buildNonAjaxRequest(context, button, form, clientId, true);
             }
-			
-			onclick = onclick != null ? onclick + ";" + request : request;
-		}
+
+            onclick.append(request);
+        }
 
         if(attrs.containsKey("swatch")) writer.writeAttribute("data-theme", attrs.get("swatch"), null);
         if (button.getIcon() != null) {
@@ -84,10 +94,18 @@ public class CommandButtonRenderer extends CoreRenderer {
         if(button.isInline()) writer.writeAttribute("data-inline", "true", null);
         if(button.getStyle() != null) writer.writeAttribute("style", button.getStyle(), null);
         writer.writeAttribute("class", styleClass, null);
-		if(!isValueBlank(onclick)) writer.writeAttribute("onclick", onclick, "onclick");
         
-		if(button.getValue() != null) writer.write(button.getValue().toString());
+	if(onclick.length() > 0) {
+            if (button.requiresConfirmation()) {
+                writer.writeAttribute("data-pfconfirmcommand", onclick.toString(), null);
+                writer.writeAttribute("onclick", button.getConfirmationScript(), "onclick");
+            } else {
+                writer.writeAttribute("onclick", onclick.toString(), "onclick");
+            }
+        }      
+        
+	if(button.getValue() != null) writer.write(button.getValue().toString());
 
-		writer.endElement("a");
+        writer.endElement("a");
     }
 }

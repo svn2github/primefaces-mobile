@@ -22,6 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.confirmdialog.ConfirmDialog;
+import org.primefaces.component.dialog.Dialog;
 
 import org.primefaces.renderkit.CoreRenderer;
 import org.primefaces.util.WidgetBuilder;
@@ -72,7 +73,8 @@ public class ConfirmDialogRenderer extends CoreRenderer {
     protected void encodeScript(FacesContext context, ConfirmDialog dialog) throws IOException {
         String clientId = dialog.getClientId(context);
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.initWithDomReady("Dialog", dialog.resolveWidgetVar(), clientId);
+        wb.initWithDomReady("ConfirmDialog", dialog.resolveWidgetVar(), clientId)
+        .attr("global", dialog.isGlobal(), false);
 
         wb.finish();
     }
@@ -83,13 +85,16 @@ public class ConfirmDialogRenderer extends CoreRenderer {
 
         writer.startElement("div", null);
         writer.writeAttribute("data-role", "header", null);
-        writer.writeAttribute("class", "ui-corner-top", null);
-
+        writer.writeAttribute("class", "ui-corner-top "+Dialog.TITLE_BAR_CLASS, null);
+        
         writer.startElement("h1", null);
+        writer.writeAttribute("class", Dialog.TITLE_CLASS, null); 
         if (headerSwatch != null) {
             writer.writeAttribute("data-theme", headerSwatch, null);
+        }       
+        if (header != null) {
+            writer.writeText(header, null);
         }
-        writer.writeText(header, null);
         writer.endElement("h1");
 
         if (dialog.isClosable()) {
@@ -116,7 +121,7 @@ public class ConfirmDialogRenderer extends CoreRenderer {
 
         writer.startElement("div", null);
         writer.writeAttribute("data-role", "content", null);
-        writer.writeAttribute("class", "ui-corner-bottom ui-content", null);
+        writer.writeAttribute("class", "ui-corner-bottom ui-content "+Dialog.CONTENT_CLASS, null);
         if (contentSwatch != null) {
             writer.writeAttribute("data-theme", contentSwatch, null);
         }
@@ -129,17 +134,18 @@ public class ConfirmDialogRenderer extends CoreRenderer {
         if (severityIcon.equals("error")) icon = "delete";            
         if (severityIcon.equals("fatal")) icon = "minus";        
         writer.startElement("span", null);
-        writer.writeAttribute("class", "ui-icon ui-icon-" + icon, null);
+        writer.writeAttribute("class", "ui-icon "+ConfirmDialog.SEVERITY_ICON_CLASS+" ui-icon-" + icon, null);
         writer.writeAttribute("style", "float: left;margin: 7px 5px;", null);
         writer.endElement("span");
 
+        writer.startElement("p", null);
+        writer.writeAttribute("class", ConfirmDialog.MESSAGE_CLASS, null);       
         if (messageFacet != null) {
             messageFacet.encodeAll(context);
         } else if (messageText != null) {
-            writer.startElement("p", null);
             writer.writeText(messageText, null);
-            writer.endElement("p");
         }
+        writer.endElement("p");        
         
         renderChildren(context, dialog);
 
