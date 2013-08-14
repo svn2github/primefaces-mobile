@@ -88,14 +88,19 @@ public class DataListRenderer extends CoreRenderer {
         
         int rowCount = dataList.getRowCount(); 
         
-        if (!dataList.getAttributes().containsKey("defaultRows")) {
+        //restore
+        Integer defaultRows = (Integer) dataList.getAttributes().get("defaultRows");
+        if (defaultRows == null) {
             dataList.getAttributes().put("defaultRows", dataList.getRows());
+            defaultRows = dataList.getRows();
         }
+        dataList.setRows(defaultRows);        
+        
+        boolean renderPaginator = (dataList.isPaginator() && (rowCount > dataList.getRows()));
         
         if (dataList.getVar() != null) {
-            if (dataList.isPaginator() && (rowCount != 0)) {
-                rowCount = (Integer) dataList.getAttributes().get("defaultRows");
-                dataList.setRows(rowCount);
+            if (renderPaginator) {
+                rowCount = dataList.getRows();
             }
 
             for (int i = 0; i < rowCount; i++) {
@@ -135,7 +140,7 @@ public class DataListRenderer extends CoreRenderer {
         }            
         
         
-        if (dataList.isPaginator() && (dataList.getRows() < dataList.getRowCount())) {
+        if (renderPaginator) {
             encodePaginatorButton(context, dataList);
         }                
 
@@ -152,7 +157,7 @@ public class DataListRenderer extends CoreRenderer {
         writer.startElement("a", dataList);
         writer.writeAttribute("id", clientId, null);        
         writer.writeAttribute("data-role", "button", null);
-        writer.writeAttribute("style", "margin-top: 20px", null);        
+        writer.writeAttribute("style", "margin: 20px 0px 20px", null);        
         writer.writeText(paginatorText, null);       
         writer.endElement("a");        
     }  
