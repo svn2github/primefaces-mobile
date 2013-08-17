@@ -121,6 +121,7 @@ public class PageRenderer extends CoreRenderer {
         writer.endElement("head");
 
         writer.startElement("body", page);
+        writer.writeAttribute("onunload", "", null);        
     }
 
     @Override
