@@ -23,7 +23,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.primefaces.component.commandbutton.CommandButton;
+import org.primefaces.context.RequestContext;
 import org.primefaces.renderkit.CoreRenderer;
+import org.primefaces.util.CSVBuilder;
 import org.primefaces.util.ComponentUtils;
 
 public class CommandButtonRenderer extends CoreRenderer {
@@ -49,6 +51,8 @@ public class CommandButtonRenderer extends CoreRenderer {
         CommandButton button = (CommandButton) component;
         String clientId = button.getClientId(context);
         String type = button.getType();
+        RequestContext requestContext = RequestContext.getCurrentInstance();
+        boolean csvEnabled = requestContext.getApplicationContext().getConfig().isClientSideValidationEnabled()&&button.isValidateClient();        
         Map<String,Object> attrs = button.getAttributes();
         String styleClass = button.getStyleClass()== null ? "" : button.getStyleClass();
         if (button.isDisabled()) styleClass = styleClass + " ui-disabled";        
@@ -71,8 +75,8 @@ public class CommandButtonRenderer extends CoreRenderer {
         
         if (!type.equals("reset") && !type.equals("button")) {
             String request;
-
-            if (button.isAjax()) {
+            boolean ajax = button.isAjax();
+            if (ajax) {
                 request = buildAjaxRequest(context, button, null);
             } else {
                 UIComponent form = ComponentUtils.findParentForm(context, button);
@@ -82,6 +86,11 @@ public class CommandButtonRenderer extends CoreRenderer {
 
                 request = buildNonAjaxRequest(context, button, form, clientId, true);
             }
+            
+            if(csvEnabled) {
+                CSVBuilder csvb = requestContext.getCSVBuilder();
+                request = csvb.init().source("this").ajax(ajax).process(button, button.getProcess()).command(request).build();
+            }            
 
             onclick.append(request);
         }

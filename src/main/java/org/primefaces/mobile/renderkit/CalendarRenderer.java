@@ -28,6 +28,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import org.primefaces.component.calendar.Calendar;
 import org.primefaces.component.calendar.CalendarUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 import org.primefaces.renderkit.InputRenderer;
@@ -188,6 +189,10 @@ public class CalendarRenderer extends InputRenderer {
             writer.writeAttribute("style", calendar.getStyle(), null);
         }
         writer.writeAttribute("class", createStyleClass(calendar), "styleClass");
+        
+        if(RequestContext.getCurrentInstance().getApplicationContext().getConfig().isClientSideValidationEnabled()) {
+            renderValidationMetadata(context, calendar);
+        }         
 
         writer.endElement("input");
     }

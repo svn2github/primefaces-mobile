@@ -75,6 +75,19 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
     }
 }
 
+PrimeFaces.validator.Highlighter = {
+    
+    default: {
+        
+        highlight: function(element) {
+            element.addClass('ui-focus');
+        },
+        unhighlight: function(element) {
+            element.removeClass('ui-focus');
+        }
+    }
+}
+
 PrimeFaces.navigate = function(to, cfg) {        
     //cast
     cfg.reverse = (cfg.reverse == 'true' || cfg.reverse == true) ? true : false;

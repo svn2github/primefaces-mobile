@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.inputtextarea.InputTextarea;
+import org.primefaces.context.RequestContext;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
@@ -108,6 +109,10 @@ public class InputTextareaRenderer extends InputRenderer {
 		if(valueToRender != null) {
 			writer.writeText(valueToRender, "value");
 		}
+                
+        if(RequestContext.getCurrentInstance().getApplicationContext().getConfig().isClientSideValidationEnabled()) {
+            renderValidationMetadata(context, inputTextarea);
+        }                        
 
         writer.endElement("textarea");
 	}
