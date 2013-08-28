@@ -57,7 +57,6 @@ public class InputTextRenderer extends InputRenderer {
 	}
 
     protected void encodeScript(FacesContext context, InputText inputText) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = inputText.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
@@ -118,8 +117,19 @@ public class InputTextRenderer extends InputRenderer {
         if(inputText.isDisabled()) writer.writeAttribute("disabled", "disabled", null);
         if(inputText.isReadonly()) writer.writeAttribute("readonly", "readonly", null);
         if(inputText.getStyle() != null) writer.writeAttribute("style", inputText.getStyle(), null);
-        if(inputText.getStyleClass() != null) writer.writeAttribute("class", inputText.getStyleClass(), "styleClass");
+        writer.writeAttribute("class", createStyleClass(inputText), "styleClass");
 
         writer.endElement("input");
     }
+    
+    protected String createStyleClass(InputText inputText) {
+        String defaultClass = "";
+        defaultClass = inputText.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = inputText.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }    
+    
 }

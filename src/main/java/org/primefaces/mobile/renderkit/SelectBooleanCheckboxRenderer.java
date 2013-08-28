@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import org.primefaces.component.inputtext.InputText;
 import org.primefaces.component.selectbooleancheckbox.SelectBooleanCheckbox;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.renderkit.InputRenderer;
@@ -67,7 +68,7 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
         writer.writeAttribute("id", clientId, "id");
 
         if(checkbox.getStyle() != null) writer.writeAttribute("style", checkbox.getStyle(), "style");
-        if(checkbox.getStyleClass() != null) writer.writeAttribute("class", checkbox.getStyleClass(), "styleClass");
+        writer.writeAttribute("class", createStyleClass(checkbox), "styleClass");
         
         if(label == null) {
             encodeInput(context, checkbox, clientId, checked, disabled);
@@ -123,7 +124,6 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
     }
     
     protected void encodeScript(FacesContext context, SelectBooleanCheckbox checkbox) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
@@ -133,4 +133,14 @@ public class SelectBooleanCheckboxRenderer extends InputRenderer {
 
         wb.finish();
     }
+    
+    protected String createStyleClass(SelectBooleanCheckbox checkbox) {
+        String defaultClass = "";
+        defaultClass = checkbox.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = checkbox.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }       
 }

@@ -71,8 +71,7 @@ public class SelectManyMenuRenderer extends SelectManyRenderer {
     protected void encodeInput(FacesContext context, SelectManyMenu menu, String inputId) throws IOException {
         ResponseWriter writer = context.getResponseWriter();  
         List<SelectItem> selectItems = getSelectItems(context, menu);       
-        String style = menu.getStyle();
-        String styleClass = menu.getStyleClass();          
+        String style = menu.getStyle();       
         writer.startElement("select", null);
         writer.writeAttribute("id", inputId, "id");
         writer.writeAttribute("name", inputId, null);       
@@ -80,7 +79,7 @@ public class SelectManyMenuRenderer extends SelectManyRenderer {
         writer.writeAttribute("data-native-menu", "false", null);
         if(MobileUtils.isMini(context)) writer.writeAttribute("data-mini", "true", null);        
         if(style != null) writer.writeAttribute("style", style, "style");
-        if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");                 
+        writer.writeAttribute("class", createStyleClass(menu), "styleClass");                 
         
         if(menu.isDisabled()) writer.writeAttribute("disabled", "disabled", null);        
         if(menu.getTabindex() != null) writer.writeAttribute("tabindex", menu.getTabindex(), null);
@@ -136,6 +135,16 @@ public class SelectManyMenuRenderer extends SelectManyRenderer {
             writer.endElement("option");
         }
     }
+    
+    protected String createStyleClass(SelectManyMenu menu) {
+        String defaultClass = "";
+        defaultClass = menu.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = menu.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }        
 
     @Override
     protected String getSubmitParam(FacesContext context, UISelectMany selectMany) {

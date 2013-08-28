@@ -187,9 +187,7 @@ public class CalendarRenderer extends InputRenderer {
         if (calendar.getStyle() != null) {
             writer.writeAttribute("style", calendar.getStyle(), null);
         }
-        if (calendar.getStyleClass() != null) {
-            writer.writeAttribute("class", calendar.getStyleClass(), "styleClass");
-        }
+        writer.writeAttribute("class", createStyleClass(calendar), "styleClass");
 
         writer.endElement("input");
     }
@@ -286,6 +284,16 @@ public class CalendarRenderer extends InputRenderer {
             return pattern;
         }
     }
+    
+    protected String createStyleClass(Calendar calendar) {
+        String defaultClass = "";
+        defaultClass = calendar.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = calendar.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }        
 
     @Override
     public Object getConvertedValue(FacesContext context, UIComponent component, Object value) throws ConverterException {

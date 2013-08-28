@@ -102,7 +102,7 @@ public class InputTextareaRenderer extends InputRenderer {
         if(inputTextarea.isDisabled()) writer.writeAttribute("disabled", "disabled", "disabled");
         if(inputTextarea.isReadonly()) writer.writeAttribute("readonly", "readonly", "readonly");
         if(inputTextarea.getStyle() != null) writer.writeAttribute("style", inputTextarea.getStyle(), "style");        
-        if(inputTextarea.getStyleClass() != null) writer.writeAttribute("class", inputTextarea.getStyleClass(), "styleClass");
+        writer.writeAttribute("class", createStyleClass(inputTextarea), "styleClass");
 
         String valueToRender = ComponentUtils.getValueToRender(context, inputTextarea);
 		if(valueToRender != null) {
@@ -112,5 +112,14 @@ public class InputTextareaRenderer extends InputRenderer {
         writer.endElement("textarea");
 	}
     
-	
+    protected String createStyleClass(InputTextarea inputTextarea) {
+        String defaultClass = "";
+        defaultClass = inputTextarea.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = inputTextarea.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }       
+    
 }

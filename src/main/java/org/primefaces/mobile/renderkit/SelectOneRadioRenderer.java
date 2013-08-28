@@ -49,7 +49,6 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = radio.getClientId(context);
         String style = radio.getStyle();
-        String styleClass = radio.getStyleClass();
         
         List<SelectItem> selectItems = getSelectItems(context, radio);
 
@@ -58,7 +57,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         if (radio.getLabel() != null) writer.writeAttribute("data-role", "fieldcontain", null);
 
         if(style != null) writer.writeAttribute("style", style, "style");
-        if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");
+        writer.writeAttribute("class", createStyleClass(radio), "styleClass");
 
         encodeSelectItems(context, radio, selectItems);
 
@@ -66,7 +65,6 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
     }
     
     protected void encodeScript(FacesContext context, SelectOneRadio radio) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = radio.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
@@ -143,6 +141,16 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         
         writer.endElement("label");
     }
+    
+    protected String createStyleClass(SelectOneRadio radio) {
+        String defaultClass = "";
+        defaultClass = radio.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = radio.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }    
     
     @Override
     protected String getSubmitParam(FacesContext context, UISelectOne selectOne) {

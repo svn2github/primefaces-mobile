@@ -47,7 +47,6 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
     }
     
     protected void encodeScript(FacesContext context, SelectManyCheckbox checkbox) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = checkbox.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
@@ -69,7 +68,7 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         if (checkbox.getLabel() != null) writer.writeAttribute("data-role", "fieldcontain", null);
 
         if(style != null) writer.writeAttribute("style", style, "style");
-        if(styleClass != null) writer.writeAttribute("class", styleClass, "styleClass");
+        writer.writeAttribute("class", createStyleClass(checkbox), "styleClass");
 
         encodeSelectItems(context, checkbox);
 
@@ -155,6 +154,16 @@ public class SelectManyCheckboxRenderer extends SelectManyRenderer {
         
         writer.endElement("label");
     }
+    
+    protected String createStyleClass(SelectManyCheckbox checkbox) {
+        String defaultClass = "";
+        defaultClass = checkbox.isValid() ? defaultClass : defaultClass + " ui-focus";
+        
+        String styleClass = checkbox.getStyleClass();
+        styleClass = styleClass == null ? defaultClass : defaultClass + " " + styleClass;
+        
+        return styleClass;
+    }      
     
     @Override
     protected String getSubmitParam(FacesContext context, UISelectMany selectMany) {
