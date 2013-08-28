@@ -35,7 +35,6 @@ public class DialogRenderer extends CoreRenderer {
     }
 
     protected void encodeScript(FacesContext context, Dialog dialog) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = dialog.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.initWithDomReady("Dialog", dialog.resolveWidgetVar(), clientId);

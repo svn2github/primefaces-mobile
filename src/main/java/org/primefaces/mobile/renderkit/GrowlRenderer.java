@@ -92,7 +92,6 @@ public class GrowlRenderer extends UINotificationRenderer {
     }
     
     protected void encodeScript(FacesContext context, Growl uiGrowl,Boolean showPopup) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
         String clientId = uiGrowl.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.initWithDomReady("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup");
