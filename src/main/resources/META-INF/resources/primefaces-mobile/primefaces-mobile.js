@@ -77,7 +77,7 @@ PrimeFaces.ajax.AjaxUtils.updateElement = function(id, content) {
 
 PrimeFaces.validator.Highlighter = {
     
-    default: {
+    'default': {
         
         highlight: function(element) {
             element.addClass('ui-focus');
