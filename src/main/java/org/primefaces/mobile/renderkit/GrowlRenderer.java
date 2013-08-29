@@ -26,7 +26,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import org.primefaces.component.growl.Growl;
+import org.primefaces.context.RequestContext;
 import org.primefaces.renderkit.UINotificationRenderer;
+import org.primefaces.util.HTML;
 import org.primefaces.util.WidgetBuilder;
 
 public class GrowlRenderer extends UINotificationRenderer {
@@ -41,6 +43,7 @@ public class GrowlRenderer extends UINotificationRenderer {
     protected void encodeMarkup(FacesContext context, Growl uiGrowl) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = uiGrowl.getClientId(context);
+        String widgetVar = uiGrowl.resolveWidgetVar();
         Map<String, List<FacesMessage>> messagesMap = new HashMap<String, List<FacesMessage>>();
 
         String _for = uiGrowl.getFor();
@@ -68,37 +71,34 @@ public class GrowlRenderer extends UINotificationRenderer {
 
         writer.startElement("div", uiGrowl);
         writer.writeAttribute("id", clientId, "id");
+        if(RequestContext.getCurrentInstance().getApplicationContext().getConfig().isClientSideValidationEnabled()) {
+            writer.writeAttribute("class", "ui-growl-pl", null);
+            writer.writeAttribute(HTML.WIDGET_VAR, widgetVar, null);
+            writer.writeAttribute("data-global", uiGrowl.isGlobalOnly(), null);
+            writer.writeAttribute("data-summary", uiGrowl.isShowSummary(), null);
+            writer.writeAttribute("data-detail", uiGrowl.isShowDetail(), null);
+        }        
         writer.startElement("div", null);
         writer.writeAttribute("id", clientId + "_popup", "id");
         writer.writeAttribute("data-role", "popup", null);
         writer.writeAttribute("data-transition", "fade", null);
-        writer.writeAttribute("data-theme", "a", null);
-
-        Boolean showPopup = false;
-        for (String severity : messagesMap.keySet()) {
-            List<FacesMessage> severityMessages = messagesMap.get(severity);
-
-            if (severityMessages.size() > 0) {
-                encodeSeverityMessages(context, uiGrowl, severity, severityMessages);
-                showPopup = true;
-            }
-        }
-
+        writer.writeAttribute("data-theme", "a", null);               
         writer.endElement("div");
         writer.endElement("div");
         
-        encodeScript(context, uiGrowl, showPopup);
+        encodeScript(context, uiGrowl);
 
     }
     
-    protected void encodeScript(FacesContext context, Growl uiGrowl,Boolean showPopup) throws IOException {
+    protected void encodeScript(FacesContext context, Growl uiGrowl) throws IOException {
         String clientId = uiGrowl.getClientId(context);        
         WidgetBuilder wb = getWidgetBuilder(context);
         wb.initWithDomReady("Growl", uiGrowl.resolveWidgetVar(), clientId+"_popup");
         wb.attr("life", uiGrowl.getLife())
-                .attr("sticky", uiGrowl.isSticky())
-                .attr("showPopup", showPopup);
+                .attr("sticky", uiGrowl.isSticky());
         
+        context.getResponseWriter().write(",msgs:");
+        encodeMessages(context, uiGrowl);        
         wb.finish();
     }
 
@@ -114,54 +114,48 @@ public class GrowlRenderer extends UINotificationRenderer {
             severityMessages.add(message);
         }
     }
-
-    protected void encodeSeverityMessages(FacesContext context, Growl uiGrowl, String severity, List<FacesMessage> messages) throws IOException {
+    
+    protected void encodeMessages(FacesContext context, Growl growl) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
-        boolean escape = uiGrowl.isEscape();
-
-
-        for (FacesMessage msg : messages) {
-            String summary = msg.getSummary() != null ? msg.getSummary() : "";
-            String detail = msg.getDetail() != null ? msg.getDetail() : summary;
-            String icon = null;
-            
-            if (severity.equals("info")) icon = "info";
-            if (severity.equals("warn")) icon = "alert";            
-            if (severity.equals("error")) icon = "delete";            
-            if (severity.equals("fatal")) icon = "minus";                     
-
-            writer.startElement("p", null);
-
-            writer.startElement("span", null);
-            writer.writeAttribute("class", "ui-icon ui-icon-" + icon, null);
-            writer.writeAttribute("style", "float: left;margin-right: 5px;", null);
-            writer.endElement("span");
-
-            if (uiGrowl.isShowSummary()) {
-                if (escape) {
-                    writer.startElement("b", null);
-                    writer.writeText(summary, null);
-                    writer.endElement("b");
-                } else {
-                    writer.write(summary);
-                }
-            }
-            
-            if (uiGrowl.isShowSummary() && uiGrowl.isShowDetail()){
-                writer.writeText(" ", null);
-            }
-            
-            if (uiGrowl.isShowDetail()) {
-                if (escape) {
-                    writer.writeText(detail, null);
-                } else {
-                    writer.write(detail);
-                }
-            }          
-
-            msg.rendered();
-            writer.endElement("p");
+        String _for = growl.getFor();
+        Iterator<FacesMessage> messages;
+        if(_for != null) {
+            messages = context.getMessages(_for);
         }
+        else {
+            messages = growl.isGlobalOnly() ? context.getMessages(null) : context.getMessages();
+        }
+        
+        writer.write("[");
 
-    }
+		while(messages.hasNext()) {
+			FacesMessage message = messages.next();      
+            String severityName = getSeverityName(message);                                     
+            
+            if(shouldRender(growl, message, severityName)) {
+                String summary = escapeText(message.getSummary());
+                String detail = escapeText(message.getDetail());
+            
+                writer.write("{");
+
+                if(growl.isShowSummary() && growl.isShowDetail())
+                    writer.writeText("summary:\"" + summary + "\",detail:\"" + detail + "\"", null);
+                else if(growl.isShowSummary() && !growl.isShowDetail())
+                    writer.writeText("summary:\"" + summary + "\",detail:\"\"", null);
+                else if(!growl.isShowSummary() && growl.isShowDetail())
+                    writer.writeText("summary:\"\",detail:\"" + detail + "\"", null);
+
+                writer.write(",severity:'" + severityName + "'");
+
+                writer.write("}");
+
+                if(messages.hasNext())
+                    writer.write(",");
+
+                message.rendered();
+            }
+		}
+
+        writer.write("]");
+    }    
 }

@@ -226,18 +226,91 @@ PrimeFaces.widget.Dialog = PrimeFaces.widget.BaseWidget.extend({
 PrimeFaces.widget.Growl = PrimeFaces.widget.BaseWidget.extend({
     init: function(cfg) {
         this._super(cfg);
-        var element = this.jq;
         cfg.y = $(document).height();
-
-        if (cfg.showPopup){  
-            //Wait other popup close
-            var delay = 300;
-            setTimeout(function() {element.popup().popup('open', cfg)},delay);
-            if (!cfg.sticky) {
-                setTimeout(function() {element.popup('close')}, cfg.life+delay);
-            }
+        cfg.delay = 300;
+        
+        this.show(this.cfg.msgs);
+    },                     
+            
+    show: function(msgs) {   
+        var _self = this;
+        if (msgs.length !== 0){                
+            
+            //clear previous messages
+            this.removeAll();
+            
+            $.each(msgs, function(index, msg) {
+                _self.renderMessage(msg);
+            });                       
         }
-    }
+    },            
+            
+    renderMessage: function(msg) {        
+
+        switch (msg.severity){
+            case 'info' : msg.severity = 'info'; break;
+            case 'warn' : msg.severity = 'alert'; break;
+            case 'error' : msg.severity = 'delete'; break;
+            case 'fatal' : msg.severity = 'minus'; break;
+            default : msg.severity = 'delete';
+        }
+
+        var markup = '<p>';
+        markup += '<span class="ui-icon ui-icon-' + msg.severity + '" style="float: left;margin-right: 5px;" />';
+        markup += '<span>';        
+        if (msg.summary) markup += '<b>'+ msg.summary +'</b>'; 
+        if (msg.summary && msg.detail) markup += ' ';
+        if (msg.summary) markup += msg.detail;         
+        markup += '</span>';
+        markup += '</p>';  
+        
+        var message = $(markup);
+        
+        this.bindEvents(message);        
+        
+        message.appendTo(this.jq);     
+        
+        this.openPopup();
+        
+    }, 
+    
+    openPopup: function() {
+        var _self = this;
+     
+        setTimeout(function() {_self.jq.popup().popup('open', _self.cfg)},_self.cfg.delay);    
+    },
+                            
+            
+    removeAll: function() {
+        this.jq.contents().remove();
+    },
+            
+    bindEvents: function(message) {
+        var sticky = this.cfg.sticky;
+
+        //remove message on click of close icon
+        this.jq.bind('popupafterclose', function(event, ui) {
+            //clear timeout if removed manually            
+            if(!sticky) {
+                clearTimeout(message.data('timeout'));
+            }
+        });        
+        
+        //hide the message after given time if not sticky
+        if(!sticky) {
+            this.setRemovalTimeout(message);
+        }
+    },            
+            
+    setRemovalTimeout: function(message) {
+        var _self = this;
+        
+        var timeout = setTimeout(function() {
+            _self.jq.popup('close');
+        }, this.cfg.life+this.cfg.delay);
+
+        message.data('timeout', timeout);
+    }            
 });
 
 /**
