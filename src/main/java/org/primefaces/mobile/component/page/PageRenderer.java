@@ -107,7 +107,7 @@ public class PageRenderer extends CoreRenderer {
         writer.endElement("script");
                
         renderResource(context, "mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
-        renderResource(context, "core/primefaces-core.js", "javax.faces.resource.Script", "primefaces");
+        renderResource(context, "core/core.js", "javax.faces.resource.Script", "primefaces");
         
         if(cc.isClientSideValidationEnabled()) {
              encodeValidationResources(context, cc.isBeanValidationAvailable());
