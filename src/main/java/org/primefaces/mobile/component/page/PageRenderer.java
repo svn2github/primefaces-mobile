@@ -17,13 +17,10 @@ package org.primefaces.mobile.component.page;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.faces.application.Resource;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import org.primefaces.config.ConfigContainer;
-import org.primefaces.context.RequestContext;
 import org.primefaces.mobile.util.Constants;
 import org.primefaces.renderkit.CoreRenderer;
 
@@ -32,7 +29,6 @@ public class PageRenderer extends CoreRenderer {
     @Override
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {        
         ResponseWriter writer = context.getResponseWriter();
-        ConfigContainer cc = RequestContext.getCurrentInstance().getApplicationContext().getConfig();
         Page page = (Page) component;
         UIComponent meta = page.getFacet("meta");
         UIComponent config = page.getFacet("config");
@@ -107,19 +103,7 @@ public class PageRenderer extends CoreRenderer {
         writer.endElement("script");
                
         renderResource(context, "mobile.js", "javax.faces.resource.Script", "primefaces-mobile");
-        renderResource(context, "core/core.js", "javax.faces.resource.Script", "primefaces");
-        
-        if(cc.isClientSideValidationEnabled()) {
-             encodeValidationResources(context, cc.isBeanValidationAvailable());
-            
-            writer.startElement("script", null);
-            writer.writeAttribute("type", "text/javascript", null);
-            writer.write("PrimeFaces.settings.locale = '" + context.getViewRoot().getLocale() + "';");
-            writer.write("PrimeFaces.settings.validateEmptyFields = " + cc.isValidateEmptyFields() + ";");
-            writer.write("PrimeFaces.settings.considerEmptyStringNull = " + cc.isInterpretEmptyStringAsNull() + ";");
-            writer.endElement("script");
-        }          
-        
+        renderResource(context, "core/core.js", "javax.faces.resource.Script", "primefaces");                  
         renderResource(context, "primefaces-mobile.js", "javax.faces.resource.Script", "primefaces-mobile");        
         
         if(postinit != null) {
@@ -159,28 +143,5 @@ public class PageRenderer extends CoreRenderer {
         attrs.put("target", "head");        
 
         resource.encodeAll(context);
-    }    
-    
-    protected void encodeValidationResources(FacesContext context, boolean beanValidationEnabled) throws IOException {
-        ResponseWriter writer = context.getResponseWriter();
-        Resource resource = context.getApplication().getResourceHandler().createResource("validation/validation.js", "primefaces");
-        
-        if(resource != null) {
-            writer.startElement("script", null);
-            writer.writeAttribute("type", "text/javascript", null);
-            writer.writeAttribute("src", resource.getRequestPath(), null);
-            writer.endElement("script");
-        }
-        
-        if(beanValidationEnabled) {
-            resource = context.getApplication().getResourceHandler().createResource("validation/beanvalidation.js", "primefaces");
-        
-            if(resource != null) {
-                writer.startElement("script", null);
-                writer.writeAttribute("type", "text/javascript", null);
-                writer.writeAttribute("src", resource.getRequestPath(), null);
-                writer.endElement("script");
-            }
-        }
-    }    
+    }            
 }

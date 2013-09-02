@@ -24,7 +24,6 @@ import org.primefaces.renderkit.InputRenderer;
 import org.primefaces.util.ComponentUtils;
 import org.primefaces.util.HTML;
 import org.primefaces.component.inputtext.InputText;
-import org.primefaces.context.RequestContext;
 import org.primefaces.mobile.util.MobileUtils;
 import org.primefaces.util.WidgetBuilder;
 
@@ -118,11 +117,7 @@ public class InputTextRenderer extends InputRenderer {
         if(inputText.isDisabled()) writer.writeAttribute("disabled", "disabled", null);
         if(inputText.isReadonly()) writer.writeAttribute("readonly", "readonly", null);
         if(inputText.getStyle() != null) writer.writeAttribute("style", inputText.getStyle(), null);
-        writer.writeAttribute("class", createStyleClass(inputText), "styleClass");
-
-        if(RequestContext.getCurrentInstance().getApplicationContext().getConfig().isClientSideValidationEnabled()) {
-            renderValidationMetadata(context, inputText);
-        }        
+        writer.writeAttribute("class", createStyleClass(inputText), "styleClass");      
         
         writer.endElement("input");
     }

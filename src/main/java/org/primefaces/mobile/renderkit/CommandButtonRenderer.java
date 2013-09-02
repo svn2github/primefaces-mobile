@@ -50,9 +50,7 @@ public class CommandButtonRenderer extends CoreRenderer {
         ResponseWriter writer = context.getResponseWriter();
         CommandButton button = (CommandButton) component;
         String clientId = button.getClientId(context);
-        String type = button.getType();
-        RequestContext requestContext = RequestContext.getCurrentInstance();
-        boolean csvEnabled = requestContext.getApplicationContext().getConfig().isClientSideValidationEnabled()&&button.isValidateClient();        
+        String type = button.getType();      
         Map<String,Object> attrs = button.getAttributes();
         String styleClass = button.getStyleClass()== null ? "" : button.getStyleClass();
         if (button.isDisabled()) styleClass = styleClass + " ui-disabled";        
@@ -85,12 +83,7 @@ public class CommandButtonRenderer extends CoreRenderer {
                 }
 
                 request = buildNonAjaxRequest(context, button, form, clientId, true);
-            }
-            
-            if(csvEnabled) {
-                CSVBuilder csvb = requestContext.getCSVBuilder();
-                request = csvb.init().source("this").ajax(ajax).process(button, button.getProcess()).command(request).build();
-            }            
+            }                      
 
             onclick.append(request);
         }
