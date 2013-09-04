@@ -66,7 +66,7 @@ public class CommandButtonRenderer extends CoreRenderer {
             onclick.append(button.getOnclick()).append(";");
         }
         
-        String onclickBehaviors = getOnclickBehaviors(context, button);
+        String onclickBehaviors = getEventBehaviors(context, button, "onclick");
         if(onclickBehaviors != null) {
             onclick.append(onclickBehaviors);
         }        
