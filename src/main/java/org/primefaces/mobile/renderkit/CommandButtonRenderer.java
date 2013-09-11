@@ -23,9 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.event.ActionEvent;
 import org.primefaces.component.commandbutton.CommandButton;
-import org.primefaces.context.RequestContext;
 import org.primefaces.renderkit.CoreRenderer;
-import org.primefaces.util.CSVBuilder;
 import org.primefaces.util.ComponentUtils;
 
 public class CommandButtonRenderer extends CoreRenderer {
@@ -66,7 +64,7 @@ public class CommandButtonRenderer extends CoreRenderer {
             onclick.append(button.getOnclick()).append(";");
         }
         
-        String onclickBehaviors = getEventBehaviors(context, button, "onclick");
+        String onclickBehaviors = getEventBehaviors(context, button, "click");
         if(onclickBehaviors != null) {
             onclick.append(onclickBehaviors);
         }        
