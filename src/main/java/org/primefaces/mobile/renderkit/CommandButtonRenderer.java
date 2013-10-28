@@ -53,11 +53,10 @@ public class CommandButtonRenderer extends CoreRenderer {
         String styleClass = button.getStyleClass()== null ? "" : button.getStyleClass();
         if (button.isDisabled()) styleClass = styleClass + " ui-disabled";        
 
-        writer.startElement("a", button);
+        writer.startElement("button", button);
         writer.writeAttribute("id", clientId, "id");
         writer.writeAttribute("name", clientId, "name");
-        writer.writeAttribute("type", type, "type");
-        writer.writeAttribute("data-role", "button", null);      
+        writer.writeAttribute("type", type, "type");    
 
         StringBuilder onclick = new StringBuilder();
         if(button.getOnclick() != null) {
@@ -106,6 +105,6 @@ public class CommandButtonRenderer extends CoreRenderer {
         
 	if(button.getValue() != null) writer.write(button.getValue().toString());
 
-        writer.endElement("a");
+        writer.endElement("button");
     }
 }
