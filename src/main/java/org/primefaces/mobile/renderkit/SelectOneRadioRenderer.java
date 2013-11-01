@@ -68,7 +68,7 @@ public class SelectOneRadioRenderer extends SelectOneRenderer {
         String clientId = radio.getClientId(context);
 
         WidgetBuilder wb = getWidgetBuilder(context);
-        wb.initWithDomReady("SelectManyCheckbox", radio.resolveWidgetVar(), clientId);
+        wb.initWithDomReady("SelectOneRadio", radio.resolveWidgetVar(), clientId);
 
         encodeClientBehaviors(context, radio);
 
